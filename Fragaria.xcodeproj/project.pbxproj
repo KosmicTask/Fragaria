@@ -20,6 +20,7 @@
 		AB41C1051191FFCB004F0CB5 /* MGSFragaria.m in Sources */ = {isa = PBXBuildFile; fileRef = AB41C1041191FFCB004F0CB5 /* MGSFragaria.m */; };
 		AB5E688711B657250026B4B9 /* README in Resources */ = {isa = PBXBuildFile; fileRef = AB5E688611B657250026B4B9 /* README */; };
 		AB5E6A4A11B65AC20026B4B9 /* SMLGutterTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB5E6A4911B65AC20026B4B9 /* SMLGutterTextView.m */; };
+		AB5E6BAB11B684AF0026B4B9 /* LICENSE-2.0.txt in Resources */ = {isa = PBXBuildFile; fileRef = AB5E6BAA11B684AF0026B4B9 /* LICENSE-2.0.txt */; };
 		AB69B65C118B75FB00903D1D /* SMLSyntaxColouring.m in Sources */ = {isa = PBXBuildFile; fileRef = AB69B65A118B75FB00903D1D /* SMLSyntaxColouring.m */; };
 		AB69B671118B76AE00903D1D /* ICUMatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = AB69B66B118B76AE00903D1D /* ICUMatcher.m */; };
 		AB69B673118B76AE00903D1D /* ICUPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = AB69B66D118B76AE00903D1D /* ICUPattern.m */; };
@@ -92,6 +93,7 @@
 		AB41C12E11920514004F0CB5 /* SMLGutterTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLGutterTextView.h; sourceTree = "<group>"; };
 		AB5E688611B657250026B4B9 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		AB5E6A4911B65AC20026B4B9 /* SMLGutterTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLGutterTextView.m; sourceTree = "<group>"; };
+		AB5E6BAA11B684AF0026B4B9 /* LICENSE-2.0.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "LICENSE-2.0.txt"; sourceTree = "<group>"; };
 		AB69B62B118B745700903D1D /* MGSFragaria.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MGSFragaria.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB69B62C118B745700903D1D /* MGSFragaria-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MGSFragaria-Info.plist"; sourceTree = "<group>"; };
 		AB69B65A118B75FB00903D1D /* SMLSyntaxColouring.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLSyntaxColouring.m; sourceTree = "<group>"; };
@@ -366,6 +368,7 @@
 		AB3972FC118C2A5D00AEF388 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				AB5E6BAA11B684AF0026B4B9 /* LICENSE-2.0.txt */,
 				AB3971E6118C27E700AEF388 /* SyntaxDefinitions.plist */,
 				AB397291118C28E700AEF388 /* Syntax Definitions */,
 				AB5E688611B657250026B4B9 /* README */,
@@ -764,6 +767,7 @@
 				AB39723A118C27E700AEF388 /* SyntaxDefinitions.plist in Resources */,
 				AB3972E5118C28E700AEF388 /* Syntax Definitions in Resources */,
 				AB5E688711B657250026B4B9 /* README in Resources */,
+				AB5E6BAB11B684AF0026B4B9 /* LICENSE-2.0.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

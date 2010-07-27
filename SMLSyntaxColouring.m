@@ -183,7 +183,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 	// get syntax dictionary
 	NSDictionary *syntaxDictionary = [[MGSSyntaxController sharedInstance] syntaxDictionaryWithName:definitionName];
-	
+		
 	// parse
 	[self parseSyntaxDictionary:syntaxDictionary];	
 }

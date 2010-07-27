@@ -60,11 +60,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	[self setAutomaticLinkDetectionEnabled:[[SMLDefaults valueForKey:@"AutomaticLinkDetection"] boolValue]];
 	[self setAutomaticQuoteSubstitutionEnabled:[[SMLDefaults valueForKey:@"AutomaticQuoteSubstitution"] boolValue]];
 	
-	[self setFont:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextFont"]]];
-	[self setTextColor:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextColourWell"]]];
-	[self setInsertionPointColor:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextColourWell"]]];
-	[self setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"BackgroundColourWell"]]];
-	
+	[self setTextDefaults];
 	
 	[self setAutomaticDataDetectionEnabled:YES];
 	[self setAutomaticTextReplacementEnabled:YES];
@@ -88,6 +84,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	lineHeight = [[[self textContainer] layoutManager] defaultLineHeightForFont:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextFont"]]];
 }
 
+- (void)setTextDefaults
+{
+	[self setFont:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextFont"]]];
+	[self setTextColor:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextColourWell"]]];
+	[self setInsertionPointColor:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextColourWell"]]];
+	[self setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"BackgroundColourWell"]]];
+}
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
@@ -653,5 +656,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	[super setFrame:rect];
 	[[docSpec valueForKey:@"lineNumbers"] updateLineNumbersForClipView:[[self enclosingScrollView] contentView] checkWidth:NO recolour:YES];
 
+}
+
+- (void)setValueForObject:(id)a
+{
 }
 @end

@@ -52,8 +52,7 @@ static NSSet *objectSetterKeys;
 	[MGSPreferencesController initializeValues];
 	
 	objectSetterKeys = [NSSet setWithObjects:MGSFOIsSyntaxColoured, MGSFOShowLineNumberGutter, MGSFOIsEdited,
-						MGSFOSyntaxDefinitionName, MGSFOSyntaxDefinitionName, MGSFOSyntaxDefinitionName,
-						MGSFODelegate,
+						MGSFOSyntaxDefinitionName, MGSFODelegate,
 						nil];
 	
 	objectGetterKeys = [NSMutableSet setWithObjects:ro_MGSFOTextView, ro_MGSFOScrollView, ro_MGSFOGutterScrollView, 

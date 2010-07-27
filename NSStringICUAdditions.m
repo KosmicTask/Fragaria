@@ -77,19 +77,17 @@ typedef struct URegularExpression URegularExpression;
 }
 
 -(void *)UTF16String {
-	UChar *ret = (UChar *)[self cStringUsingEncoding:[NSString nativeUTF16Encoding]];
-	
-	// for some reason, the null-terminator doesn't always show up at the right place and this
-	// causes extra characters to be created in the unicode string.  We remove them here by force.
-	unsigned int len = [self length];
-	ret[len] = '\0';
-	return ret;	
+	unsigned int length = [self length];
+	UChar *utf16String = NSAllocateCollectable((length+1)*sizeof(UChar), 0);
+	[self getCharacters:utf16String range:NSMakeRange(0, length)];
+	utf16String[length] = 0;
+	return utf16String;
 }
 
 -(void *)copyUTF16String {
 	unsigned int length = [self length];
 	UChar *utf16String = malloc((length+1)*sizeof(UChar));
-	[self getCharacters: utf16String];
+	[self getCharacters:utf16String range:NSMakeRange(0, length)];
 	utf16String[length] = 0;
 	return utf16String;
 }

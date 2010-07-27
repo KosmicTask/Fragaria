@@ -153,6 +153,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 - (NSRange)selectionRangeForProposedRange:(NSRange)proposedSelRange granularity:(NSSelectionGranularity)granularity
 {
+	// If it's not a mouse event return unchanged
+	NSEventType eventType = [[NSApp currentEvent] type];
+	if (eventType != NSLeftMouseDown && eventType != NSLeftMouseUp) {
+		return [super selectionRangeForProposedRange:proposedSelRange granularity:granularity];
+	}
+	
 	if (granularity != NSSelectByWord || [[self string] length] == proposedSelRange.location || [[NSApp currentEvent] clickCount] != 2) { // If it's not a double-click return unchanged
 		return [super selectionRangeForProposedRange:proposedSelRange granularity:granularity];
 	}

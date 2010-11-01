@@ -642,5 +642,13 @@
 		<key>extensions</key>
 		<string>xml dtd xsd xsl</string>
 	</dict>
+	<dict>
+		<key>name</key>
+		<string>GraphViz</string>
+		<key>file</key>
+		<string>graphviz</string>
+		<key>extensions</key>
+		<string>gv dot</string>
+	</dict>
 </array>
 </plist>

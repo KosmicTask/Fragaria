@@ -168,7 +168,6 @@ static NSSet *objectSetterKeys;
 {
 	// set text view string
 	[[docSpec valueForKey:ro_MGSFOTextView] setString:string];
-	[[docSpec valueForKey:ro_MGSFOLineNumbers] updateLineNumbersCheckWidth:YES recolour:YES];
 }
 
 /*

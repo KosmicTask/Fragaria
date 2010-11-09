@@ -174,17 +174,12 @@ static id sharedInstance = nil;
 	NSDictionary *none = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"None", @"none", [NSString string], nil] forKeys:keys];
 	[syntaxDefinitionsArray insertObject:none atIndex:0];
 	[syntaxDefinitionsArray insertObject:standard atIndex:0];
-	
-	NSMutableArray *changedSyntaxDefinitionsArray = nil;
-	if ([SMLDefaults valueForKey:@"ChangedSyntaxDefinitions"]) {
-		changedSyntaxDefinitionsArray = [NSArray arrayWithArray:[SMLDefaults valueForKey:@"ChangedSyntaxDefinitions"]];
-	}
-	
+		
 	// we will key our definitions by name
 	syntaxDefinitions = [NSMutableDictionary dictionaryWithCapacity:30];
 	NSMutableArray *definitionNames = [NSMutableArray arrayWithCapacity:30];
 	
-	NSInteger index = 0;
+	NSInteger idx = 0;
 	for (id item in syntaxDefinitionsArray) {
 		
 		if ([[item valueForKey:@"extensions"] isKindOfClass:[NSArray class]]) { // If extensions is an array instead of a string, i.e. an older version
@@ -196,8 +191,8 @@ static id sharedInstance = nil;
 		id syntaxDefinition = [NSMutableDictionary dictionaryWithCapacity:6];
 		[syntaxDefinition setValue:name forKey:@"name"];
 		[syntaxDefinition setValue:[item valueForKey:@"file"] forKey:@"file"];
-		[syntaxDefinition setValue:[NSNumber numberWithInteger:index] forKey:@"sortOrder"];
-		index++;
+		[syntaxDefinition setValue:[NSNumber numberWithInteger:idx] forKey:@"sortOrder"];
+		idx++;
 			
 		[syntaxDefinitions setObject:syntaxDefinition forKey:name];
 		[definitionNames addObject:name];

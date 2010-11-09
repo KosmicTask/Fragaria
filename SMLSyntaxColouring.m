@@ -26,6 +26,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 @interface SMLSyntaxColouring()
 - (void)parseSyntaxDictionary:(NSDictionary *)syntaxDictionary;
 - (NSString *)assignSyntaxDefinition;
+- (void)performDocumentDelegateSelector:(SEL)selector withObject:(id)object;
+- (void)autocompleteWordsTimerSelector:(NSTimer *)theTimer;
+- (void)liveUpdatePreviewTimerSelector:(NSTimer *)theTimer;
 @end
 
 @implementation SMLSyntaxColouring
@@ -45,6 +48,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	if ((self = [super init])) {
 		
 		document = theDocument;
+		lastCursorLocation = 0;
 		
 		firstLayoutManager = (SMLLayoutManager *)[[document valueForKey:@"firstTextView"] layoutManager];
 		secondLayoutManager = nil;
@@ -78,7 +82,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[[document valueForKey:@"firstTextView"] setDelegate:self];
 		[[[document valueForKey:@"firstTextView"] textStorage] setDelegate:self];
 		undoManager = [[NSUndoManager alloc] init];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkIfCanUndo) name:@"NSUndoManagerDidUndoChangeNotification" object:undoManager];
 		
 		lastLineHighlightRange = NSMakeRange(0, 0);
 		
@@ -140,6 +143,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 - (NSUndoManager *)undoManagerForTextView:(NSTextView *)aTextView
 {
+#pragma unused(aTextView)
+	
 	return undoManager;
 }
 
@@ -239,6 +244,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
  */
 - (void)parseSyntaxDictionary:(NSDictionary *)syntaxDictionary
 {
+	
 	NSMutableArray *keywordsAndAutocompleteWordsTemporary = [NSMutableArray array];
 	
 	// If the plist file is malformed be sure to set the values to something
@@ -477,10 +483,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	if (textView == nil) {
 		return;
 	}
-	visibleRect = [[[textView enclosingScrollView] contentView] documentVisibleRect];
-	visibleRange = [[textView layoutManager] glyphRangeForBoundingRect:visibleRect inTextContainer:[textView textContainer]];
-	beginningOfFirstVisibleLine = [[textView string] lineRangeForRange:NSMakeRange(visibleRange.location, 0)].location;
-	endOfLastVisibleLine = NSMaxRange([completeString lineRangeForRange:NSMakeRange(NSMaxRange(visibleRange), 0)]);
+	NSRect visibleRect = [[[textView enclosingScrollView] contentView] documentVisibleRect];
+	NSRange visibleRange = [[textView layoutManager] glyphRangeForBoundingRect:visibleRect inTextContainer:[textView textContainer]];
+	NSInteger beginningOfFirstVisibleLine = [[textView string] lineRangeForRange:NSMakeRange(visibleRange.location, 0)].location;
+	NSInteger endOfLastVisibleLine = NSMaxRange([completeString lineRangeForRange:NSMakeRange(NSMaxRange(visibleRange), 0)]);
 	
 	[self recolourRange:NSMakeRange(beginningOfFirstVisibleLine, endOfLastVisibleLine - beginningOfFirstVisibleLine)];
 }
@@ -492,10 +498,15 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		return;
 	}
 	
-	shouldOnlyColourTillTheEndOfLine = [[SMLDefaults valueForKey:@"OnlyColourTillTheEndOfLine"] boolValue];
-	shouldColourMultiLineStrings = [[SMLDefaults valueForKey:@"ColourMultiLineStrings"] boolValue];
+	BOOL shouldOnlyColourTillTheEndOfLine = [[SMLDefaults valueForKey:@"OnlyColourTillTheEndOfLine"] boolValue];
+	BOOL shouldColourMultiLineStrings = [[SMLDefaults valueForKey:@"ColourMultiLineStrings"] boolValue];
 	
 	NSRange effectiveRange = range;
+	NSRange rangeOfLine = NSMakeRange(0, 0);
+	NSRange foundRange = NSMakeRange(0, 0);
+	NSRange searchRange = NSMakeRange(0, 0);
+	NSUInteger searchSyntaxLength = 0;
+	NSUInteger beginning = 0, end = 0, endOfLine = 0, length = 0;
 
 	if (shouldColourMultiLineStrings) { // When multiline strings are coloured it needs to go backwards to find where the string might have started if it's "above" the top of the screen
 		NSInteger beginFirstStringInMultiLine = [completeString rangeOfString:firstString options:NSBackwardsSearch range:NSMakeRange(0, effectiveRange.location)].location;
@@ -505,21 +516,22 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		}
 	}
 	
-	rangeLocation = effectiveRange.location;
-	maxRange = NSMaxRange(effectiveRange);
+	NSUInteger rangeLocation = effectiveRange.location;
+	NSUInteger maxRange = NSMaxRange(effectiveRange);
 	searchString = [completeString substringWithRange:effectiveRange];
-	searchStringLength = [searchString length];
+	NSUInteger searchStringLength = [searchString length];
 	if (searchStringLength == 0) {
 		return;
 	}
-	scanner = [[NSScanner alloc] initWithString:searchString];
+	MGSScanner *scanner = [[NSScanner alloc] initWithString:searchString];
 	[scanner setCharactersToBeSkipped:nil];
-	completeDocumentScanner = [[NSScanner alloc] initWithString:completeString];
+	MGSScanner *completeDocumentScanner = [[NSScanner alloc] initWithString:completeString];
 	[completeDocumentScanner setCharactersToBeSkipped:nil];
 	
-	completeStringLength = [completeString length];
+	NSUInteger completeStringLength = [completeString length];
 	
-	beginLocationInMultiLine = 0;
+	NSUInteger endLocationInMultiLine = 0;
+	NSUInteger beginLocationInMultiLine = 0;
 	
 	[self removeColoursFromRange:range];		
 	
@@ -529,8 +541,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	// Commands
 	if (![beginCommand isEqualToString:@""] && [[SMLDefaults valueForKey:@"ColourCommands"] boolValue] == YES) {
 		searchSyntaxLength = [endCommand length];
-		beginCommandCharacter = [beginCommand characterAtIndex:0];
-		endCommandCharacter = [endCommand characterAtIndex:0];
+		unichar beginCommandCharacter = [beginCommand characterAtIndex:0];
+		unichar endCommandCharacter = [endCommand characterAtIndex:0];
 		while (![scanner isAtEnd]) {
 			[scanner scanUpToString:beginCommand intoString:nil];
 			beginning = [scanner scanLocation];
@@ -541,11 +553,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 			} else {
 				// To avoid problems with strings like <yada <%=yada%> yada> we need to balance the number of begin- and end-tags
 				// If ever there's a beginCommand or endCommand with more than one character then do a check first
-				commandLocation = beginning + 1;
-				skipEndCommand = 0;
+				NSUInteger commandLocation = beginning + 1;
+				NSUInteger skipEndCommand = 0;
 				
 				while (commandLocation < endOfLine) {
-					commandCharacterTest = [searchString characterAtIndex:commandLocation];
+					unichar commandCharacterTest = [searchString characterAtIndex:commandLocation];
 					if (commandCharacterTest == endCommandCharacter) {
 						if (!skipEndCommand) {
 							break;
@@ -629,6 +641,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 				break;
 			}
 			
+			NSString *keywordTestString = nil;
 			if (!keywordsCaseSensitive) {
 				keywordTestString = [[completeString substringWithRange:NSMakeRange(beginning + rangeLocation, end - beginning)] lowercaseString];
 			} else {
@@ -662,6 +675,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 				break;
 			}
 			
+			NSString *autocompleteTestString = nil;
 			if (!keywordsCaseSensitive) {
 				autocompleteTestString = [[completeString substringWithRange:NSMakeRange(beginning + rangeLocation, end - beginning)] lowercaseString];
 			} else {
@@ -1002,7 +1016,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 	}
 	@catch (NSException *exception) {
-		//Log(exception);
+		NSLog(@"Syntax colouring exception: %@", exception);
 	}
 	
 }
@@ -1056,12 +1070,36 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	lastLineHighlightRange = lineRange;
 }
 
+#pragma mark -
+#pragma mark Document delegate support
+
+/*
+ 
+ - performDocumentDelegateSelector:withObject:
+ 
+ */
+- (void)performDocumentDelegateSelector:(SEL)selector withObject:(id)object
+{
+	id delegate = [document valueForKey:MGSFODelegate]; 
+	if (delegate && [delegate respondsToSelector:selector]) {
+		[delegate performSelector:selector withObject:object];
+	}
+}
+
 
 #pragma mark -
-#pragma mark Delegates
+#pragma mark NSTextDelegate
 
+/*
+ 
+ - textDidChange:
+ 
+ */
 - (void)textDidChange:(NSNotification *)notification
 {
+	// send out document delegate notifications
+	[self performDocumentDelegateSelector:_cmd withObject:notification];
+
 	if (reactToChanges == NO) {
 		return;
 	}
@@ -1096,31 +1134,103 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 	[[document valueForKey:@"lineNumbers"] updateLineNumbersCheckWidth:NO recolour:NO];
 	
-	id delegate = [document valueForKey:MGSFODelegate]; 
-	if (delegate && [delegate respondsToSelector:_cmd]) {
-		[delegate performSelector:_cmd withObject:notification];
-	}
+}
+/*
+ 
+ - textDidBeginEditing:
+ 
+ */
+- (void)textDidBeginEditing:(NSNotification *)aNotification
+{
+	// send out document delegate notifications
+	[self performDocumentDelegateSelector:_cmd withObject:aNotification];
 }
 
+/*
+ 
+ - textDidEndEditing:
+ 
+ */
+- (void)textDidEndEditing:(NSNotification *)aNotification
+{
+	// send out document delegate notifications
+	[self performDocumentDelegateSelector:_cmd withObject:aNotification];
+}
 
+/*
+ 
+ - textShouldBeginEditing:
+ 
+ */
+- (BOOL)textShouldBeginEditing:(NSText *)aTextObject
+{
+	id delegate = [document valueForKey:MGSFODelegate]; 
+	if (delegate && [delegate respondsToSelector:@selector(textShouldBeginEditing:)]) {
+		return [delegate textShouldBeginEditing:aTextObject];
+	}
+	
+	return YES;
+}
+
+/*
+ 
+ - textShouldEndEditing:
+ 
+ */
+- (BOOL)textShouldEndEditing:(NSText *)aTextObject
+{
+	id delegate = [document valueForKey:MGSFODelegate]; 
+	if (delegate && [delegate respondsToSelector:@selector(textShouldEndEditing:)]) {
+		return [delegate textShouldEndEditing:aTextObject];
+	}
+	
+	return YES;
+}
+
+#pragma mark -
+#pragma mark NSTextViewDelegate
+
+/*
+ 
+ It would cumbersome to route all NSTextViewDelegate messages to our delegate.
+ 
+ A better solution would be to permit subclasses of this class to be made the text view delegate.
+ 
+ */
+/*
+ 
+ - textViewDidChangeTypingAttributes:
+ 
+ */
+- (void)textViewDidChangeTypingAttributes:(NSNotification *)aNotification
+{
+	// send out document delegate notifications
+	[self performDocumentDelegateSelector:_cmd withObject:aNotification];
+
+}
+
+/*
+ 
+ - textViewDidChangeSelection:
+ 
+ */
 - (void)textViewDidChangeSelection:(NSNotification *)aNotification
 {
+	// send out document delegate notifications
+	[self performDocumentDelegateSelector:_cmd withObject:aNotification];
+
 	if (reactToChanges == NO) {
 		return;
 	}
 	
-	completeStringLength = [completeString length];
+	NSUInteger completeStringLength = [completeString length];
 	if (completeStringLength == 0) {
 		return;
 	}
 	
 	SMLTextView *textView = [aNotification object];
-	
-	// MGS [SMLCurrentProject setLastTextViewInFocus:textView];
-	
-	// MGS [SMLInterface updateStatusBar];
-	
-	editedRange = [textView selectedRange];
+		
+	NSRange editedRange = [textView selectedRange];
 	
 	if ([[SMLDefaults valueForKey:@"HighlightCurrentLine"] boolValue] == YES) {
 		[self highlightLineRange:[completeString lineRangeForRange:editedRange]];
@@ -1131,8 +1241,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	}
 
 	
-	cursorLocation = editedRange.location;
-	differenceBetweenLastAndPresent = cursorLocation - lastCursorLocation;
+	NSUInteger cursorLocation = editedRange.location;
+	NSInteger differenceBetweenLastAndPresent = cursorLocation - lastCursorLocation;
 	lastCursorLocation = cursorLocation;
 	if (differenceBetweenLastAndPresent != 1 && differenceBetweenLastAndPresent != -1) {
 		return; // If the difference is more than one, they've moved the cursor with the mouse or it has been moved by resetSelectedRange below and we shouldn't check for matching braces then
@@ -1146,8 +1256,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		return;
 	}
 	
-	characterToCheck = [completeString characterAtIndex:cursorLocation];
-	skipMatchingBrace = 0;
+	unichar characterToCheck = [completeString characterAtIndex:cursorLocation];
+	NSInteger skipMatchingBrace = 0;
 	
 	if (characterToCheck == ')') {
 		while (cursorLocation--) {
@@ -1209,11 +1319,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 			}
 		}
 	}
+	
 }
 
 
-- (NSArray *)textView:theTextView completions:(NSArray *)words forPartialWordRange:(NSRange)charRange indexOfSelectedItem:(int *)index
+- (NSArray *)textView:theTextView completions:(NSArray *)words forPartialWordRange:(NSRange)charRange indexOfSelectedItem:(int *)idx
 {
+#pragma unused(idx)
 	if ([keywordsAndAutocompleteWords count] == 0) {
 		if ([[SMLDefaults valueForKey:@"AutocompleteIncludeStandardWords"] boolValue] == NO) {
 			return [NSArray array];
@@ -1289,8 +1401,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)autocompleteWordsTimerSelector:(NSTimer *)theTimer
 {
 	SMLTextView *textView = [theTimer userInfo];
-	selectedRange = [textView selectedRange];
-	stringLength = [completeString length];
+	NSRange selectedRange = [textView selectedRange];
+	NSUInteger stringLength = [completeString length];
 	if (selectedRange.location <= stringLength && selectedRange.length == 0 && stringLength != 0) {
 		if (selectedRange.location == stringLength) { // If we're at the very end of the document
 			[textView complete:nil];
@@ -1311,6 +1423,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 - (void)liveUpdatePreviewTimerSelector:(NSTimer *)theTimer
 {
+#pragma unused(theTimer)
 	if ([[SMLDefaults valueForKey:@"LiveUpdatePreview"] boolValue] == YES) {
 		// MGS [[SMLPreviewController sharedInstance] liveUpdate];
 	}

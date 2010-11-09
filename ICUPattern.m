@@ -205,7 +205,7 @@ unsigned const ICUUnicodeWordBoundaries = UREGEX_UWORD;
 		if(status == U_BUFFER_OVERFLOW_ERROR) { // buffer was too small, grow it
 			NSZoneFree([self zone], destBuf);
 			NSAssert(destCapacity * 2 < INT_MAX, @"Overflow occurred splitting string.");
-			destCapacity = (destCapacity < requiredCapacity) ? requiredCapacity : destCapacity * 2;
+			destCapacity = (destCapacity < (unsigned)requiredCapacity) ? (unsigned)requiredCapacity : destCapacity * 2;
 			status = 0;
 		} else if(destFieldsCapacity == numberOfComponents) {
 			destFieldsCapacity *= 2;

@@ -235,7 +235,7 @@
 						<key>_historyCapacity</key>
 						<integer>40</integer>
 						<key>bookmark</key>
-						<string>AB5C67D3128975E600526B27</string>
+						<string>AB5C67F812897C4F00526B27</string>
 						<key>history</key>
 						<array>
 							<string>AB5C67C0128974BD00526B27</string>
@@ -254,7 +254,7 @@
 				<key>PBXModuleWindowStatusBarHidden2</key>
 				<false/>
 				<key>RubberWindowFrame</key>
-				<string>-1251 127 1251 897 -1280 0 1280 1024 </string>
+				<string>-1346 -516 1251 897 -1280 0 1280 1024 </string>
 			</dict>
 		</dict>
 		<dict>
@@ -275,7 +275,7 @@
 						<key>_historyCapacity</key>
 						<integer>40</integer>
 						<key>bookmark</key>
-						<string>AB5C67D4128975E600526B27</string>
+						<string>AB5C67F912897C4F00526B27</string>
 						<key>history</key>
 						<array>
 							<string>AB5C6795128973EF00526B27</string>
@@ -315,7 +315,7 @@
 						<key>_historyCapacity</key>
 						<integer>40</integer>
 						<key>bookmark</key>
-						<string>AB5C67D5128975E600526B27</string>
+						<string>AB5C67FA12897C4F00526B27</string>
 						<key>history</key>
 						<array>
 							<string>AB5C67C5128974BD00526B27</string>
@@ -456,7 +456,7 @@
 							<real>254</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>45 100 1280 898 0 0 1280 1002 </string>
+						<string>92 104 1280 898 0 0 1280 1002 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -472,7 +472,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>AB69B646118B75A400903D1D</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>SMLSyntaxColouring.m</string>
+								<string>SMLSyntaxColouring.h</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -480,11 +480,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>AB69B647118B75A400903D1D</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>SMLSyntaxColouring.m</string>
+										<string>SMLSyntaxColouring.h</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>AB5C67D2128975E600526B27</string>
+										<string>AB5C67F712897C4F00526B27</string>
 										<key>history</key>
 										<array>
 											<string>AB69B6E9118B7F4600903D1D</string>
@@ -537,8 +537,8 @@
 											<string>AB5C67B5128974BD00526B27</string>
 											<string>AB5C67B6128974BD00526B27</string>
 											<string>AB5C67B7128974BD00526B27</string>
+											<string>AB5C67F612897C4F00526B27</string>
 											<string>AB5C67B8128974BD00526B27</string>
-											<string>AB5C67CB128975BD00526B27</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -554,7 +554,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {1004, 587}}</string>
 								<key>RubberWindowFrame</key>
-								<string>45 100 1280 898 0 0 1280 1002 </string>
+								<string>92 104 1280 898 0 0 1280 1002 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -632,7 +632,7 @@
 									<key>GeometryConfiguration</key>
 									<dict>
 										<key>Frame</key>
-										<string>{{10, 27}, {1004, 384}}</string>
+										<string>{{10, 27}, {1004, 238}}</string>
 									</dict>
 									<key>Module</key>
 									<string>PBXCVSModule</string>
@@ -654,7 +654,7 @@
 										<key>Frame</key>
 										<string>{{10, 27}, {1004, 238}}</string>
 										<key>RubberWindowFrame</key>
-										<string>45 100 1280 898 0 0 1280 1002 </string>
+										<string>92 104 1280 898 0 0 1280 1002 </string>
 									</dict>
 									<key>Module</key>
 									<string>PBXBuildResultsModule</string>
@@ -859,7 +859,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>310998502.17913401</real>
+	<real>311000143.23108202</real>
 	<key>ToolbarConfigUserDefaultsMinorVersion</key>
 	<string>2</string>
 	<key>ToolbarDisplayMode</key>
@@ -883,7 +883,7 @@
 		<string>/Users/Jonathan/Documents/Computing/github/Mugginsoft/Fragaria/Fragaria.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>45 100 1280 898 0 0 1280 1002 </string>
+	<string>92 104 1280 898 0 0 1280 1002 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>

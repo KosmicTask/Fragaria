@@ -644,6 +644,14 @@
 	</dict>
 	<dict>
 		<key>name</key>
+		<string>GraphViz</string>
+		<key>file</key>
+		<string>graphviz</string>
+		<key>extensions</key>
+		<string>gv dot</string>
+	</dict>
+	<dict>
+		<key>name</key>
 		<string>F-Script</string>
 		<key>file</key>
 		<string>f-script</string>

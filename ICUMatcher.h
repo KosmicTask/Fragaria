@@ -44,7 +44,7 @@
     @abstract   Resets the pattern and performs a match from the specified index.
     @discussion Use <code>group</code> and <code>rangeOfMatch</code> to extract the match.
 */
--(BOOL)findFromIndex:(unsigned)index;
+-(BOOL)findFromIndex:(unsigned)idx;
 
 /*!
     @method     group
@@ -72,7 +72,7 @@
     @abstract   Returns true if the pattern matches some prefix of the input string starting at the specified index.
     @discussion This method returns YES when some prefix of the substring matches the input string.
 */
--(BOOL)lookingAt:(unsigned)index;
+-(BOOL)lookingAt:(unsigned)idx;
 
 /*!
     @method     pattern

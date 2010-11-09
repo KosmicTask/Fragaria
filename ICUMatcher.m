@@ -80,12 +80,12 @@ typedef struct URegularExpression URegularExpression;
 	return r;
 }
 
--(BOOL)findFromIndex:(unsigned)index {
+-(BOOL)findFromIndex:(unsigned)idx {
 	URegularExpression *re = [[self pattern] re];
 	[self reset];
 
 	UErrorCode status = 0;
-	UBool r = uregex_find(re, index, &status);
+	UBool r = uregex_find(re, idx, &status);
 	CheckStatus(status);
 
 	return r;
@@ -113,7 +113,6 @@ typedef struct URegularExpression URegularExpression;
 
 		CheckStatus(status);
 
-		groupSize = InitialGroupSize; // reset to default
 		NSString *result = [[NSString alloc] initWithBytes:dest length:buffSize*sizeof(UChar) encoding:[NSString nativeUTF16Encoding]];
 		NSZoneFree([self zone], dest);
 		return result;
@@ -129,7 +128,9 @@ typedef struct URegularExpression URegularExpression;
 	return numberOfGroups;
 }
 
--(BOOL)lookingAt:(unsigned)index {
+-(BOOL)lookingAt:(unsigned)idx {
+	
+#pragma unused(idx)
 	UErrorCode status = 0;
 	URegularExpression *re = [[self pattern] re];
 	BOOL matches = uregex_lookingAt(re, 0, &status);

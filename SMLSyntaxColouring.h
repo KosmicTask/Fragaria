@@ -21,18 +21,17 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 @interface SMLSyntaxColouring : NSObject <NSTextStorageDelegate> {
 	
-	// TODO: I suspect that most of these are method rather than instance ivars. Sort it.
 	NSUndoManager *undoManager;
 	SMLLayoutManager *firstLayoutManager, *secondLayoutManager, *thirdLayoutManager, *fourthLayoutManager;
 	
 	NSTimer *autocompleteWordsTimer;
-	NSInteger currentYOfSelectedCharacter, lastYOfSelectedCharacter, currentYOfLastCharacterInLine, lastYOfLastCharacterInLine, currentYOfLastCharacter, lastYOfLastCharacter, lastCursorLocation;
+	NSInteger lastCursorLocation;
 	
 	NSCharacterSet *letterCharacterSet, *keywordStartCharacterSet, *keywordEndCharacterSet;
 	
-	NSDictionary *commandsColour, *commentsColour, *instructionsColour, *keywordsColour, *autocompleteWordsColour, *stringsColour, *variablesColour, *attributesColour, *lineHighlightColour;
+	NSDictionary *commandsColour, *commentsColour, *instructionsColour, *keywordsColour, *autocompleteWordsColour, 
+					*stringsColour, *variablesColour, *attributesColour, *lineHighlightColour;
 	
-	NSEnumerator *wordEnumerator;
 	NSSet *keywords;
 	NSSet *autocompleteWords;
 	NSArray *keywordsAndAutocompleteWords;
@@ -52,32 +51,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 	NSString *completeString;
 	NSString *searchString;
-	NSInteger beginning, end, endOfLine, index, length, searchStringLength, commandLocation, skipEndCommand, beginLocationInMultiLine, endLocationInMultiLine, searchSyntaxLength, rangeLocation;
-	NSRange rangeOfLine;
-	NSString *keyword;
-	BOOL shouldOnlyColourTillTheEndOfLine;
-	unichar commandCharacterTest;
-	unichar beginCommandCharacter;
-	unichar endCommandCharacter;
-	BOOL shouldColourMultiLineStrings;
-	BOOL foundMatch;
-	NSInteger completeStringLength;
-	unichar characterToCheck;
-	NSRange editedRange;
-	NSInteger cursorLocation;
-	NSInteger differenceBetweenLastAndPresent;
-	NSInteger skipMatchingBrace;
-	NSRect visibleRect;
-	NSRange visibleRange;
-	NSInteger beginningOfFirstVisibleLine;
-	NSInteger endOfLastVisibleLine;
-	NSRange selectedRange;;
-	NSInteger stringLength;
-	NSString *keywordTestString;
-	NSString *autocompleteTestString;
-	NSRange searchRange;
-	NSInteger maxRange;
 	
+	// check these
 	NSTextContainer *textContainer;
 	
 	BOOL reactToChanges;
@@ -92,28 +67,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	ICUMatcher *firstStringMatcher;
 	ICUMatcher *secondStringMatcher;
 	
-	NSRange foundRange;
-	
 	NSTimer *liveUpdatePreviewTimer;
 	
 	NSRange lastLineHighlightRange;
 }
 
-//@property ICUPattern *firstStringPattern;
-//@property ICUPattern *secondStringPattern;
-//
-//@property ICUMatcher *firstStringMatcher;
-//@property ICUMatcher *secondStringMatcher;
-
-//@property NSSet *keywords;
-//@property NSSet *autocompleteWords;
-//@property NSArray *keywordsAndAutocompleteWords;
-//
-//@property BOOL keywordsCaseSensitive;
-//@property BOOL recolourKeywordIfAlreadyColoured;
 @property BOOL reactToChanges;
-
-//@property NSEnumerator *wordEnumerator;
 
 @property (copy) NSString *functionDefinition;
 @property (copy) NSString *removeFromFunction;
@@ -123,7 +82,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 @property (assign) SMLLayoutManager *fourthLayoutManager;
 
 @property (readonly) NSUndoManager *undoManager;
-//@property (readonly) NSDictionary *highlightColour;
 
 - (id)initWithDocument:(id)document;
 

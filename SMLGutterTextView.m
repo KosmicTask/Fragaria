@@ -27,7 +27,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 - (id)initWithFrame:(NSRect)frame
 {
-	if (self = [super initWithFrame:frame]) {
+	if ((self = [super initWithFrame:frame])) {
 
 		[self setContinuousSpellCheckingEnabled:NO];
 		[self setAllowsUndo:NO];
@@ -46,7 +46,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[self setFont:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextFont"]]];
 		[self setTextColor:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"GutterTextColourWell"]]];
 		[self setInsertionPointColor:[NSColor textColor]];//[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextColourWell"]]];
-		[self setBackgroundColor:[NSColor colorWithCalibratedWhite:0.94 alpha:1.0]];
+		[self setBackgroundColor:[NSColor colorWithCalibratedWhite:0.94f alpha:1.0f]];
 
 		NSUserDefaultsController *defaultsController = [NSUserDefaultsController sharedUserDefaultsController];
 		[defaultsController addObserver:self forKeyPath:@"values.TextFont" options:NSKeyValueObservingOptionNew context:@"TextFontChanged"];
@@ -74,9 +74,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[[NSColor lightGrayColor] set];
 		NSBezierPath *dottedLine = [NSBezierPath bezierPathWithRect:NSMakeRect(bounds.size.width, 0, 0, bounds.size.height)];
 		CGFloat dash[2];
-		dash[0] = 1.0;
-		dash[1] = 2.0;
-		[dottedLine setLineDash:dash count:2 phase:1.0];
+		dash[0] = 1.0f;
+		dash[1] = 2.0f;
+		[dottedLine setLineDash:dash count:2 phase:1.0f];
 		[dottedLine stroke];
 	}
 	

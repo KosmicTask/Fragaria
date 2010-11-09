@@ -28,7 +28,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 - (id)initWithFrame:(NSRect)frame
 {
-	if (self = [super initWithFrame:frame]) {
+	if ((self = [super initWithFrame:frame])) {
 		SMLLayoutManager *layoutManager = [[SMLLayoutManager alloc] init];
 		[[self textContainer] replaceLayoutManager:layoutManager];
 		
@@ -137,12 +137,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		
 		if ([[SMLDefaults valueForKey:@"AutomaticallyIndentBraces"] boolValue] == YES) {
 			NSCharacterSet *characterSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
-			NSInteger index = [lastLineString length];
-			while (index--) {
-				if ([characterSet characterIsMember:[lastLineString characterAtIndex:index]]) {
+			NSInteger idx = [lastLineString length];
+			while (idx--) {
+				if ([characterSet characterIsMember:[lastLineString characterAtIndex:idx]]) {
 					continue;
 				}
-				if ([lastLineString characterAtIndex:index] == '{') {
+				if ([lastLineString characterAtIndex:idx] == '{') {
 					[self insertTab:nil];
 				}
 				break;
@@ -164,13 +164,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		return [super selectionRangeForProposedRange:proposedSelRange granularity:granularity];
 	}
 	
-	NSInteger location = [super selectionRangeForProposedRange:proposedSelRange granularity:NSSelectByCharacter].location;
+	NSUInteger location = [super selectionRangeForProposedRange:proposedSelRange granularity:NSSelectByCharacter].location;
 	NSInteger originalLocation = location;
 
 	NSString *completeString = [self string];
 	unichar characterToCheck = [completeString characterAtIndex:location];
 	NSInteger skipMatchingBrace = 0;
-	NSInteger lengthOfString = [completeString length];
+	NSUInteger lengthOfString = [completeString length];
 	if (lengthOfString == proposedSelRange.location) { // To avoid crash if a double-click occurs after any text
 		return [super selectionRangeForProposedRange:proposedSelRange granularity:granularity];
 	}
@@ -345,7 +345,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 	if ([self selectedRange].length > 0) { // Check to see if the selection is in the text or if it's at the beginning of a line or in whitespace; if one doesn't do this one shifts the line if there's only one suggestion in the auto-complete
 		NSRange rangeOfFirstLine = [[self string] lineRangeForRange:NSMakeRange([self selectedRange].location, 0)];
-		NSInteger firstCharacterOfFirstLine = rangeOfFirstLine.location;
+		NSUInteger firstCharacterOfFirstLine = rangeOfFirstLine.location;
 		while ([[self string] characterAtIndex:firstCharacterOfFirstLine] == ' ' || [[self string] characterAtIndex:firstCharacterOfFirstLine] == '\t') {
 			firstCharacterOfFirstLine++;
 		}
@@ -403,6 +403,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
+#pragma unused(theEvent)
 	[[self enclosingScrollView] setDocumentCursor:[NSCursor IBeamCursor]];
 }
 
@@ -455,7 +456,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSDictionary *sizeAttribute = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextFont"]], NSFontAttributeName, nil];
 	NSString *sizeString = [NSString stringWithString:@" "];
 	CGFloat sizeOfCharacter = [sizeString sizeWithAttributes:sizeAttribute].width;
-	pageGuideX = (sizeOfCharacter * ([[SMLDefaults valueForKey:@"ShowPageGuideAtColumn"] integerValue] + 1)) - 1.5; // -1.5 to put it between the two characters and draw only on one pixel and not two (as the system draws it in a special way), and that's also why the width above is set to zero 
+	pageGuideX = (sizeOfCharacter * ([[SMLDefaults valueForKey:@"ShowPageGuideAtColumn"] integerValue] + 1)) - 1.5f; // -1.5 to put it between the two characters and draw only on one pixel and not two (as the system draws it in a special way), and that's also why the width above is set to zero 
 	
 	NSColor *color = [NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextColourWell"]];
 	pageGuideColour = [color colorWithAlphaComponent:([color alphaComponent] / 4)]; // Use the same colour as the text but with more transparency
@@ -565,6 +566,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 	return menu;
 	
+	// TODO: consider what menu behaviour is appropriate
 	/*
 	NSArray *array = [menu itemArray];
 	for (id oldMenuItem in array) {
@@ -613,7 +615,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 - (IBAction)save:(id)sender
 {
-	// [[SMLFileMenuController sharedInstance] saveAction:nil];
+#pragma unused(sender)
+	// no implicit save functionality
 }
 
 
@@ -621,7 +624,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 {
 	NSColor *textColour = [[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextColourWell"]] colorUsingColorSpaceName:NSCalibratedWhiteColorSpace];
 	
-	if (textColour != nil && [textColour whiteComponent] == 0.0 && [textColour alphaComponent] == 1.0) { // Keep the original cursor if it's black
+	if (textColour != nil && [textColour whiteComponent] < 0.01 && [textColour alphaComponent] > 0.990) { // Keep the original cursor if it's black
 		[self setColouredIBeamCursor:[NSCursor IBeamCursor]];
 	} else {
 		NSImage *cursorImage = [[NSCursor IBeamCursor] image];
@@ -636,12 +639,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 - (void)cursorUpdate:(NSEvent *)event
 {
+#pragma unused(event)
 	[colouredIBeamCursor set];
 }
 	
 
 - (void)mouseMoved:(NSEvent *)theEvent
 {
+	#pragma unused(theEvent)
 	if ([NSCursor currentCursor] == [NSCursor IBeamCursor]) {
 		[colouredIBeamCursor set];
 	}
@@ -663,10 +668,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	[super setFrame:rect];
 	[[docSpec valueForKey:ro_MGSFOLineNumbers] updateLineNumbersForClipView:[[self enclosingScrollView] contentView] checkWidth:NO recolour:YES];
 
-}
-
-- (void)setValueForObject:(id)a
-{
 }
 
 /*

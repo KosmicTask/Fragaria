@@ -47,7 +47,7 @@ typedef struct URegularExpression URegularExpression;
 	NSMutableArray *foundGroups = [NSMutableArray array];
 	
 	[matcher findFromIndex:0];	
-	int i;
+	unsigned i;
 	for(i=0;i<=[matcher numberOfGroups];i++)
 		[foundGroups addObject:[matcher groupAtIndex:i]];
 

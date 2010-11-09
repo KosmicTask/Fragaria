@@ -29,7 +29,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 - (id)init
 {
-	if (self = [super init]) {
+	if ((self = [super init])) {
 		
 		attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextFont"]], NSFontAttributeName, [NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"InvisibleCharactersColourWell"]], NSForegroundColorAttributeName, nil];
 		unichar tabUnichar = 0x00AC;

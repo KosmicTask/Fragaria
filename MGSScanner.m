@@ -30,13 +30,13 @@
  setScanLocation:
  
  */
-- (void)setScanLocation:(NSUInteger)index 
+- (void)setScanLocation:(NSUInteger)idx 
 {
-	if (index > maxIndex) {
-		index = maxIndex;
+	if (idx > maxIndex) {
+		idx = maxIndex;
 	}
 	
-	[super setScanLocation:index];
+	[super setScanLocation:idx];
 }
 
 @end

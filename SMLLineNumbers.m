@@ -35,7 +35,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 - (id)initWithDocument:(id)theDocument
 {
-	if (self = [super init]) {
+	if ((self = [super init])) {
 		
 		document = theDocument;
 		zeroPoint = NSMakePoint(0, 0);
@@ -96,7 +96,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSString *textString;
 	NSString *searchString;
 	
-	NSInteger index;
+	NSInteger idx;
 	NSInteger lineNumber;
 	
 	NSInteger indexNonWrap;
@@ -149,11 +149,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	textString = [textView string];
 	searchString = [textString substringWithRange:NSMakeRange(0,visibleRange.location)];
 	
-	for (index = 0, lineNumber = 0; index < visibleRange.location; lineNumber++) {
-		index = NSMaxRange([searchString lineRangeForRange:NSMakeRange(index, 0)]);
+	for (idx = 0, lineNumber = 0; idx < (NSInteger)visibleRange.location; lineNumber++) {
+		idx = NSMaxRange([searchString lineRangeForRange:NSMakeRange(idx, 0)]);
 	}
 	
-	indexNonWrap = [searchString lineRangeForRange:NSMakeRange(index, 0)].location;
+	indexNonWrap = [searchString lineRangeForRange:NSMakeRange(idx, 0)].location;
 	maxRangeVisibleRange = NSMaxRange([textString lineRangeForRange:NSMakeRange(NSMaxRange(visibleRange), 0)]); // Set it to just after the last glyph on the last visible line 
 	numberOfGlyphsInTextString = [layoutManager numberOfGlyphs];
 	oneMoreTime = NO;
@@ -166,24 +166,24 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSMutableString *lineNumbersString = [[NSMutableString alloc] init];
 	
 	while (indexNonWrap <= maxRangeVisibleRange) {
-		if (index == indexNonWrap) {
+		if (idx == indexNonWrap) {
 			lineNumber++;
 			[lineNumbersString appendFormat:@"%i\n", lineNumber];
 		} else {
 			[lineNumbersString appendFormat:@"%C\n", 0x00B7];
-			indexNonWrap = index;
+			indexNonWrap = idx;
 		}
 		
-		if (index < maxRangeVisibleRange) {
-			[layoutManager lineFragmentRectForGlyphAtIndex:index effectiveRange:&range];
-			index = NSMaxRange(range);
+		if (idx < maxRangeVisibleRange) {
+			[layoutManager lineFragmentRectForGlyphAtIndex:idx effectiveRange:&range];
+			idx = NSMaxRange(range);
 			indexNonWrap = NSMaxRange([textString lineRangeForRange:NSMakeRange(indexNonWrap, 0)]);
 		} else {
-			index++;
+			idx++;
 			indexNonWrap ++;
 		}
 		
-		if (index == numberOfGlyphsInTextString && !oneMoreTime) {
+		if (idx == numberOfGlyphsInTextString && !oneMoreTime) {
 			break;
 		}
 	}

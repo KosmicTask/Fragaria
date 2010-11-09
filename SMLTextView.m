@@ -19,6 +19,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
+#import "MGSFragaria.h"
 #import "MGSFragariaFramework.h"
 
 @implementation SMLTextView
@@ -660,11 +661,22 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)setFrame:(NSRect)rect
 {
 	[super setFrame:rect];
-	[[docSpec valueForKey:@"lineNumbers"] updateLineNumbersForClipView:[[self enclosingScrollView] contentView] checkWidth:NO recolour:YES];
+	[[docSpec valueForKey:ro_MGSFOLineNumbers] updateLineNumbersForClipView:[[self enclosingScrollView] contentView] checkWidth:NO recolour:YES];
 
 }
 
 - (void)setValueForObject:(id)a
 {
+}
+
+/*
+ 
+ - setString:
+ 
+ */
+- (void)setString:(NSString *)aString
+{
+	[super setString:aString];
+	[[docSpec valueForKey:ro_MGSFOLineNumbers] updateLineNumbersCheckWidth:YES recolour:YES];
 }
 @end

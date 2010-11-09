@@ -38,6 +38,10 @@
 		AB69B74A118B80A000903D1D /* MGSFragaria.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB69B62B118B745700903D1D /* MGSFragaria.framework */; };
 		AB69B754118B830700903D1D /* MGSFragaria.h in Headers */ = {isa = PBXBuildFile; fileRef = AB69B753118B830700903D1D /* MGSFragaria.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AB69B80C118B8D0400903D1D /* MGSPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB69B80A118B8D0400903D1D /* MGSPreferencesController.m */; };
+		AB90E50212140B4A00FC95F4 /* NSScanner+Fragaria.h in Headers */ = {isa = PBXBuildFile; fileRef = AB90E50012140B4A00FC95F4 /* NSScanner+Fragaria.h */; };
+		AB90E50312140B4A00FC95F4 /* NSScanner+Fragaria.m in Sources */ = {isa = PBXBuildFile; fileRef = AB90E50112140B4A00FC95F4 /* NSScanner+Fragaria.m */; };
+		AB90E51612140D7800FC95F4 /* MGSScanner.h in Headers */ = {isa = PBXBuildFile; fileRef = AB90E51412140D7800FC95F4 /* MGSScanner.h */; };
+		AB90E51712140D7800FC95F4 /* MGSScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = AB90E51512140D7800FC95F4 /* MGSScanner.m */; };
 		ABA812DC11B6855200A29990 /* LICENSE-2.0.txt in Resources */ = {isa = PBXBuildFile; fileRef = ABA812DB11B6855200A29990 /* LICENSE-2.0.txt */; };
 		ABD0FDB01193281600E6AFE6 /* MGSFragaria.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB69B62B118B745700903D1D /* MGSFragaria.framework */; };
 		ABD0FE591193543600E6AFE6 /* MGSFragariaPreferences.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD0FE581193543600E6AFE6 /* MGSFragariaPreferences.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -150,6 +154,10 @@
 		AB69B753118B830700903D1D /* MGSFragaria.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSFragaria.h; sourceTree = "<group>"; };
 		AB69B809118B8D0400903D1D /* MGSPreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSPreferencesController.h; sourceTree = "<group>"; };
 		AB69B80A118B8D0400903D1D /* MGSPreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MGSPreferencesController.m; sourceTree = "<group>"; };
+		AB90E50012140B4A00FC95F4 /* NSScanner+Fragaria.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSScanner+Fragaria.h"; sourceTree = "<group>"; };
+		AB90E50112140B4A00FC95F4 /* NSScanner+Fragaria.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSScanner+Fragaria.m"; sourceTree = "<group>"; };
+		AB90E51412140D7800FC95F4 /* MGSScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSScanner.h; sourceTree = "<group>"; };
+		AB90E51512140D7800FC95F4 /* MGSScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MGSScanner.m; sourceTree = "<group>"; };
 		ABA812DB11B6855200A29990 /* LICENSE-2.0.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "LICENSE-2.0.txt"; sourceTree = "<group>"; };
 		ABD0FD7F119326FE00E6AFE6 /* MGSFragariaFramework.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSFragariaFramework.h; sourceTree = "<group>"; };
 		ABD0FE581193543600E6AFE6 /* MGSFragariaPreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSFragariaPreferences.h; sourceTree = "<group>"; };
@@ -304,6 +312,10 @@
 				AB69B66F118B76AE00903D1D /* NSStringICUAdditions.m */,
 				AB69B6D9118B7F2A00903D1D /* SMLLayoutManager.m */,
 				AB69B65A118B75FB00903D1D /* SMLSyntaxColouring.m */,
+				AB90E50012140B4A00FC95F4 /* NSScanner+Fragaria.h */,
+				AB90E50112140B4A00FC95F4 /* NSScanner+Fragaria.m */,
+				AB90E51412140D7800FC95F4 /* MGSScanner.h */,
+				AB90E51512140D7800FC95F4 /* MGSScanner.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -422,6 +434,8 @@
 			files = (
 				AB69B754118B830700903D1D /* MGSFragaria.h in Headers */,
 				ABD0FE591193543600E6AFE6 /* MGSFragariaPreferences.h in Headers */,
+				AB90E50212140B4A00FC95F4 /* NSScanner+Fragaria.h in Headers */,
+				AB90E51612140D7800FC95F4 /* MGSScanner.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -571,6 +585,8 @@
 				AB41C1011191FDFE004F0CB5 /* SMLLineNumbers.m in Sources */,
 				AB41C1051191FFCB004F0CB5 /* MGSFragaria.m in Sources */,
 				AB5E6A4A11B65AC20026B4B9 /* SMLGutterTextView.m in Sources */,
+				AB90E50312140B4A00FC95F4 /* NSScanner+Fragaria.m in Sources */,
+				AB90E51712140D7800FC95F4 /* MGSScanner.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

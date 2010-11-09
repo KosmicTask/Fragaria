@@ -21,6 +21,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 @interface SMLSyntaxColouring : NSObject <NSTextStorageDelegate> {
 	
+	// TODO: I suspect that most of these are method rather than instance ivars. Sort it.
 	NSUndoManager *undoManager;
 	SMLLayoutManager *firstLayoutManager, *secondLayoutManager, *thirdLayoutManager, *fourthLayoutManager;
 	
@@ -51,8 +52,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 	NSString *completeString;
 	NSString *searchString;
-	NSScanner *scanner;
-	NSScanner *completeDocumentScanner;	
 	NSInteger beginning, end, endOfLine, index, length, searchStringLength, commandLocation, skipEndCommand, beginLocationInMultiLine, endLocationInMultiLine, searchSyntaxLength, rangeLocation;
 	NSRange rangeOfLine;
 	NSString *keyword;

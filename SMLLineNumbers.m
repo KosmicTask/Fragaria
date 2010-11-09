@@ -87,13 +87,45 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 - (void)updateLineNumbersForClipView:(NSClipView *)clipView checkWidth:(BOOL)checkWidth recolour:(BOOL)recolour
 {
+	SMLTextView *textView;
+	NSScrollView *scrollView;
+	NSScrollView *gutterScrollView;
+	NSLayoutManager *layoutManager;
+	NSRect visibleRect;
+	NSRange visibleRange;
+	NSString *textString;
+	NSString *searchString;
+	
+	NSInteger index;
+	NSInteger lineNumber;
+	
+	NSInteger indexNonWrap;
+	NSInteger maxRangeVisibleRange;
+	NSInteger numberOfGlyphsInTextString;
+	BOOL oneMoreTime;
+	unichar lastGlyph;
+	
+	NSRange range;
+	NSInteger widthOfStringInGutter;
+	NSInteger gutterWidth;
+	NSRect currentViewBounds;
+	
+	NSInteger currentLineHeight;
+	
+	CGFloat addToScrollPoint;
+	
+	if (updatingLineNumbersForClipView == clipView) {
+		return;
+	}
+	updatingLineNumbersForClipView = clipView;
+	
 	textView = [clipView documentView];
 	
 	if ([[document valueForKey:@"showLineNumberGutter"] boolValue] == NO || textView == nil) {
 		if (checkWidth == YES && recolour == YES) {
 			[[document valueForKey:@"syntaxColouring"] pageRecolourTextView:textView];
 		}
-		return;
+		goto allDone;
 	}
 	
 	scrollView = (NSScrollView *)[clipView superview];
@@ -108,7 +140,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	} else if (scrollView == [document valueForKey:@"fourthTextScrollView"]) {
 		gutterScrollView = [document valueForKey:@"fourthGutterScrollView"];
 	} else {
-		return;
+		goto allDone;
 	}
 	
 	layoutManager = [textView layoutManager];
@@ -184,5 +216,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	if ((NSInteger)visibleRect.origin.y != 0 && currentLineHeight != 0) {
 		[[gutterScrollView contentView] scrollToPoint:NSMakePoint(0, ((NSInteger)visibleRect.origin.y % currentLineHeight) + addToScrollPoint)]; // Move currentGutterScrollView so it aligns with the rows in currentTextView
 	}
+	
+allDone:
+	
+	updatingLineNumbersForClipView = nil;
 }
 @end

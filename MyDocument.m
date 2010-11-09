@@ -65,7 +65,6 @@
 	[fragaria setString:@""];
 	
 	// access the NSTextView
-	// don't set the delegate on the text view
 	NSTextView *textView = [fragaria objectForKey:ro_MGSFOTextView];
 	
 #pragma unused(textView)

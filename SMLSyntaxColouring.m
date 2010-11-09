@@ -26,6 +26,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 @interface SMLSyntaxColouring()
 - (void)parseSyntaxDictionary:(NSDictionary *)syntaxDictionary;
 - (NSString *)assignSyntaxDefinition;
+- (void)performDocumentDelegateSelector:(SEL)selector withObject:(id)object;
 @end
 
 @implementation SMLSyntaxColouring
@@ -512,9 +513,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	if (searchStringLength == 0) {
 		return;
 	}
-	scanner = [[NSScanner alloc] initWithString:searchString];
+	MGSScanner *scanner = [[NSScanner alloc] initWithString:searchString];
 	[scanner setCharactersToBeSkipped:nil];
-	completeDocumentScanner = [[NSScanner alloc] initWithString:completeString];
+	MGSScanner *completeDocumentScanner = [[NSScanner alloc] initWithString:completeString];
 	[completeDocumentScanner setCharactersToBeSkipped:nil];
 	
 	completeStringLength = [completeString length];
@@ -1002,7 +1003,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 	}
 	@catch (NSException *exception) {
-		//Log(exception);
+		NSLog(@"Syntax colouring exception: %@", exception);
 	}
 	
 }
@@ -1056,12 +1057,36 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	lastLineHighlightRange = lineRange;
 }
 
+#pragma mark -
+#pragma mark Document delegate support
+
+/*
+ 
+ - performDocumentDelegateSelector:withObject:
+ 
+ */
+- (void)performDocumentDelegateSelector:(SEL)selector withObject:(id)object
+{
+	id delegate = [document valueForKey:MGSFODelegate]; 
+	if (delegate && [delegate respondsToSelector:selector]) {
+		[delegate performSelector:selector withObject:object];
+	}
+}
+
 
 #pragma mark -
-#pragma mark Delegates
+#pragma mark NSTextDelegate
 
+/*
+ 
+ - textDidChange:
+ 
+ */
 - (void)textDidChange:(NSNotification *)notification
 {
+	// send out document delegate notifications
+	[self performDocumentDelegateSelector:_cmd withObject:notification];
+
 	if (reactToChanges == NO) {
 		return;
 	}
@@ -1096,15 +1121,83 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 	[[document valueForKey:@"lineNumbers"] updateLineNumbersCheckWidth:NO recolour:NO];
 	
-	id delegate = [document valueForKey:MGSFODelegate]; 
-	if (delegate && [delegate respondsToSelector:_cmd]) {
-		[delegate performSelector:_cmd withObject:notification];
-	}
+}
+/*
+ 
+ - textDidBeginEditing:
+ 
+ */
+- (void)textDidBeginEditing:(NSNotification *)aNotification
+{
+	// send out document delegate notifications
+	[self performDocumentDelegateSelector:_cmd withObject:aNotification];
 }
 
+/*
+ 
+ - textDidEndEditing:
+ 
+ */
+- (void)textDidEndEditing:(NSNotification *)aNotification
+{
+	// send out document delegate notifications
+	[self performDocumentDelegateSelector:_cmd withObject:aNotification];
+}
 
+/*
+ 
+ - textShouldBeginEditing:
+ 
+ */
+- (BOOL)textShouldBeginEditing:(NSText *)aTextObject
+{
+	id delegate = [document valueForKey:MGSFODelegate]; 
+	if (delegate && [delegate respondsToSelector:@selector(textShouldBeginEditing:)]) {
+		return [delegate textShouldBeginEditing:aTextObject];
+	}
+	
+	return YES;
+}
+
+/*
+ 
+ - textShouldEndEditing:
+ 
+ */
+- (BOOL)textShouldEndEditing:(NSText *)aTextObject
+{
+	id delegate = [document valueForKey:MGSFODelegate]; 
+	if (delegate && [delegate respondsToSelector:@selector(textShouldEndEditing:)]) {
+		return [delegate textShouldEndEditing:aTextObject];
+	}
+	
+	return YES;}
+
+#pragma mark -
+#pragma mark NSTextViewDelegate
+
+/*
+ 
+ - textViewDidChangeTypingAttributes:
+ 
+ */
+- (void)textViewDidChangeTypingAttributes:(NSNotification *)aNotification
+{
+	// send out document delegate notifications
+	[self performDocumentDelegateSelector:_cmd withObject:aNotification];
+
+}
+
+/*
+ 
+ - textViewDidChangeSelection:
+ 
+ */
 - (void)textViewDidChangeSelection:(NSNotification *)aNotification
 {
+	// send out document delegate notifications
+	[self performDocumentDelegateSelector:_cmd withObject:aNotification];
+
 	if (reactToChanges == NO) {
 		return;
 	}
@@ -1209,6 +1302,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 			}
 		}
 	}
+	
 }
 
 

@@ -11,18 +11,30 @@
 
 @implementation MyDocument
 
+/*
+ 
+ - init
+ 
+ */
 - (id)init
 {
     self = [super init];
     if (self) {
     
         // Add your subclass-specific initialization here.
-        // If an error occurs here, send a [self release] message and return nil.
-    
+     
     }
     return self;
 }
 
+
+#pragma mark -
+#pragma mark Nib loading
+/*
+ 
+ - windowNibName
+ 
+ */
 - (NSString *)windowNibName
 {
     // Override returning the nib file name of the document
@@ -30,6 +42,11 @@
     return @"MyDocument";
 }
 
+/*
+ 
+ - windowControllerDidLoadNib:
+ 
+ */
 - (void)windowControllerDidLoadNib:(NSWindowController *) aController
 {
     [super windowControllerDidLoadNib:aController];
@@ -60,7 +77,6 @@
 	// embed editor in editView
 	[fragaria embedInView:editView];
 	
-
 	// set text
 	[fragaria setString:@""];
 	
@@ -71,8 +87,17 @@
 	
 }
 
+#pragma mark -
+#pragma mark NSDocument data
+/*
+ 
+ - dataOfType:error:
+ 
+ */
 - (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError
 {
+#pragma unused(typeName)
+	
     // Insert code here to write your document to data of the specified type. If the given outError != NULL, ensure that you set *outError when returning nil.
 
     // You can also choose to override -fileWrapperOfType:error:, -writeToURL:ofType:error:, or -writeToURL:ofType:forSaveOperation:originalContentsURL:error: instead.
@@ -85,8 +110,16 @@
 	return nil;
 }
 
+/*
+ 
+ readFromData:ofType:error:
+ 
+ */
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError
 {
+#pragma unused(data)
+#pragma unused(typeName)
+	
     // Insert code here to read your document from the given data of the specified type.  If the given outError != NULL, ensure that you set *outError when returning NO.
 
     // You can also choose to override -readFromFileWrapper:ofType:error: or -readFromURL:ofType:error: instead. 
@@ -99,6 +132,8 @@
     return YES;
 }
 
+#pragma mark -
+#pragma mark Syntax definition handling
 
 /*
  
@@ -121,6 +156,9 @@
 	return [fragaria objectForKey:MGSFOSyntaxDefinitionName];
 	
 }
+
+#pragma mark -
+#pragma mark NSTextDelegate
 /*
  
  - textDidChange:
@@ -130,9 +168,55 @@
  */
 - (void)textDidChange:(NSNotification *)notification
 {
+	#pragma unused(notification)
+	
 	NSWindow *window = [[self windowControllers] objectAtIndex:0];
 	
 	[window setDocumentEdited:YES];
+}
+
+/*
+ 
+ - textDidBeginEditing:
+ 
+ */
+- (void)textDidBeginEditing:(NSNotification *)aNotification
+{
+	NSLog(@"notification : %@", [aNotification name]);
+}
+
+/*
+ 
+ - textDidEndEditing:
+ 
+ */
+- (void)textDidEndEditing:(NSNotification *)aNotification
+{
+	NSLog(@"notification : %@", [aNotification name]);
+}
+
+/*
+ 
+ - textShouldBeginEditing:
+ 
+ */
+- (BOOL)textShouldBeginEditing:(NSText *)aTextObject
+{
+#pragma unused(aTextObject)
+	
+	return YES;
+}
+
+/*
+ 
+ - textShouldEndEditing:
+ 
+ */
+- (BOOL)textShouldEndEditing:(NSText *)aTextObject
+{
+	#pragma unused(aTextObject)
+	
+	return YES;
 }
 
 @end

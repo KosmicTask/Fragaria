@@ -14,13 +14,18 @@
 
 @synthesize window;
 
+
+#pragma mark -
+#pragma mark NSApplicationDelegate
 /*
  
  - applicationDidFinishLaunching:
  
  */
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification 
+{
+#pragma unused(aNotification)
+	
 	// create an instance
 	fragaria = [[MGSFragaria alloc] init];
 
@@ -47,7 +52,7 @@
 	// embed editor in editView
 	[fragaria embedInView:editView];
 
-	// get initial text
+	// get initial text - in this case a test file from the bundle
 	NSString *path = [[NSBundle mainBundle] pathForResource:@"SMLSyntaxColouring" ofType:@"m"];
 	NSString *fileText = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
 	
@@ -63,27 +68,38 @@
 
 /*
  
+ - applicationShouldTerminateAfterLastWindowClosed:
+ 
+ */
+ - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication
+ {
+	 #pragma unused(theApplication)
+	 
+	 return YES;
+ }
+
+
+#pragma mark -
+#pragma mark Pasteboard handling
+/*
+ 
  copyToPasteBoard
  
  */
 - (IBAction)copyToPasteBoard:(id)sender
 {
+	#pragma unused(sender)
+	
 	NSAttributedString *attString = [fragaria attributedString];
 	NSData *data = [attString RTFFromRange:NSMakeRange(0, [attString length]) documentAttributes:nil];
 	NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
 	[pasteboard clearContents];
 	[pasteboard setData:data forType:NSRTFPboardType];
 }
-/*
- 
- - applicationShouldTerminateAfterLastWindowClosed:
- 
- */
- - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication
- {
-	 return YES;
- }
 
+
+#pragma mark -
+#pragma mark Syntax definition handling
 /*
  
  - setSyntaxDefinition:
@@ -105,15 +121,63 @@
 	return [fragaria objectForKey:MGSFOSyntaxDefinitionName];
 
 }
+#pragma mark -
+#pragma mark NSTextDelegate
+
 /*
  
  - textDidChange:
  
- fragaria delegate method
- 
  */
 - (void)textDidChange:(NSNotification *)notification
 {
+	#pragma unused(notification)
+
 	[window setDocumentEdited:YES];
 }
+
+/*
+ 
+ - textDidBeginEditing:
+ 
+ */
+- (void)textDidBeginEditing:(NSNotification *)aNotification
+{
+	NSLog(@"notification : %@", [aNotification name]);
+}
+
+/*
+ 
+ - textDidEndEditing:
+ 
+ */
+- (void)textDidEndEditing:(NSNotification *)aNotification
+{
+	NSLog(@"notification : %@", [aNotification name]);
+}
+
+/*
+ 
+ - textShouldBeginEditing:
+ 
+ */
+- (BOOL)textShouldBeginEditing:(NSText *)aTextObject
+{
+#pragma unused(aTextObject)
+	
+	return YES;
+}
+
+/*
+ 
+ - textShouldEndEditing:
+ 
+ */
+- (BOOL)textShouldEndEditing:(NSText *)aTextObject
+{
+#pragma unused(aTextObject)
+	
+	return YES;
+}
+
 @end

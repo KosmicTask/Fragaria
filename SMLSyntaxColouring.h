@@ -23,7 +23,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 	id document;
 
-	NSUndoManager *undoManager;
 	SMLLayoutManager *firstLayoutManager, *secondLayoutManager, *thirdLayoutManager, *fourthLayoutManager;
 	
 	NSInteger lastCursorLocation;
@@ -41,8 +40,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSString *endInstruction;
 	NSString *firstString;
 	NSString *secondString;
-	NSString *firstSingleLineComment, *secondSingleLineComment, *beginFirstMultiLineComment, *endFirstMultiLineComment, *beginSecondMultiLineComment, *endSecondMultiLineComment, *functionDefinition, *removeFromFunction;
-	NSString *completeString;
+	NSString *firstSingleLineComment, *secondSingleLineComment, *beginFirstMultiLineComment, *endFirstMultiLineComment, 
+			*beginSecondMultiLineComment, *endSecondMultiLineComment, *functionDefinition, *removeFromFunction;
 	NSString *searchString;
 
 	unichar firstStringUnichar;
@@ -77,25 +76,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 @property (assign) SMLLayoutManager *thirdLayoutManager;
 @property (assign) SMLLayoutManager *fourthLayoutManager;
 
-@property (readonly) NSUndoManager *undoManager;
-
 - (id)initWithDocument:(id)document;
-
-- (void)setColours;
-- (void)applySyntaxDefinition;
-- (void)prepareRegularExpressions;
-- (void)recolourRange:(NSRange)range;
-
-- (void)removeAllColours;
-- (void)removeColoursFromRange:(NSRange)range;
-
-- (NSString *)guessSyntaxDefinitionExtensionFromFirstLine:(NSString *)firstLine;
-
-- (void)pageRecolour;
 - (void)pageRecolourTextView:(SMLTextView *)textView;
-
-- (void)setColour:(NSDictionary *)colour range:(NSRange)range;
-- (void)highlightLineRange:(NSRange)lineRange;
-
 
 @end

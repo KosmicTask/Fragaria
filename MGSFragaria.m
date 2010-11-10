@@ -86,7 +86,7 @@ static NSSet *objectSetterKeys;
 
 /*
  
- + editDocSpec:inView:
+ + createDocSpec:inView:
  
  */
 + (void)createDocSpec:(id)docSpec inView:(NSView *)contentView

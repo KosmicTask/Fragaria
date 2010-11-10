@@ -27,6 +27,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 @synthesize showInvisibleCharacters;
 
+#pragma mark -
+#pragma mark Instance methods
+/*
+ 
+ - init
+ 
+ */
 - (id)init
 {
 	if ((self = [super init])) {
@@ -48,7 +55,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	return self;
 }
 
-
+#pragma mark -
+#pragma mark KVO
+/*
+ 
+ - observeValueForKeyPath:ofObject:change:context:
+ 
+ */
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
 	if ([(NSString *)context isEqualToString:@"FontOrColourValueChanged"]) {
@@ -60,6 +73,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 }
 
 
+#pragma mark -
+#pragma mark Drawing
+/*
+ 
+ - drawGlyphsForGlyphRange:atPoint:
+ 
+ */
 - (void)drawGlyphsForGlyphRange:(NSRange)glyphRange atPoint:(NSPoint)containerOrigin
 {
     if (showInvisibleCharacters) {
@@ -88,12 +108,17 @@ Unless required by applicable law or agreed to in writing, software distributed 
     [super drawGlyphsForGlyphRange:glyphRange atPoint:containerOrigin];
 }
 
+#pragma mark -
+#pragma mark Accessors
+/*
+ 
+ - setShowInvisibleCharacters:
+ 
+ */
 
 - (void)setShowInvisibleCharacters:(BOOL)flag
 {
 	showInvisibleCharacters = flag;
-	[self setShowsInvisibleCharacters:flag];
 }
-
 
 @end

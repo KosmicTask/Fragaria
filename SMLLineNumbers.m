@@ -25,6 +25,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 @implementation SMLLineNumbers
 
+#pragma mark -
+#pragma mark Instance methods
+/*
+ 
+ - init
+ 
+ */
 - (id)init
 {
 	[self initWithDocument:nil];
@@ -33,6 +40,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 }
 
 
+/*
+ 
+ - initWithDocument:
+ 
+ */
 - (id)initWithDocument:(id)theDocument
 {
 	if ((self = [super init])) {
@@ -48,7 +60,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
     return self;
 }
 
-
+#pragma mark -
+#pragma mark KVO
+/*
+ 
+ - observeValueForKeyPath:ofObject:change:context
+ 
+ */
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
 	if ([(NSString *)context isEqualToString:@"TextFontChanged"]) {
@@ -58,7 +76,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	}
 }
 
-
+#pragma mark -
+#pragma mark View updating
+/*
+ 
+ - viewBoundsDidChange:
+ 
+ */
 - (void)viewBoundsDidChange:(NSNotification *)notification
 {
 	if (notification != nil && [notification object] != nil && [[notification object] isKindOfClass:[NSClipView class]]) {
@@ -66,7 +90,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	}
 }
 
-
+/*
+ 
+ - updateLineNumbersCheckWidth:recolour:
+ 
+ */
 - (void)updateLineNumbersCheckWidth:(BOOL)checkWidth recolour:(BOOL)recolour
 {
 	[self updateLineNumbersForClipView:[[document valueForKey:@"firstTextScrollView"] contentView] checkWidth:checkWidth recolour:recolour];
@@ -84,7 +112,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	}
 }
 
-
+/*
+ 
+ - updateLineNumbersForClipView:checkWidth:recolour:
+ 
+ */
 - (void)updateLineNumbersForClipView:(NSClipView *)clipView checkWidth:(BOOL)checkWidth recolour:(BOOL)recolour
 {
 	SMLTextView *textView;

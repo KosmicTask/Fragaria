@@ -25,6 +25,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 @implementation SMLGutterTextView
 
+#pragma mark -
+#pragma mark Instance methods
+/*
+ 
+ - initWithFrame:
+ 
+ */
 - (id)initWithFrame:(NSRect)frame
 {
 	if ((self = [super initWithFrame:frame])) {
@@ -45,7 +52,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		
 		[self setFont:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextFont"]]];
 		[self setTextColor:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"GutterTextColourWell"]]];
-		[self setInsertionPointColor:[NSColor textColor]];//[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextColourWell"]]];
+		[self setInsertionPointColor:[NSColor textColor]];
+		//[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextColourWell"]]];
 		[self setBackgroundColor:[NSColor colorWithCalibratedWhite:0.94f alpha:1.0f]];
 
 		NSUserDefaultsController *defaultsController = [NSUserDefaultsController sharedUserDefaultsController];
@@ -54,7 +62,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	return self;
 }
 
-
+#pragma mark -
+#pragma mark KVO
+/*
+ 
+ - observeValueForKeyPath:ofObject:change:context:
+ 
+ */
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
 	if ([(NSString *)context isEqualToString:@"TextFontChanged"]) {
@@ -65,6 +79,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 }
 
 
+#pragma mark -
+#pragma mark Drawing
+
+/*
+ 
+ - drawRect:
+ 
+ */
 - (void)drawRect:(NSRect)rect
 {
 	[super drawRect:rect];
@@ -82,7 +104,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 }
 
-
+/*
+ 
+ - isOpaque
+ 
+ */
 - (BOOL)isOpaque
 {
 	return YES;

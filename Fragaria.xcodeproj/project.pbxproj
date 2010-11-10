@@ -41,6 +41,8 @@
 		ABA812DC11B6855200A29990 /* LICENSE-2.0.txt in Resources */ = {isa = PBXBuildFile; fileRef = ABA812DB11B6855200A29990 /* LICENSE-2.0.txt */; };
 		ABD0FDB01193281600E6AFE6 /* MGSFragaria.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB69B62B118B745700903D1D /* MGSFragaria.framework */; };
 		ABD0FE591193543600E6AFE6 /* MGSFragariaPreferences.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD0FE581193543600E6AFE6 /* MGSFragariaPreferences.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		ABDED9C3128AB4E0002EE039 /* MGSScanner.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDED9C1128AB4E0002EE039 /* MGSScanner.h */; };
+		ABDED9C4128AB4E0002EE039 /* MGSScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDED9C2128AB4E0002EE039 /* MGSScanner.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -153,6 +155,8 @@
 		ABA812DB11B6855200A29990 /* LICENSE-2.0.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "LICENSE-2.0.txt"; sourceTree = "<group>"; };
 		ABD0FD7F119326FE00E6AFE6 /* MGSFragariaFramework.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSFragariaFramework.h; sourceTree = "<group>"; };
 		ABD0FE581193543600E6AFE6 /* MGSFragariaPreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSFragariaPreferences.h; sourceTree = "<group>"; };
+		ABDED9C1128AB4E0002EE039 /* MGSScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSScanner.h; sourceTree = "<group>"; };
+		ABDED9C2128AB4E0002EE039 /* MGSScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MGSScanner.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -226,6 +230,7 @@
 			children = (
 				AB92A4151192B66A0055A3E7 /* Application */,
 				AB69B752118B82DF00903D1D /* Framework */,
+				AB3972FC118C2A5D00AEF388 /* Resources */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -270,6 +275,9 @@
 		AB3972FC118C2A5D00AEF388 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				ABA812DB11B6855200A29990 /* LICENSE-2.0.txt */,
+				AB69B62C118B745700903D1D /* MGSFragaria-Info.plist */,
+				AB648E2C11FB385700AEF7BD /* Fragaria Document Based App-Info.plist */,
 				AB3971E6118C27E700AEF388 /* SyntaxDefinitions.plist */,
 				AB397291118C28E700AEF388 /* Syntax Definitions */,
 				AB5E688611B657250026B4B9 /* README */,
@@ -283,29 +291,11 @@
 				AB41C12E11920514004F0CB5 /* SMLGutterTextView.h */,
 				AB41C1261192049F004F0CB5 /* SMLLineNumbers.h */,
 				AB69B678118B76E700903D1D /* SMLLayoutManager.h */,
-				AB69B66A118B76AE00903D1D /* ICUMatcher.h */,
-				AB69B66C118B76AE00903D1D /* ICUPattern.h */,
-				AB69B66E118B76AE00903D1D /* NSStringICUAdditions.h */,
 				AB69B666118B768000903D1D /* SMLTextView.h */,
 				AB69B664118B766300903D1D /* SMLSyntaxColouring.h */,
 				AB69B662118B763A00903D1D /* SMLStandardHeader.h */,
 			);
 			name = headers;
-			sourceTree = "<group>";
-		};
-		AB5E6A3C11B65A690026B4B9 /* Classes */ = {
-			isa = PBXGroup;
-			children = (
-				AB5E6A4911B65AC20026B4B9 /* SMLGutterTextView.m */,
-				AB41C1001191FDFE004F0CB5 /* SMLLineNumbers.m */,
-				AB69B68E118B78D400903D1D /* SMLTextView.m */,
-				AB69B66B118B76AE00903D1D /* ICUMatcher.m */,
-				AB69B66D118B76AE00903D1D /* ICUPattern.m */,
-				AB69B66F118B76AE00903D1D /* NSStringICUAdditions.m */,
-				AB69B6D9118B7F2A00903D1D /* SMLLayoutManager.m */,
-				AB69B65A118B75FB00903D1D /* SMLSyntaxColouring.m */,
-			);
-			name = Classes;
 			sourceTree = "<group>";
 		};
 		AB648E2211FB37AF00AEF7BD /* Simple */ = {
@@ -320,7 +310,7 @@
 		AB648E2311FB37D200AEF7BD /* NSDocument based */ = {
 			isa = PBXGroup;
 			children = (
-				AB648E3E11FB38E700AEF7BD /* MyDocument.h */,
+				ABDED9C7128AB554002EE039 /* Headers */,
 				AB648E3F11FB38E700AEF7BD /* MyDocument.m */,
 			);
 			name = "NSDocument based";
@@ -329,10 +319,12 @@
 		AB69B659118B75E100903D1D /* Smultron */ = {
 			isa = PBXGroup;
 			children = (
-				AB5E6A3C11B65A690026B4B9 /* Classes */,
 				AB3972FD118C2A8200AEF388 /* headers */,
-				AB3972FC118C2A5D00AEF388 /* Resources */,
-				AB69B69D118B7A9600903D1D /* icu */,
+				AB5E6A4911B65AC20026B4B9 /* SMLGutterTextView.m */,
+				AB41C1001191FDFE004F0CB5 /* SMLLineNumbers.m */,
+				AB69B68E118B78D400903D1D /* SMLTextView.m */,
+				AB69B6D9118B7F2A00903D1D /* SMLLayoutManager.m */,
+				AB69B65A118B75FB00903D1D /* SMLSyntaxColouring.m */,
 			);
 			name = Smultron;
 			sourceTree = "<group>";
@@ -372,12 +364,9 @@
 		AB69B752118B82DF00903D1D /* Framework */ = {
 			isa = PBXGroup;
 			children = (
+				ABDED9B6128AB144002EE039 /* Fragaria */,
+				ABDED9A9128AAEB6002EE039 /* ICU */,
 				AB69B659118B75E100903D1D /* Smultron */,
-				ABFBCC901192193B00F55626 /* Resources */,
-				ABFBCC58119217F700F55626 /* Headers */,
-				AB3971C9118C1F8A00AEF388 /* MGSSyntaxController.m */,
-				AB41C1041191FFCB004F0CB5 /* MGSFragaria.m */,
-				AB69B80A118B8D0400903D1D /* MGSPreferencesController.m */,
 			);
 			name = Framework;
 			sourceTree = "<group>";
@@ -391,6 +380,48 @@
 			name = Application;
 			sourceTree = "<group>";
 		};
+		ABDED9A9128AAEB6002EE039 /* ICU */ = {
+			isa = PBXGroup;
+			children = (
+				ABDED9BE128AB492002EE039 /* Headers */,
+				AB69B69D118B7A9600903D1D /* icu */,
+				AB69B66B118B76AE00903D1D /* ICUMatcher.m */,
+				AB69B66D118B76AE00903D1D /* ICUPattern.m */,
+				AB69B66F118B76AE00903D1D /* NSStringICUAdditions.m */,
+			);
+			name = ICU;
+			sourceTree = "<group>";
+		};
+		ABDED9B6128AB144002EE039 /* Fragaria */ = {
+			isa = PBXGroup;
+			children = (
+				ABFBCC58119217F700F55626 /* Headers */,
+				AB3971C9118C1F8A00AEF388 /* MGSSyntaxController.m */,
+				AB41C1041191FFCB004F0CB5 /* MGSFragaria.m */,
+				ABDED9C2128AB4E0002EE039 /* MGSScanner.m */,
+				AB69B80A118B8D0400903D1D /* MGSPreferencesController.m */,
+			);
+			name = Fragaria;
+			sourceTree = "<group>";
+		};
+		ABDED9BE128AB492002EE039 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				AB69B66A118B76AE00903D1D /* ICUMatcher.h */,
+				AB69B66C118B76AE00903D1D /* ICUPattern.h */,
+				AB69B66E118B76AE00903D1D /* NSStringICUAdditions.h */,
+			);
+			name = Headers;
+			sourceTree = "<group>";
+		};
+		ABDED9C7128AB554002EE039 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				AB648E3E11FB38E700AEF7BD /* MyDocument.h */,
+			);
+			name = Headers;
+			sourceTree = "<group>";
+		};
 		ABFBCC58119217F700F55626 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
@@ -399,18 +430,9 @@
 				AB69B809118B8D0400903D1D /* MGSPreferencesController.h */,
 				ABD0FD7F119326FE00E6AFE6 /* MGSFragariaFramework.h */,
 				ABD0FE581193543600E6AFE6 /* MGSFragariaPreferences.h */,
+				ABDED9C1128AB4E0002EE039 /* MGSScanner.h */,
 			);
 			name = Headers;
-			sourceTree = "<group>";
-		};
-		ABFBCC901192193B00F55626 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				ABA812DB11B6855200A29990 /* LICENSE-2.0.txt */,
-				AB69B62C118B745700903D1D /* MGSFragaria-Info.plist */,
-				AB648E2C11FB385700AEF7BD /* Fragaria Document Based App-Info.plist */,
-			);
-			name = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -422,6 +444,7 @@
 			files = (
 				AB69B754118B830700903D1D /* MGSFragaria.h in Headers */,
 				ABD0FE591193543600E6AFE6 /* MGSFragariaPreferences.h in Headers */,
+				ABDED9C3128AB4E0002EE039 /* MGSScanner.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -577,6 +600,7 @@
 				AB41C1011191FDFE004F0CB5 /* SMLLineNumbers.m in Sources */,
 				AB41C1051191FFCB004F0CB5 /* MGSFragaria.m in Sources */,
 				AB5E6A4A11B65AC20026B4B9 /* SMLGutterTextView.m in Sources */,
+				ABDED9C4128AB4E0002EE039 /* MGSScanner.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

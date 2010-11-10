@@ -101,10 +101,13 @@ static NSSet *objectSetterKeys;
 	[textScrollView setAutohidesScrollers:YES];
 	[textScrollView setAutoresizingMask:(NSViewWidthSizable | NSViewHeightSizable)];
 	[[textScrollView contentView] setAutoresizesSubviews:YES];
+	[textScrollView setPostsFrameChangedNotifications:YES];
 	
 	// create line numbers
 	SMLLineNumbers *lineNumbers = [[SMLLineNumbers alloc] initWithDocument:docSpec];
 	[[NSNotificationCenter defaultCenter] addObserver:lineNumbers selector:@selector(viewBoundsDidChange:) name:NSViewBoundsDidChangeNotification object:[textScrollView contentView]];
+	[[NSNotificationCenter defaultCenter] addObserver:lineNumbers selector:@selector(viewBoundsDidChange:) name:NSViewFrameDidChangeNotification object:[textScrollView contentView]];
+
 	[docSpec setValue:lineNumbers forKey:ro_MGSFOLineNumbers];
 	
 	// create textview

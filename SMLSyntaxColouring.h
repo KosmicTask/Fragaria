@@ -19,15 +19,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 @class ICUPattern;
 @class ICUMatcher;
 
-@interface SMLSyntaxColouring : NSObject <NSTextStorageDelegate> {
+@interface SMLSyntaxColouring : NSObject <NSTextStorageDelegate, NSTextViewDelegate> {
 	
+	id document;
+
 	NSUndoManager *undoManager;
 	SMLLayoutManager *firstLayoutManager, *secondLayoutManager, *thirdLayoutManager, *fourthLayoutManager;
 	
-	NSTimer *autocompleteWordsTimer;
 	NSInteger lastCursorLocation;
-	
-	NSCharacterSet *letterCharacterSet, *keywordStartCharacterSet, *keywordEndCharacterSet;
 	
 	NSDictionary *commandsColour, *commentsColour, *instructionsColour, *keywordsColour, *autocompleteWordsColour, 
 					*stringsColour, *variablesColour, *attributesColour, *lineHighlightColour;
@@ -35,40 +34,37 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSSet *keywords;
 	NSSet *autocompleteWords;
 	NSArray *keywordsAndAutocompleteWords;
-	BOOL keywordsCaseSensitive;
-	BOOL recolourKeywordIfAlreadyColoured;
+
 	NSString *beginCommand;
 	NSString *endCommand;
 	NSString *beginInstruction;
 	NSString *endInstruction;
-	NSCharacterSet *beginVariable;
-	NSCharacterSet *endVariable;
 	NSString *firstString;
-	unichar firstStringUnichar;
 	NSString *secondString;
-	unichar secondStringUnichar;
 	NSString *firstSingleLineComment, *secondSingleLineComment, *beginFirstMultiLineComment, *endFirstMultiLineComment, *beginSecondMultiLineComment, *endSecondMultiLineComment, *functionDefinition, *removeFromFunction;
-	
 	NSString *completeString;
 	NSString *searchString;
-	
-	// check these
-	NSTextContainer *textContainer;
-	
+
+	unichar firstStringUnichar;
+	unichar secondStringUnichar;
+
 	BOOL reactToChanges;
-	
-	id document;
+	BOOL keywordsCaseSensitive;
+	BOOL recolourKeywordIfAlreadyColoured;
 	
 	NSCharacterSet *attributesCharacterSet;
+	NSCharacterSet *beginVariable;
+	NSCharacterSet *endVariable;
+	NSCharacterSet *letterCharacterSet, *keywordStartCharacterSet, *keywordEndCharacterSet;
 	
 	ICUPattern *firstStringPattern;
-	ICUPattern *secondStringPattern;
-	
+	ICUPattern *secondStringPattern;	
 	ICUMatcher *firstStringMatcher;
 	ICUMatcher *secondStringMatcher;
 	
 	NSTimer *liveUpdatePreviewTimer;
-	
+	NSTimer *autocompleteWordsTimer;
+
 	NSRange lastLineHighlightRange;
 }
 

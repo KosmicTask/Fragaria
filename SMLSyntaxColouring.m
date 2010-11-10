@@ -33,8 +33,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 @implementation SMLSyntaxColouring
 
-@synthesize reactToChanges, functionDefinition, removeFromFunction, secondLayoutManager, thirdLayoutManager, fourthLayoutManager, undoManager;
+@synthesize reactToChanges, functionDefinition, removeFromFunction, secondLayoutManager, 
+thirdLayoutManager, fourthLayoutManager, undoManager;
 
+/*
+ 
+ - init
+ 
+ */
 - (id)init
 {
 	[self initWithDocument:nil];
@@ -42,11 +48,15 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	return self;
 }
 
-
+/*
+ 
+ - initWithDocument:
+ 
+ */
 - (id)initWithDocument:(id)theDocument
 {
 	if ((self = [super init])) {
-		
+
 		document = theDocument;
 		lastCursorLocation = 0;
 		
@@ -74,8 +84,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[self applySyntaxDefinition];
 		[document addObserver:self forKeyPath:@"syntaxDefinition" options:NSKeyValueObservingOptionNew context:@"syntaxDefinition"];
 		
+		//get mutable string content here somehow
 		completeString = [[document valueForKey:@"firstTextView"] string];
-		textContainer = [[document valueForKey:@"firstTextView"] textContainer];
 		
 		reactToChanges = YES;
 
@@ -108,13 +118,16 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[defaultsController addObserver:self forKeyPath:@"values.HighlightCurrentLine" options:NSKeyValueObservingOptionNew context:@"ColoursChanged"];
 		[defaultsController addObserver:self forKeyPath:@"values.HighlightLineColourWell" options:NSKeyValueObservingOptionNew context:@"ColoursChanged"];
 		[defaultsController addObserver:self forKeyPath:@"values.ColourMultiLineStrings" options:NSKeyValueObservingOptionNew context:@"MultiLineChanged"];
-		
 	}
 	
     return self;
 }
 
-
+/*
+ 
+ - observeValueForKeyPath:ofObject:change:context:
+ 
+ */
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
 	if ([(NSString *)context isEqualToString:@"ColoursChanged"]) {
@@ -140,7 +153,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 }
 
-
+/*
+ 
+ - undoManagerForTextView:
+ 
+ */
 - (NSUndoManager *)undoManagerForTextView:(NSTextView *)aTextView
 {
 #pragma unused(aTextView)
@@ -151,6 +168,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 #pragma mark -
 #pragma mark Setup
 
+/*
+ 
+ - setColours
+ 
+ */
 - (void)setColours
 {
 	commandsColour = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"CommandsColourWell"]], NSForegroundColorAttributeName, nil];
@@ -237,6 +259,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 	return definitionName;
 }
+
 /*
  
  - parseSyntaxDictionary
@@ -409,7 +432,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	[self prepareRegularExpressions];
 }
 
-
+/*
+ 
+ - prepareRegularExpressions
+ 
+ */
 - (void)prepareRegularExpressions
 {
 	if ([[SMLDefaults valueForKey:@"ColourMultiLineStrings"] boolValue] == NO) {
@@ -428,6 +455,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 #pragma mark -
 #pragma mark Colouring
 
+/*
+ 
+ - removeAllColours
+ 
+ */
 - (void)removeAllColours
 {
 	NSRange wholeRange = NSMakeRange(0, [completeString length]);
@@ -443,7 +475,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	}
 }
 
-
+/*
+ 
+ - removeColoursFromRange
+ 
+ */
 - (void)removeColoursFromRange:(NSRange)range
 {
 	[firstLayoutManager removeTemporaryAttribute:NSForegroundColorAttributeName forCharacterRange:range];
@@ -458,7 +494,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	}
 }
 
-
+/*
+ 
+ - pageRecolour
+ 
+ */
 - (void)pageRecolour
 {
 	[self pageRecolourTextView:[document valueForKey:@"firstTextView"]];
@@ -473,7 +513,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	}
 }
 
-
+/*
+ 
+ - pageRecolourTextView:
+ 
+ */
 - (void)pageRecolourTextView:(SMLTextView *)textView
 {
 	if ([[document valueForKey:@"isSyntaxColoured"] boolValue] == NO) {
@@ -491,7 +535,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	[self recolourRange:NSMakeRange(beginningOfFirstVisibleLine, endOfLastVisibleLine - beginningOfFirstVisibleLine)];
 }
 
-
+/*
+ 
+ - recolourRange:
+ 
+ */
 - (void)recolourRange:(NSRange)range
 {
 	if (reactToChanges == NO) {
@@ -1021,7 +1069,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 }
 
-
+/*
+ 
+ - setColour:range:
+ 
+ */
 - (void)setColour:(NSDictionary *)colourDictionary range:(NSRange)range
 {
 	[firstLayoutManager setTemporaryAttributes:colourDictionary forCharacterRange:range];
@@ -1036,7 +1088,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	}
 }
 
-
+/*
+ 
+ - highlightLineRange:
+ 
+ */
 - (void)highlightLineRange:(NSRange)lineRange
 {
 	if (lineRange.location == lastLineHighlightRange.location && lineRange.length == lastLineHighlightRange.length) {
@@ -1322,7 +1378,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 }
 
-
+/*
+ 
+ - textView:completions:forPartialWordRange:indexOfSelectedItem
+ 
+ */
 - (NSArray *)textView:theTextView completions:(NSArray *)words forPartialWordRange:(NSRange)charRange indexOfSelectedItem:(int *)idx
 {
 #pragma unused(idx)
@@ -1358,6 +1418,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 #pragma mark -
 #pragma mark Other
+
+/*
+ 
+ - guessSyntaxDefinitionExtensionFromFirstLine:
+ 
+ */
 - (NSString *)guessSyntaxDefinitionExtensionFromFirstLine:(NSString *)firstLine
 {
 	NSString *returnString = nil;
@@ -1387,17 +1453,23 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	return returnString;
 }
 
-
+/*
+ 
+ - checkIfCanUndo
+ 
+ */
 - (void)checkIfCanUndo
 {
 	if (![undoManager canUndo]) {
 		[document setValue:[NSNumber numberWithBool:NO] forKey:MGSFOIsEdited];
-		// MGS [SMLCurrentProject updateEditedBlobStatus];
-		// MGS [SMLCurrentProject reloadData];
 	}
 }
 
-
+/*
+ 
+ - autocompleteWordsTimerSelector:
+ 
+ */
 - (void)autocompleteWordsTimerSelector:(NSTimer *)theTimer
 {
 	SMLTextView *textView = [theTimer userInfo];
@@ -1420,7 +1492,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	}
 }
 
-
+/*
+ 
+ - liveUpdatePreviewTimerSelector:
+ 
+ */
 - (void)liveUpdatePreviewTimerSelector:(NSTimer *)theTimer
 {
 #pragma unused(theTimer)

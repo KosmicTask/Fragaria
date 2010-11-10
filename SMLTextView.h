@@ -27,14 +27,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 	NSCursor *colouredIBeamCursor;
 	
-	BOOL inCompleteMethod;
-	
-	NSMutableDictionary *docSpec;
+	id docSpec;
 }
 
 @property (assign) NSCursor *colouredIBeamCursor;
-@property (assign) BOOL inCompleteMethod;
-@property (assign) NSMutableDictionary *docSpec;
+@property (assign) id docSpec;
 
 - (void)setDefaults;
 

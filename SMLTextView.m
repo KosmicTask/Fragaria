@@ -24,7 +24,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 @implementation SMLTextView
 
-@synthesize colouredIBeamCursor, inCompleteMethod, docSpec;
+@synthesize colouredIBeamCursor, docSpec;
 
 #pragma mark -
 #pragma mark Instance methods
@@ -65,8 +65,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
  */
 - (void)setDefaults
 {
-	inCompleteMethod = NO;
-	
+
 	[self setTabWidth];
 	
 	[self setVerticallyResizable:YES];

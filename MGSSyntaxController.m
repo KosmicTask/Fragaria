@@ -92,7 +92,9 @@ static id sharedInstance = nil;
  */
 - (NSDictionary *)standardSyntaxDefinition
 {
-	NSDictionary *definition = [syntaxDefinitions objectForKey:[[self class] standardSyntaxDefinitionName]];
+	// key is lowercase name
+	NSString *name = [[self class] standardSyntaxDefinitionName];
+	NSDictionary *definition = [syntaxDefinitions objectForKey:[name lowercaseString]];
 	NSAssert(definition, @"standard syntax definition not found");
 	return definition;
 }
@@ -104,7 +106,8 @@ static id sharedInstance = nil;
  */
 - (NSDictionary *)syntaxDefinitionWithName:(NSString *)name
 {
-	NSDictionary *definition = [syntaxDefinitions objectForKey:name];
+	// key is lowercase name
+	NSDictionary *definition = [syntaxDefinitions objectForKey:[name lowercaseString]];
 	if (!definition) {
 		definition = [self standardSyntaxDefinition];
 	}
@@ -175,7 +178,11 @@ static id sharedInstance = nil;
 	[syntaxDefinitionsArray insertObject:none atIndex:0];
 	[syntaxDefinitionsArray insertObject:standard atIndex:0];
 		
-	// we will key our definitions by name
+	/*
+	 
+	 build a dictionary of definitions keyed by lowercase definition name
+	 
+	 */
 	syntaxDefinitions = [NSMutableDictionary dictionaryWithCapacity:30];
 	NSMutableArray *definitionNames = [NSMutableArray arrayWithCapacity:30];
 	
@@ -193,8 +200,9 @@ static id sharedInstance = nil;
 		[syntaxDefinition setValue:[item valueForKey:@"file"] forKey:@"file"];
 		[syntaxDefinition setValue:[NSNumber numberWithInteger:idx] forKey:@"sortOrder"];
 		idx++;
-			
-		[syntaxDefinitions setObject:syntaxDefinition forKey:name];
+		
+		// key is lowercase name
+		[syntaxDefinitions setObject:syntaxDefinition forKey:[name lowercaseString]];
 		[definitionNames addObject:name];
 	}
 	

@@ -19,35 +19,22 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 #import <Cocoa/Cocoa.h>
 
-@class MGSFragaria;
 
-@interface SMLTextView : NSTextView {
-	NSInteger lineHeight;
-	NSPoint startPoint;
-    NSPoint startOrigin;
-	CGFloat pageGuideX;
-	NSColor *pageGuideColour;
+@interface SMLBasicPerformer : NSObject {
 	
-	BOOL showPageGuide;
-	
-	NSCursor *colouredIBeamCursor;
-	
-	MGSFragaria *fragaria;
+	NSNumberFormatter *thousandFormatter;
+	NSMutableDictionary *fetchRequests;
 }
 
-@property (assign) NSCursor *colouredIBeamCursor;
-@property (assign) MGSFragaria *fragaria;
++ (SMLBasicPerformer *)sharedInstance;
 
-- (void)setDefaults;
+- (void)insertFetchRequests;
+- (NSArray *)fetchAll:(NSString *)key;
+- (void)removeAllItemsFromMenu:(NSMenu *)menu;
+- (NSString *)createUUID;
+- (void)insertSortOrderNumbersForArrayController:(NSArrayController *)arrayController;
+- (NSString *)thousandFormatedStringFromNumber:(NSNumber *)number;
+- (NSString *)resolveAliasInPath:(NSString *)path;
 
-- (void)setTextDefaults;
-
-- (NSInteger)lineHeight;
-
-- (void)setTabWidth;
-
-- (void)setPageGuideValues;
-
-- (void)updateIBeamCursor;
 
 @end

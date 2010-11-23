@@ -1,10 +1,9 @@
 /*
  
  
- MGSFragaria 1.0, 01-05-2010
+ MGSFragaria
  Written by Jonathan Mitchell, jonathan@mugginsoft.com
- 
- Based on:
+ Find the latest version at https://github.com/mugginsoft/Fragaria
  
 Smultron version 3.6b1, 2009-09-12
 Written by Peter Borg, pgw3@mac.com
@@ -22,9 +21,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 #import "MGSFragaria.h"
 #import "MGSFragariaFramework.h"
 
+// class extension
+@interface SMLTextView()
+- (void)windowDidBecomeMainOrKey:(NSNotification *)note;
+@end
+
 @implementation SMLTextView
 
-@synthesize colouredIBeamCursor, docSpec;
+@synthesize colouredIBeamCursor, fragaria;
 
 #pragma mark -
 #pragma mark Instance methods
@@ -39,7 +43,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		SMLLayoutManager *layoutManager = [[SMLLayoutManager alloc] init];
 		[[self textContainer] replaceLayoutManager:layoutManager];
 		
-		[self setDefaults];		
+		[self setDefaults];	
 	}
 	return self;
 }
@@ -130,7 +134,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)setFrame:(NSRect)rect
 {
 	[super setFrame:rect];
-	[[docSpec valueForKey:ro_MGSFOLineNumbers] updateLineNumbersForClipView:[[self enclosingScrollView] contentView] checkWidth:NO recolour:YES];
+	[[fragaria objectForKey:ro_MGSFOLineNumbers] updateLineNumbersForClipView:[[self enclosingScrollView] contentView] checkWidth:NO recolour:YES];
 	
 }
 
@@ -142,7 +146,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)setString:(NSString *)aString
 {
 	[super setString:aString];
-	[[docSpec valueForKey:ro_MGSFOLineNumbers] updateLineNumbersCheckWidth:YES recolour:YES];
+	[[fragaria objectForKey:ro_MGSFOLineNumbers] updateLineNumbersCheckWidth:YES recolour:YES];
 }
 
 #pragma mark -
@@ -158,7 +162,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	if ([(NSString *)context isEqualToString:@"TextFontChanged"]) {
 		[self setFont:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextFont"]]];
 		lineHeight = [[[self textContainer] layoutManager] defaultLineHeightForFont:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextFont"]]];
-		[[docSpec valueForKey:ro_MGSFOLineNumbers] updateLineNumbersForClipView:[[self enclosingScrollView] contentView] checkWidth:NO recolour:YES];
+		[[fragaria objectForKey:ro_MGSFOLineNumbers] updateLineNumbersForClipView:[[self enclosingScrollView] contentView] checkWidth:NO recolour:YES];
 		[self setPageGuideValues];
 	} else if ([(NSString *)context isEqualToString:@"TextColourChanged"]) {
 		[self setTextColor:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextColourWell"]]];
@@ -349,7 +353,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	}
 	
 	if (shouldShiftText) {
-		// MGS [[SMLTextMenuController sharedInstance] shiftRightAction:nil];
+		[[MGSTextMenuController sharedInstance] shiftRightAction:nil];
 	} else if ([[SMLDefaults valueForKey:@"IndentWithSpaces"] boolValue] == YES) {
 		NSMutableString *spacesString = [NSMutableString string];
 		NSInteger numberOfSpacesPerTab = [[SMLDefaults valueForKey:@"TabWidth"] integerValue];
@@ -797,6 +801,62 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)performFindPanelAction:(id)sender
 {
 	[super performFindPanelAction:sender];
+}
+
+
+#pragma mark -
+#pragma mark NSView
+
+/*
+ 
+ - viewWillMoveToWindow:
+ 
+ */
+- (void)viewWillMoveToWindow:(NSWindow *)newWindow
+{
+	[super viewWillMoveToWindow:newWindow];
+}
+
+/*
+ 
+ - viewDidMoveToWindow
+ 
+ */
+- (void)viewDidMoveToWindow
+{
+	if ([self window]) {
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeMainOrKey:) name:NSWindowDidBecomeKeyNotification object:[self window]];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeMainOrKey:) name:NSWindowDidBecomeMainNotification object:[self window]];
+	}
+	
+	[super viewDidMoveToWindow];
+}
+
+/*
+ 
+ - becomeFirstResponder
+ 
+ */
+- (BOOL)becomeFirstResponder
+{
+	[MGSFragaria setCurrentInstance:self.fragaria];
+	
+	return [super becomeFirstResponder];
+}
+
+#pragma mark -
+#pragma mark Notification methods
+
+/*
+ 
+ - windowDidBecomeMainOrKey:
+ 
+ */
+- (void)windowDidBecomeMainOrKey:(NSNotification *)note
+{
+	#pragma unused(note)
+	
+	[MGSFragaria setCurrentInstance:self.fragaria];
 }
 
 @end

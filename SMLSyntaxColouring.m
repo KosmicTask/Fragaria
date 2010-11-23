@@ -2,10 +2,9 @@
 
 /*
 
-MGSFragaria 1.0, 01-05-2010
-Written by Jonathan Mitchell, jonathan@mugginsoft.com
-
-Based on:
+ MGSFragaria
+ Written by Jonathan Mitchell, jonathan@mugginsoft.com
+ Find the latest version at https://github.com/mugginsoft/Fragaria
  
 Smultron version 3.6b1, 2009-09-12
 Written by Peter Borg, pgw3@mac.com
@@ -46,7 +45,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 @implementation SMLSyntaxColouring
 
 @synthesize reactToChanges, functionDefinition, removeFromFunction, secondLayoutManager, 
-thirdLayoutManager, fourthLayoutManager;
+thirdLayoutManager, fourthLayoutManager, undoManager;
 
 #pragma mark -
 #pragma mark Instance methods
@@ -76,6 +75,8 @@ thirdLayoutManager, fourthLayoutManager;
 		// retain the document
 		document = theDocument;
 		
+		undoManager = [[NSUndoManager alloc] init];
+
 		// configure the document text view
 		NSTextView *textView = [document valueForKey:@"firstTextView"];
 		NSAssert([textView isKindOfClass:[NSTextView class]], @"bad textview");
@@ -120,7 +121,7 @@ thirdLayoutManager, fourthLayoutManager;
 		[[NSNotificationCenter defaultCenter] addObserver:self 
 												 selector:@selector(undoManagerDidUndo:) 
 													 name:@"NSUndoManagerDidUndoChangeNotification" 
-												   object:[textView undoManager]];
+												   object:undoManager];
 		
 		// add document KVO observers
 		[document addObserver:self forKeyPath:@"syntaxDefinition" options:NSKeyValueObservingOptionNew context:@"syntaxDefinition"];
@@ -1458,7 +1459,7 @@ thirdLayoutManager, fourthLayoutManager;
  - textView:completions:forPartialWordRange:indexOfSelectedItem
  
  */
-- (NSArray *)textView:theTextView completions:(NSArray *)words forPartialWordRange:(NSRange)charRange indexOfSelectedItem:(int *)idx
+- (NSArray *)textView:theTextView completions:(NSArray *)words forPartialWordRange:(NSRange)charRange indexOfSelectedItem:(NSInteger *)idx
 {
 #pragma unused(idx)
 	if ([keywordsAndAutocompleteWords count] == 0) {
@@ -1501,11 +1502,11 @@ thirdLayoutManager, fourthLayoutManager;
  */
 - (void)undoManagerDidUndo:(NSNotification *)aNote
 {
-	NSUndoManager *undoManager = [aNote object];
+	NSUndoManager *theUndoManager = [aNote object];
 	
-	NSAssert([undoManager isKindOfClass:[NSUndoManager class]], @"bad notification object");
+	NSAssert([theUndoManager isKindOfClass:[NSUndoManager class]], @"bad notification object");
 	
-	if (![undoManager canUndo]) {
+	if (![theUndoManager canUndo]) {
 		
 		// we can undo no more so we must be restored to unedited state
 		[document setValue:[NSNumber numberWithBool:NO] forKey:MGSFOIsEdited];

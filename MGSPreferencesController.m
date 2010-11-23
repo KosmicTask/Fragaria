@@ -144,6 +144,7 @@ static BOOL MGS_preferencesInitialized = NO;
 	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:@"AutomaticQuoteSubstitution"];
 	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:@"UseTabStops"];
 	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:@"HighlightCurrentLine"];
+	[dictionary setValue:[NSNumber numberWithInteger:4] forKey:@"SpacesPerTabEntabDetab"];
 	
 	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:@"AutomaticallyIndentBraces"];
 	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:@"AutoInsertAClosingParenthesis"];

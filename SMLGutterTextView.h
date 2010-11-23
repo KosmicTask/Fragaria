@@ -1,4 +1,9 @@
 /*
+ 
+ MGSFragaria
+ Written by Jonathan Mitchell, jonathan@mugginsoft.com
+ Find the latest version at https://github.com/mugginsoft/Fragaria
+ 
 Smultron version 3.6b1, 2009-09-12
 Written by Peter Borg, pgw3@mac.com
 Find the latest version at http://smultron.sourceforge.net

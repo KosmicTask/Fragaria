@@ -1,4 +1,9 @@
 /*
+ 
+ MGSFragaria
+ Written by Jonathan Mitchell, jonathan@mugginsoft.com
+ Find the latest version at https://github.com/mugginsoft/Fragaria
+ 
 Smultron version 3.6b1, 2009-09-12
 Written by Peter Borg, pgw3@mac.com
 Find the latest version at http://smultron.sourceforge.net
@@ -141,29 +146,18 @@ typedef enum {
 
 #define ICON_MAX_SIZE 256.0
 
-#define SMLMain [SMLMainController sharedInstance]
 #define SMLBasic [SMLBasicPerformer sharedInstance]
-#define SMLInterface [SMLInterfacePerformer sharedInstance]
-#define SMLOpenSave [SMLOpenSavePerformer sharedInstance]
 #define SMLText [SMLTextPerformer sharedInstance]
 #define SMLVarious [SMLVariousPerformer sharedInstance]
-#define SMLDocumentViews [SMLDocumentViewsController sharedInstance]
-#define SMLManagedObjectContext [[SMLApplicationDelegate sharedInstance] managedObjectContext]
-
 #define SMLDefaults [[NSUserDefaultsController sharedUserDefaultsController] values]
 
-#define SMLCurrentProject [[SMLProjectsController sharedDocumentController] currentDocument]
-#define SMLCurrentDocument [[SMLProjectsController sharedDocumentController] currentSMLDocument]
-#define SMLCurrentTextView [[SMLProjectsController sharedDocumentController] currentTextView]
-#define SMLCurrentText [[SMLProjectsController sharedDocumentController] currentText]
-#define SMLCurrentWindow [[[SMLCurrentProject windowControllers] objectAtIndex:0] window]
-
-
-
-
-
-@interface SMLStandardHeader : NSObject
-{
-}
-
-@end
+/*
+ 
+ Target the current instance
+ 
+ */
+#define SMLCurrentExtraInterfaceController [[MGSFragaria currentInstance] extraInterfaceController]
+#define SMLCurrentDocument [[MGSFragaria currentInstance] docSpec]
+#define SMLCurrentTextView [[MGSFragaria currentInstance] textView]
+#define SMLCurrentText [[[MGSFragaria currentInstance] textView] string]
+#define SMLCurrentWindow [[[MGSFragaria currentInstance] textView] window]

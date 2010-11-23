@@ -1,7 +1,8 @@
 /*
  
- MGSFragaria 1.0, 01-05-2010
+ MGSFragaria
  Written by Jonathan Mitchell, jonathan@mugginsoft.com
+ Find the latest version at https://github.com/mugginsoft/Fragaria
  
  Based on:
  

@@ -1,4 +1,9 @@
 /*
+ 
+ MGSFragaria
+ Written by Jonathan Mitchell, jonathan@mugginsoft.com
+ Find the latest version at https://github.com/mugginsoft/Fragaria
+ 
 Smultron version 3.6b1, 2009-09-12
 Written by Peter Borg, pgw3@mac.com
 Find the latest version at http://smultron.sourceforge.net
@@ -22,7 +27,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 @interface SMLSyntaxColouring : NSObject <NSTextStorageDelegate, NSTextViewDelegate> {
 	
 	id document;
-
+	NSUndoManager *undoManager;
+	
 	SMLLayoutManager *firstLayoutManager, *secondLayoutManager, *thirdLayoutManager, *fourthLayoutManager;
 	
 	NSInteger lastCursorLocation;
@@ -68,6 +74,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 }
 
 @property BOOL reactToChanges;
+@property (readonly) NSUndoManager *undoManager;
 
 @property (copy) NSString *functionDefinition;
 @property (copy) NSString *removeFromFunction;
@@ -78,5 +85,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 - (id)initWithDocument:(id)document;
 - (void)pageRecolourTextView:(SMLTextView *)textView;
+- (void)pageRecolour;
+- (void)applySyntaxDefinition;
 
 @end

@@ -12,12 +12,29 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		AB257FCE129B1BF500A3FF76 /* SMLTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB69B666118B768000903D1D /* SMLTextView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AB257FE0129B1CE300A3FF76 /* MGSSyntaxController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3971C8118C1F8A00AEF388 /* MGSSyntaxController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AB257FE1129B1CE300A3FF76 /* MGSPreferencesController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB69B809118B8D0400903D1D /* MGSPreferencesController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AB257FE2129B1CE300A3FF76 /* MGSFragariaPreferences.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD0FE581193543600E6AFE6 /* MGSFragariaPreferences.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AB257FE3129B1CE300A3FF76 /* MGSScanner.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDED9C1128AB4E0002EE039 /* MGSScanner.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AB257FE4129B1CE300A3FF76 /* MGSTextMenuController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB472B7B1299732F00202CB5 /* MGSTextMenuController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AB257FE5129B1CE300A3FF76 /* MGSExtraInterfaceController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB472BF51299BBBA00202CB5 /* MGSExtraInterfaceController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AB3971CB118C1F8A00AEF388 /* MGSSyntaxController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3971C9118C1F8A00AEF388 /* MGSSyntaxController.m */; };
 		AB39723A118C27E700AEF388 /* SyntaxDefinitions.plist in Resources */ = {isa = PBXBuildFile; fileRef = AB3971E6118C27E700AEF388 /* SyntaxDefinitions.plist */; };
 		AB3972E5118C28E700AEF388 /* Syntax Definitions in Resources */ = {isa = PBXBuildFile; fileRef = AB397291118C28E700AEF388 /* Syntax Definitions */; };
 		AB3C15EB1193054100D1F62D /* SMLSyntaxColouring.m in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB69B65A118B75FB00903D1D /* SMLSyntaxColouring.m */; };
 		AB41C1011191FDFE004F0CB5 /* SMLLineNumbers.m in Sources */ = {isa = PBXBuildFile; fileRef = AB41C1001191FDFE004F0CB5 /* SMLLineNumbers.m */; };
 		AB41C1051191FFCB004F0CB5 /* MGSFragaria.m in Sources */ = {isa = PBXBuildFile; fileRef = AB41C1041191FFCB004F0CB5 /* MGSFragaria.m */; };
+		AB472B6F129972E400202CB5 /* MGSTextMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB472B6E129972E400202CB5 /* MGSTextMenuController.m */; };
+		AB472B9E12997B1F00202CB5 /* SMLBasicPerformer.m in Sources */ = {isa = PBXBuildFile; fileRef = AB472B9D12997B1F00202CB5 /* SMLBasicPerformer.m */; };
+		AB472BE91299AF3800202CB5 /* SMLTextPerformer.m in Sources */ = {isa = PBXBuildFile; fileRef = AB472BE81299AF3800202CB5 /* SMLTextPerformer.m */; };
+		AB472BF41299BBB100202CB5 /* MGSExtraInterfaceController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB472BF31299BBB100202CB5 /* MGSExtraInterfaceController.m */; };
+		AB472C7B1299C2F500202CB5 /* SMLCommandResult.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB472C7A1299C2F500202CB5 /* SMLCommandResult.xib */; };
+		AB472C811299C30F00202CB5 /* SMLRegularExpressionHelp.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB472C801299C30F00202CB5 /* SMLRegularExpressionHelp.xib */; };
+		AB472C831299C31F00202CB5 /* SMLOpenPanelAccessoryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB472C821299C31F00202CB5 /* SMLOpenPanelAccessoryView.xib */; };
+		AB472C851299C33100202CB5 /* SMLGoToLine.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB472C841299C33100202CB5 /* SMLGoToLine.xib */; };
+		AB472C881299C34500202CB5 /* SMLDetab.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB472C861299C34500202CB5 /* SMLDetab.xib */; };
+		AB472C891299C34500202CB5 /* SMLEntab.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB472C871299C34500202CB5 /* SMLEntab.xib */; };
 		AB5E688711B657250026B4B9 /* README in Resources */ = {isa = PBXBuildFile; fileRef = AB5E688611B657250026B4B9 /* README */; };
 		AB5E6A4A11B65AC20026B4B9 /* SMLGutterTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB5E6A4911B65AC20026B4B9 /* SMLGutterTextView.m */; };
 		AB648E3311FB386E00AEF7BD /* MGSFragaria.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB69B62B118B745700903D1D /* MGSFragaria.framework */; };
@@ -40,8 +57,6 @@
 		AB69B80C118B8D0400903D1D /* MGSPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB69B80A118B8D0400903D1D /* MGSPreferencesController.m */; };
 		ABA812DC11B6855200A29990 /* LICENSE-2.0.txt in Resources */ = {isa = PBXBuildFile; fileRef = ABA812DB11B6855200A29990 /* LICENSE-2.0.txt */; };
 		ABD0FDB01193281600E6AFE6 /* MGSFragaria.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB69B62B118B745700903D1D /* MGSFragaria.framework */; };
-		ABD0FE591193543600E6AFE6 /* MGSFragariaPreferences.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD0FE581193543600E6AFE6 /* MGSFragariaPreferences.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		ABDED9C3128AB4E0002EE039 /* MGSScanner.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDED9C1128AB4E0002EE039 /* MGSScanner.h */; };
 		ABDED9C4128AB4E0002EE039 /* MGSScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDED9C2128AB4E0002EE039 /* MGSScanner.m */; };
 /* End PBXBuildFile section */
 
@@ -106,6 +121,20 @@
 		AB41C1041191FFCB004F0CB5 /* MGSFragaria.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MGSFragaria.m; sourceTree = "<group>"; };
 		AB41C1261192049F004F0CB5 /* SMLLineNumbers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLLineNumbers.h; sourceTree = "<group>"; };
 		AB41C12E11920514004F0CB5 /* SMLGutterTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLGutterTextView.h; sourceTree = "<group>"; };
+		AB472B6E129972E400202CB5 /* MGSTextMenuController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MGSTextMenuController.m; sourceTree = "<group>"; };
+		AB472B7B1299732F00202CB5 /* MGSTextMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSTextMenuController.h; sourceTree = "<group>"; };
+		AB472B9D12997B1F00202CB5 /* SMLBasicPerformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLBasicPerformer.m; sourceTree = "<group>"; };
+		AB472B9F12997B3300202CB5 /* SMLBasicPerformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLBasicPerformer.h; sourceTree = "<group>"; };
+		AB472BE81299AF3800202CB5 /* SMLTextPerformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLTextPerformer.m; sourceTree = "<group>"; };
+		AB472BEA1299AF5100202CB5 /* SMLTextPerformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLTextPerformer.h; sourceTree = "<group>"; };
+		AB472BF31299BBB100202CB5 /* MGSExtraInterfaceController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MGSExtraInterfaceController.m; sourceTree = "<group>"; };
+		AB472BF51299BBBA00202CB5 /* MGSExtraInterfaceController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSExtraInterfaceController.h; sourceTree = "<group>"; };
+		AB472C7A1299C2F500202CB5 /* SMLCommandResult.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SMLCommandResult.xib; sourceTree = "<group>"; };
+		AB472C801299C30F00202CB5 /* SMLRegularExpressionHelp.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SMLRegularExpressionHelp.xib; sourceTree = "<group>"; };
+		AB472C821299C31F00202CB5 /* SMLOpenPanelAccessoryView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SMLOpenPanelAccessoryView.xib; sourceTree = "<group>"; };
+		AB472C841299C33100202CB5 /* SMLGoToLine.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SMLGoToLine.xib; sourceTree = "<group>"; };
+		AB472C861299C34500202CB5 /* SMLDetab.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SMLDetab.xib; sourceTree = "<group>"; };
+		AB472C871299C34500202CB5 /* SMLEntab.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SMLEntab.xib; sourceTree = "<group>"; };
 		AB5E688611B657250026B4B9 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		AB5E6A4911B65AC20026B4B9 /* SMLGutterTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLGutterTextView.m; sourceTree = "<group>"; };
 		AB648E2A11FB385700AEF7BD /* Fragaria Document Based App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Fragaria Document Based App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -252,6 +281,12 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				AB472C861299C34500202CB5 /* SMLDetab.xib */,
+				AB472C871299C34500202CB5 /* SMLEntab.xib */,
+				AB472C841299C33100202CB5 /* SMLGoToLine.xib */,
+				AB472C821299C31F00202CB5 /* SMLOpenPanelAccessoryView.xib */,
+				AB472C801299C30F00202CB5 /* SMLRegularExpressionHelp.xib */,
+				AB472C7A1299C2F500202CB5 /* SMLCommandResult.xib */,
 				AB648E4A11FB3A5200AEF7BD /* MainMenu-Document.xib */,
 				AB648E4C11FB3A5200AEF7BD /* MyDocument.xib */,
 				AB648E4211FB395100AEF7BD /* Fragaria_Document-Info.plist */,
@@ -288,6 +323,8 @@
 		AB3972FD118C2A8200AEF388 /* headers */ = {
 			isa = PBXGroup;
 			children = (
+				AB472BEA1299AF5100202CB5 /* SMLTextPerformer.h */,
+				AB472B9F12997B3300202CB5 /* SMLBasicPerformer.h */,
 				AB41C12E11920514004F0CB5 /* SMLGutterTextView.h */,
 				AB41C1261192049F004F0CB5 /* SMLLineNumbers.h */,
 				AB69B678118B76E700903D1D /* SMLLayoutManager.h */,
@@ -324,7 +361,9 @@
 				AB41C1001191FDFE004F0CB5 /* SMLLineNumbers.m */,
 				AB69B68E118B78D400903D1D /* SMLTextView.m */,
 				AB69B6D9118B7F2A00903D1D /* SMLLayoutManager.m */,
+				AB472B9D12997B1F00202CB5 /* SMLBasicPerformer.m */,
 				AB69B65A118B75FB00903D1D /* SMLSyntaxColouring.m */,
+				AB472BE81299AF3800202CB5 /* SMLTextPerformer.m */,
 			);
 			name = Smultron;
 			sourceTree = "<group>";
@@ -400,6 +439,8 @@
 				AB41C1041191FFCB004F0CB5 /* MGSFragaria.m */,
 				ABDED9C2128AB4E0002EE039 /* MGSScanner.m */,
 				AB69B80A118B8D0400903D1D /* MGSPreferencesController.m */,
+				AB472BF31299BBB100202CB5 /* MGSExtraInterfaceController.m */,
+				AB472B6E129972E400202CB5 /* MGSTextMenuController.m */,
 			);
 			name = Fragaria;
 			sourceTree = "<group>";
@@ -431,6 +472,8 @@
 				ABD0FD7F119326FE00E6AFE6 /* MGSFragariaFramework.h */,
 				ABD0FE581193543600E6AFE6 /* MGSFragariaPreferences.h */,
 				ABDED9C1128AB4E0002EE039 /* MGSScanner.h */,
+				AB472B7B1299732F00202CB5 /* MGSTextMenuController.h */,
+				AB472BF51299BBBA00202CB5 /* MGSExtraInterfaceController.h */,
 			);
 			name = Headers;
 			sourceTree = "<group>";
@@ -442,9 +485,14 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB257FE0129B1CE300A3FF76 /* MGSSyntaxController.h in Headers */,
+				AB257FE1129B1CE300A3FF76 /* MGSPreferencesController.h in Headers */,
+				AB257FE2129B1CE300A3FF76 /* MGSFragariaPreferences.h in Headers */,
+				AB257FE3129B1CE300A3FF76 /* MGSScanner.h in Headers */,
+				AB257FE4129B1CE300A3FF76 /* MGSTextMenuController.h in Headers */,
+				AB257FE5129B1CE300A3FF76 /* MGSExtraInterfaceController.h in Headers */,
 				AB69B754118B830700903D1D /* MGSFragaria.h in Headers */,
-				ABD0FE591193543600E6AFE6 /* MGSFragariaPreferences.h in Headers */,
-				ABDED9C3128AB4E0002EE039 /* MGSScanner.h in Headers */,
+				AB257FCE129B1BF500A3FF76 /* SMLTextView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -561,6 +609,12 @@
 				AB3972E5118C28E700AEF388 /* Syntax Definitions in Resources */,
 				AB5E688711B657250026B4B9 /* README in Resources */,
 				ABA812DC11B6855200A29990 /* LICENSE-2.0.txt in Resources */,
+				AB472C7B1299C2F500202CB5 /* SMLCommandResult.xib in Resources */,
+				AB472C811299C30F00202CB5 /* SMLRegularExpressionHelp.xib in Resources */,
+				AB472C831299C31F00202CB5 /* SMLOpenPanelAccessoryView.xib in Resources */,
+				AB472C851299C33100202CB5 /* SMLGoToLine.xib in Resources */,
+				AB472C881299C34500202CB5 /* SMLDetab.xib in Resources */,
+				AB472C891299C34500202CB5 /* SMLEntab.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -601,6 +655,10 @@
 				AB41C1051191FFCB004F0CB5 /* MGSFragaria.m in Sources */,
 				AB5E6A4A11B65AC20026B4B9 /* SMLGutterTextView.m in Sources */,
 				ABDED9C4128AB4E0002EE039 /* MGSScanner.m in Sources */,
+				AB472B6F129972E400202CB5 /* MGSTextMenuController.m in Sources */,
+				AB472B9E12997B1F00202CB5 /* SMLBasicPerformer.m in Sources */,
+				AB472BE91299AF3800202CB5 /* SMLTextPerformer.m in Sources */,
+				AB472BF41299BBB100202CB5 /* MGSExtraInterfaceController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

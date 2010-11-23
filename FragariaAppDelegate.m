@@ -57,7 +57,7 @@
 	NSString *fileText = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
 	
 	// set text
-	[fragaria setString:fileText];
+	[fragaria performSelector:@selector(setString:) withObject:fileText afterDelay:0];
 	
 	// access the NSTextView
 	NSTextView *textView = [fragaria objectForKey:ro_MGSFOTextView];

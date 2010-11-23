@@ -33,17 +33,25 @@ extern NSString * const MGSFODelegate;
 extern NSString * const ro_MGSFOLineNumbers; // readonly
 extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 
+@class MGSTextMenuController;
+@class MGSExtraInterfaceController;
+
 #import "MGSFragariaPreferences.h"
 
 @interface MGSFragaria : NSObject
 {
 	@private
 	id _docSpec;
+	MGSExtraInterfaceController *extraInterfaceController;
 }
+
+@property (readonly) MGSExtraInterfaceController *extraInterfaceController;
+
++ (id)currentInstance;
++ (void)setCurrentInstance:(MGSFragaria *)anInstance;
 
 + (void)initializeFramework;
 + (id)createDocSpec;
-+ (void)createDocSpec:(id)document inView:(NSView *)contentView;
 + (void)docSpec:(id)docSpec setString:(NSString *)string;
 + (NSString *)stringForDocSpec:(id)docSpec;
 + (NSAttributedString *)attributedStringForDocSpec:(id)docSpec;
@@ -56,4 +64,7 @@ extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 - (void)setString:(NSString *)aString;
 - (NSAttributedString *)attributedString;
 - (NSString *)string;
+- (id)docSpec;
+- (NSTextView *)textView;
+- (MGSTextMenuController *)textMenuController;
 @end

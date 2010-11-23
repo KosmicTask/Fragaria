@@ -19,35 +19,26 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 #import <Cocoa/Cocoa.h>
 
-@class MGSFragaria;
 
-@interface SMLTextView : NSTextView {
-	NSInteger lineHeight;
-	NSPoint startPoint;
-    NSPoint startOrigin;
-	CGFloat pageGuideX;
-	NSColor *pageGuideColour;
+@interface SMLTextPerformer : NSObject {
+
+	NSString *darkSideLineEnding;
+	NSString *macLineEnding;
+	NSString *unixLineEnding;
 	
-	BOOL showPageGuide;
-	
-	NSCursor *colouredIBeamCursor;
-	
-	MGSFragaria *fragaria;
+	NSString *newLineSymbolString;
 }
 
-@property (assign) NSCursor *colouredIBeamCursor;
-@property (assign) MGSFragaria *fragaria;
++ (SMLTextPerformer *)sharedInstance;
 
-- (void)setDefaults;
+- (NSString *)convertLineEndings:(NSString *)stringToConvert inDocument:(id)document;
 
-- (void)setTextDefaults;
+- (NSStringEncoding)guessEncodingFromData:(NSData *)textData;
 
-- (NSInteger)lineHeight;
+- (NSString *)replaceAllNewLineCharactersWithSymbolInString:(NSString *)theTextString;
 
-- (void)setTabWidth;
+- (NSString *)removeAllLineEndingsInString:(NSString *)string;
 
-- (void)setPageGuideValues;
 
-- (void)updateIBeamCursor;
 
 @end

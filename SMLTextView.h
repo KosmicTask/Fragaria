@@ -22,6 +22,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 @class MGSFragaria;
 
 @interface SMLTextView : NSTextView {
+	@private
 	NSInteger lineHeight;
 	NSPoint startPoint;
     NSPoint startOrigin;
@@ -50,4 +51,5 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 - (void)updateIBeamCursor;
 
+- (void)setString:(NSString *)text options:(NSDictionary *)options;
 @end

@@ -424,7 +424,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 }
 
 #pragma mark -
-#pragma mark Test handling
+#pragma mark Text handling
 /*
  
  - insertText:
@@ -554,6 +554,44 @@ Unless required by applicable law or agreed to in writing, software distributed 
 			}
 		}
 	}
+}
+
+/*
+ 
+ - setString:options:
+ 
+ */
+- (void)setString:(NSString *)text options:(NSDictionary *)options
+{
+	BOOL undo = [[options objectForKey:@"undo"] boolValue];
+	
+	if ([self isEditable] && undo) {
+		
+		/*
+		 
+		 see http://www.cocoabuilder.com/archive/cocoa/179875-exponent-action-in-nstextview-subclass.html
+		 entitled: Re: "exponent" action in NSTextView subclass (SOLVED)
+		 
+		 This details how to make programatic changes to the textStorage object.
+		 
+		 */
+		NSTextStorage *textStorage = [self textStorage];
+		NSRange all = NSMakeRange(0, [textStorage length]); 
+		if ([self shouldChangeTextInRange:all replacementString:text]) {
+			[textStorage beginEditing];
+			[textStorage replaceCharactersInRange:all withString:text];
+			[textStorage endEditing];
+			[self didChangeText];
+			NSUndoManager *undoManager = [self undoManager];
+			
+			// TODO: this doesn't seem to be having the desired effect
+			[undoManager setActionName:NSLocalizedString(@"Content Change", @"undo content change")];
+			
+		}
+	} else {
+		[self setString:text];
+	}
+	
 }
 
 #pragma mark -

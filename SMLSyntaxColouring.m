@@ -1491,6 +1491,17 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 	}
 }
 
+/*
+ 
+ - undoManagerForTextView:
+ 
+ */
+- (NSUndoManager *)undoManagerForTextView:(NSTextView *)aTextView
+{
+#pragma unused(aTextView)
+	return undoManager;
+}
+
 
 #pragma mark -
 #pragma mark Undo handling
@@ -1514,6 +1525,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		//should data be reloaded?
 	}
 }
+
 
 #pragma mark -
 #pragma mark NSTimer callbacks

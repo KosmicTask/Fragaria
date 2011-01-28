@@ -24,12 +24,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSDictionary *attributes;
 	NSString *tabCharacter;
 	NSString *newLineCharacter;
-	
-
 	BOOL showInvisibleCharacters;
 }
 
--(void)setShowInvisibleCharacters:(BOOL)flag;
+- (NSAttributedString *)attributedStringWithTemporaryAttributesApplied;
 
 @property BOOL showInvisibleCharacters;
 

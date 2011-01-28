@@ -583,6 +583,32 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 
 /*
  
+ - pageRecolourTextView:options:
+ 
+ */
+- (void)pageRecolourTextView:(SMLTextView *)textView options:(NSDictionary *)options
+{
+	if (!textView) {
+		return;
+	}
+
+	if ([[document valueForKey:@"isSyntaxColoured"] boolValue] == NO) {
+		return;
+	}
+	
+	// colourAll option
+	NSNumber *colourAll = [options objectForKey:@"colourAll"];
+	if (!colourAll || ![colourAll boolValue]) {
+		[self pageRecolourTextView:textView];
+		return;
+	}
+	
+	
+	[self recolourRange:NSMakeRange(0, [[textView string] length])];
+}
+
+/*
+ 
  - recolourRange:
  
  */

@@ -165,6 +165,24 @@ static MGSFragaria *_currentInstance;
 	return [[[docSpec valueForKey:ro_MGSFOTextView] layoutManager] attributedString];
 }
 
+/*
+ 
+ + attributedStringWithTemporaryAttributesAppliedForDocSpec:
+ 
+ */
++ (NSAttributedString *)attributedStringWithTemporaryAttributesAppliedForDocSpec:(id)docSpec
+{
+	// recolour the entire textview content
+	SMLTextView *textView = [docSpec valueForKey:ro_MGSFOTextView];
+	SMLSyntaxColouring *syntaxColouring = [docSpec valueForKey:ro_MGSFOSyntaxColouring];
+	NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool:YES], @"colourAll", nil];
+	[syntaxColouring pageRecolourTextView:textView options: options];
+	
+	// get content with layout manager temporary attributes persisted
+	SMLLayoutManager *layoutManager = (SMLLayoutManager *)[textView layoutManager];
+	return [layoutManager attributedStringWithTemporaryAttributesApplied];
+}
+
 #pragma mark -
 #pragma mark Instance methods
 /*
@@ -352,6 +370,16 @@ static MGSFragaria *_currentInstance;
 - (NSAttributedString *)attributedString
 {
 	return [[self class] attributedStringForDocSpec:_docSpec];
+}
+
+/*
+ 
+ - attributedStringWithTemporaryAttributesApplied
+ 
+ */
+- (NSAttributedString *)attributedStringWithTemporaryAttributesApplied
+{
+	return [[self class] attributedStringWithTemporaryAttributesAppliedForDocSpec:_docSpec];
 }
 
 /*

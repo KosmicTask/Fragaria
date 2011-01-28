@@ -56,6 +56,7 @@ extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 + (void)docSpec:(id)docSpec setString:(NSString *)string options:(NSDictionary *)options;
 + (NSString *)stringForDocSpec:(id)docSpec;
 + (NSAttributedString *)attributedStringForDocSpec:(id)docSpec;
++ (NSAttributedString *)attributedStringWithTemporaryAttributesAppliedForDocSpec:(id)docSpec;
 + (NSString *)stringForDocSpec:(id)docSpec;
 
 - (id)initWithObject:(id)object;
@@ -65,6 +66,7 @@ extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 - (void)setString:(NSString *)aString;
 - (void)setString:(NSString *)aString options:(NSDictionary *)options;
 - (NSAttributedString *)attributedString;
+- (NSAttributedString *)attributedStringWithTemporaryAttributesApplied;
 - (NSString *)string;
 - (id)docSpec;
 - (NSTextView *)textView;

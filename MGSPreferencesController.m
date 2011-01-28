@@ -42,6 +42,7 @@ NSString * const MGSPrefsIndentNewLinesAutomatically = @"IndentNewLinesAutomatic
 NSString * const MGSPrefsOnlyColourTillTheEndOfLine = @"OnlyColourTillTheEndOfLine";
 NSString * const MGSPrefsShowMatchingBraces = @"ShowMatchingBraces";
 NSString * const MGSPrefsShowInvisibleCharacters = @"ShowInvisibleCharacters";
+
 NSString * const MGSPrefsIndentWithSpaces = @"IndentWithSpaces";
 NSString * const MGSPrefsColourMultiLineStrings = @"ColourMultiLineStrings";
 NSString * const MGSPrefsAutocompleteSuggestAutomatically = @"AutocompleteSuggestAutomatically";
@@ -132,7 +133,7 @@ static BOOL MGS_preferencesInitialized = NO;
 	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:@"IndentNewLinesAutomatically"];
 	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:@"OnlyColourTillTheEndOfLine"];
 	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:@"ShowMatchingBraces"];
-	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:@"ShowInvisibleCharacters"];
+	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:MGSPrefsShowInvisibleCharacters];
 	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:@"IndentWithSpaces"];
 	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:@"ColourMultiLineStrings"];
 	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:@"AutocompleteSuggestAutomatically"];

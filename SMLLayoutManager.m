@@ -80,23 +80,26 @@ Unless required by applicable law or agreed to in writing, software distributed 
  
  */
 - (void)drawGlyphsForGlyphRange:(NSRange)glyphRange atPoint:(NSPoint)containerOrigin
-{
+{	
     if (showInvisibleCharacters) {
-		completeString = [[self textStorage] string];
-		lengthToRedraw = NSMaxRange(glyphRange);	
 		
-		for (index = glyphRange.location; index < lengthToRedraw; index++) {
-			characterToCheck = [completeString characterAtIndex:index];
+		NSPoint pointToDrawAt;
+		NSRect glyphFragment;
+		NSString *completeString = [[self textStorage] string];
+		NSInteger lengthToRedraw = NSMaxRange(glyphRange);	
+		
+		for (NSInteger idx = glyphRange.location; idx < lengthToRedraw; idx++) {
+			unichar characterToCheck = [completeString characterAtIndex:idx];
 			if (characterToCheck == '\t') {
-				pointToDrawAt = [self locationForGlyphAtIndex:index];
-				glyphFragment = [self lineFragmentRectForGlyphAtIndex:index effectiveRange:NULL];
+				pointToDrawAt = [self locationForGlyphAtIndex:idx];
+				glyphFragment = [self lineFragmentRectForGlyphAtIndex:idx effectiveRange:NULL];
 				pointToDrawAt.x += glyphFragment.origin.x;
 				pointToDrawAt.y = glyphFragment.origin.y;
 				[tabCharacter drawAtPoint:pointToDrawAt withAttributes:attributes];
 				
 			} else if (characterToCheck == '\n' || characterToCheck == '\r') {
-				pointToDrawAt = [self locationForGlyphAtIndex:index];
-				glyphFragment = [self lineFragmentRectForGlyphAtIndex:index effectiveRange:NULL];
+				pointToDrawAt = [self locationForGlyphAtIndex:idx];
+				glyphFragment = [self lineFragmentRectForGlyphAtIndex:idx effectiveRange:NULL];
 				pointToDrawAt.x += glyphFragment.origin.x;
 				pointToDrawAt.y = glyphFragment.origin.y;
 				[newLineCharacter drawAtPoint:pointToDrawAt withAttributes:attributes];
@@ -119,5 +122,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 {
 	showInvisibleCharacters = flag;
 }
+
 
 @end

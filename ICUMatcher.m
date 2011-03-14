@@ -39,7 +39,7 @@ typedef struct URegularExpression URegularExpression;
 	return [[[ICUMatcher class] alloc] initWithPattern:p overString:stringToSearchOver];
 }
 
--(ICUMatcher *)initWithPattern:(ICUPattern *)p overString:(NSString *)aStringToSearch; {
+-(ICUMatcher *)initWithPattern:(ICUPattern *)p overString:(NSString *)aStringToSearch {
 	if(![super init])
 		return nil;
 

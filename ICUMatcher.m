@@ -147,7 +147,7 @@ typedef struct URegularExpression URegularExpression;
 	UErrorCode status = 0;
 	UChar *replacementText = [aReplacementString UTF16String];
 	URegularExpression *re = [[self pattern] re];
-	unsigned int searchTextLength = [[[self pattern] stringToSearch] length];
+	NSUInteger searchTextLength = [[[self pattern] stringToSearch] length];
 	
 	BOOL replacementCompleted = NO;
 	int resultLength = 0;

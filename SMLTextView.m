@@ -40,7 +40,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (id)initWithFrame:(NSRect)frame
 {
 	if ((self = [super initWithFrame:frame])) {
-		SMLLayoutManager *layoutManager = [[SMLLayoutManager alloc] init];
+		SMLLayoutManager *layoutManager = [[[SMLLayoutManager alloc] init] autorelease];
 		[[self textContainer] replaceLayoutManager:layoutManager];
 		
 		[self setDefaults];	
@@ -389,7 +389,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	while (numberOfSpaces--) {
 		[sizeString appendString:@" "];
 	}
-	NSDictionary *sizeAttribute = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextFont"]], NSFontAttributeName, nil];
+	NSDictionary *sizeAttribute = [[[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextFont"]], NSFontAttributeName, nil] autorelease];
 	CGFloat sizeOfTab = [sizeString sizeWithAttributes:sizeAttribute].width;
 	
 	NSMutableParagraphStyle *style = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
@@ -410,7 +410,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
  */
 - (void)setPageGuideValues
 {
-	NSDictionary *sizeAttribute = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextFont"]], NSFontAttributeName, nil];
+	NSDictionary *sizeAttribute = [[[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextFont"]], NSFontAttributeName, nil] autorelease];
 	NSString *sizeString = [NSString stringWithString:@" "];
 	CGFloat sizeOfCharacter = [sizeString sizeWithAttributes:sizeAttribute].width;
 	pageGuideX = (sizeOfCharacter * ([[SMLDefaults valueForKey:@"ShowPageGuideAtColumn"] integerValue] + 1)) - 1.5f; // -1.5 to put it between the two characters and draw only on one pixel and not two (as the system draws it in a special way), and that's also why the width above is set to zero 
@@ -455,7 +455,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 			if (characterToCheck == '{') {
 				if (skipMatchingBrace == 0) { // If we have found the opening brace check first how much space is in front of that line so the same amount can be inserted in front of the new line
 					NSString *openingBraceLineWhitespaceString;
-					NSScanner *openingLineScanner = [[NSScanner alloc] initWithString:[completeString substringWithRange:[completeString lineRangeForRange:NSMakeRange(location, 0)]]];
+					NSScanner *openingLineScanner = [[[NSScanner alloc] initWithString:[completeString substringWithRange:[completeString lineRangeForRange:NSMakeRange(location, 0)]]] autorelease];
 					[openingLineScanner setCharactersToBeSkipped:nil];
 					BOOL foundOpeningBraceWhitespace = [openingLineScanner scanCharactersFromSet:whitespaceCharacterSet intoString:&openingBraceLineWhitespaceString];
 					
@@ -534,7 +534,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSString *lastLineString = [[self string] substringWithRange:[[self string] lineRangeForRange:NSMakeRange([self selectedRange].location - 1, 0)]];
 	if ([[SMLDefaults valueForKey:@"IndentNewLinesAutomatically"] boolValue] == YES) {
 		NSString *previousLineWhitespaceString;
-		NSScanner *previousLineScanner = [[NSScanner alloc] initWithString:[[self string] substringWithRange:[[self string] lineRangeForRange:NSMakeRange([self selectedRange].location - 1, 0)]]];
+		NSScanner *previousLineScanner = [[[NSScanner alloc] initWithString:[[self string] substringWithRange:[[self string] lineRangeForRange:NSMakeRange([self selectedRange].location - 1, 0)]]] autorelease];
 		[previousLineScanner setCharactersToBeSkipped:nil];		
 		if ([previousLineScanner scanCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:&previousLineWhitespaceString]) {
 			[self insertText:previousLineWhitespaceString];

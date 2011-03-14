@@ -264,17 +264,17 @@ static id sharedInstance = nil;
 		NSString *fileName = [definition objectForKey:@"file"];
 		
 		// load dictionary from this bundle
-		NSDictionary *syntaxDictionary = [[NSDictionary alloc] initWithContentsOfFile:[[self bundle] pathForResource:fileName ofType:KMGSSyntaxDefinitionsExt inDirectory:KMGSSyntaxDefinitionsFolder]];
+		NSDictionary *syntaxDictionary = [[[NSDictionary alloc] initWithContentsOfFile:[[self bundle] pathForResource:fileName ofType:KMGSSyntaxDefinitionsExt inDirectory:KMGSSyntaxDefinitionsFolder]] autorelease];
 		if (syntaxDictionary) return syntaxDictionary;
 		
 		// load dictionary from main bundle
-		syntaxDictionary = [[NSDictionary alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:fileName ofType:KMGSSyntaxDefinitionsExt inDirectory:KMGSSyntaxDefinitionsFolder]];
+		syntaxDictionary = [[[NSDictionary alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:fileName ofType:KMGSSyntaxDefinitionsExt inDirectory:KMGSSyntaxDefinitionsFolder]] autorelease];
 		if (syntaxDictionary) return syntaxDictionary;
 		
 		// load from application support
 		NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
 		NSString *path = [[[[[NSHomeDirectory() stringByAppendingPathComponent:@"Library"] stringByAppendingPathComponent:@"Application Support"] stringByAppendingPathComponent:appName] stringByAppendingPathComponent:fileName] stringByAppendingString:KMGSSyntaxDictionaryExt];
-		syntaxDictionary = [[NSDictionary alloc] initWithContentsOfFile:path];
+		syntaxDictionary = [[[NSDictionary alloc] initWithContentsOfFile:path] autorelease];
 		if (syntaxDictionary) return syntaxDictionary;
 		
 		// no dictionary found so use standard definition
@@ -291,7 +291,7 @@ static id sharedInstance = nil;
 - (void)addSyntaxDefinitions:(NSMutableArray *)definitions path:(NSString *)path
 {
 	if ([[NSFileManager defaultManager] fileExistsAtPath:path] == YES) {
-		[definitions addObjectsFromArray:[[NSArray alloc] initWithContentsOfFile:path]];
+		[definitions addObjectsFromArray:[[[NSArray alloc] initWithContentsOfFile:path] autorelease]];
 	}
 	
 }

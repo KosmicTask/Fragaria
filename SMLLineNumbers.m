@@ -194,7 +194,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 			oneMoreTime = YES; // Continue one more time through the loop if the last glyph isn't newline
 		}
 	}
-	NSMutableString *lineNumbersString = [[NSMutableString alloc] init];
+	NSMutableString *lineNumbersString = [[[NSMutableString alloc] init] autorelease];
 	
 	while (indexNonWrap <= maxRangeVisibleRange) {
 		if (idx == indexNonWrap) {

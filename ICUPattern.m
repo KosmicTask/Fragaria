@@ -119,7 +119,7 @@ unsigned const ICUUnicodeWordBoundaries = UREGEX_UWORD;
 
 - (id)copyWithZone:(NSZone *)zone {
 
-	ICUPattern *p = [[[[self class] allocWithZone:zone] initWithString:[self description] flags:[self flags]] autorelease];
+	ICUPattern *p = [[[self class] allocWithZone:zone] initWithString:[self description] flags:[self flags]];
 
 	UErrorCode status = 0;
 	URegularExpression *r = uregex_clone([self re], &status);

@@ -233,7 +233,7 @@ static MGSFragaria *_currentInstance;
 	NSInteger gutterWidth = [[SMLDefaults valueForKey:MGSPrefsGutterWidth] integerValue];
 	
 	// create text scrollview
-	NSScrollView *textScrollView = [[NSScrollView alloc] initWithFrame:NSMakeRect(gutterWidth, 0, [contentView bounds].size.width - gutterWidth, [contentView bounds].size.height)];
+	NSScrollView *textScrollView = [[[NSScrollView alloc] initWithFrame:NSMakeRect(gutterWidth, 0, [contentView bounds].size.width - gutterWidth, [contentView bounds].size.height)] autorelease];
 	NSSize contentSize = [textScrollView contentSize];
 	[textScrollView setBorderType:NSNoBorder];
 	[textScrollView setHasVerticalScroller:YES];
@@ -243,7 +243,7 @@ static MGSFragaria *_currentInstance;
 	[textScrollView setPostsFrameChangedNotifications:YES];
 	
 	// create line numbers
-	SMLLineNumbers *lineNumbers = [[SMLLineNumbers alloc] initWithDocument:_docSpec];
+	SMLLineNumbers *lineNumbers = [[[SMLLineNumbers alloc] initWithDocument:_docSpec] autorelease];
 	[[NSNotificationCenter defaultCenter] addObserver:lineNumbers selector:@selector(viewBoundsDidChange:) name:NSViewBoundsDidChangeNotification object:[textScrollView contentView]];
 	[[NSNotificationCenter defaultCenter] addObserver:lineNumbers selector:@selector(viewBoundsDidChange:) name:NSViewFrameDidChangeNotification object:[textScrollView contentView]];
 	
@@ -252,14 +252,14 @@ static MGSFragaria *_currentInstance;
 	// create textview
 	SMLTextView *textView = nil;
 	if ([[SMLDefaults valueForKey:MGSPrefsLineWrapNewDocuments] boolValue] == YES) {
-		textView = [[SMLTextView alloc] initWithFrame:NSMakeRect(gutterWidth, 0, contentSize.width, contentSize.height)];
+		textView = [[[SMLTextView alloc] initWithFrame:NSMakeRect(gutterWidth, 0, contentSize.width, contentSize.height)] autorelease];
 		[textView setMinSize:contentSize];
 		[textScrollView setHasHorizontalScroller:NO];
 		[textView setHorizontallyResizable:YES];
 		[[textView textContainer] setWidthTracksTextView:YES];
 		[[textView textContainer] setContainerSize:NSMakeSize(contentSize.width, FLT_MAX)];		 
 	} else {
-		textView = [[SMLTextView alloc] initWithFrame:NSMakeRect(gutterWidth, 0, contentSize.width, contentSize.height)];
+		textView = [[[SMLTextView alloc] initWithFrame:NSMakeRect(gutterWidth, 0, contentSize.width, contentSize.height)] autorelease];
 		[textView setMinSize:contentSize];
 		[textScrollView setHasHorizontalScroller:YES];
 		[textView setHorizontallyResizable:YES];
@@ -270,7 +270,7 @@ static MGSFragaria *_currentInstance;
 	[textScrollView setDocumentView:textView];
 	
 	// create gutter scrollview
-	NSScrollView *gutterScrollView = [[NSScrollView alloc] initWithFrame:NSMakeRect(0, 0, gutterWidth, contentSize.height)];
+	NSScrollView *gutterScrollView = [[[NSScrollView alloc] initWithFrame:NSMakeRect(0, 0, gutterWidth, contentSize.height)] autorelease];
 	[gutterScrollView setBorderType:NSNoBorder];
 	[gutterScrollView setHasVerticalScroller:NO];
 	[gutterScrollView setHasHorizontalScroller:NO];
@@ -278,7 +278,7 @@ static MGSFragaria *_currentInstance;
 	[[gutterScrollView contentView] setAutoresizesSubviews:YES];
 	
 	// create gutter textview
-	SMLGutterTextView *gutterTextView = [[SMLGutterTextView alloc] initWithFrame:NSMakeRect(0, 0, gutterWidth, contentSize.height - 50)];
+	SMLGutterTextView *gutterTextView = [[[SMLGutterTextView alloc] initWithFrame:NSMakeRect(0, 0, gutterWidth, contentSize.height - 50)] autorelease];
 	[gutterScrollView setDocumentView:gutterTextView];
 	
 	// update the docSpec
@@ -287,7 +287,7 @@ static MGSFragaria *_currentInstance;
 	[_docSpec setValue:gutterScrollView forKey:ro_MGSFOGutterScrollView];
 	
 	// add syntax colouring
-	SMLSyntaxColouring *syntaxColouring = [[SMLSyntaxColouring alloc] initWithDocument:_docSpec];
+	SMLSyntaxColouring *syntaxColouring = [[[SMLSyntaxColouring alloc] initWithDocument:_docSpec] autorelease];
 	[_docSpec setValue:syntaxColouring forKey:ro_MGSFOSyntaxColouring];
 	
 	// add views to content view

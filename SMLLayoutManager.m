@@ -129,7 +129,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	 
 	 */
 	
-	NSMutableAttributedString *attributedString = [[self attributedString] mutableCopy];
+	NSMutableAttributedString *attributedString = [[[self attributedString] mutableCopy] autorelease];
 	NSInteger lastCharacter = [attributedString length];
 	[self removeTemporaryAttribute:NSBackgroundColorAttributeName forCharacterRange:NSMakeRange(0, lastCharacter)];
 	

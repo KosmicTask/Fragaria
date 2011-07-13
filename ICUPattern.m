@@ -44,11 +44,11 @@ unsigned const ICUUnicodeWordBoundaries = UREGEX_UWORD;
 @implementation ICUPattern
 
 +(ICUPattern *)patternWithString:(NSString *)aPattern flags:(unsigned)flags {
-	return [[self alloc] initWithString:aPattern flags:flags];	
+	return [[[self alloc] initWithString:aPattern flags:flags] autorelease];	
 }
 
 +(ICUPattern *)patternWithString:(NSString *)aPattern {
-	return [[self alloc] initWithString:aPattern flags:0];
+	return [[[self alloc] initWithString:aPattern flags:0] autorelease];
 }
 
 -(id)initWithString:(NSString *)aPattern flags:(unsigned)f {
@@ -174,7 +174,7 @@ unsigned const ICUUnicodeWordBoundaries = UREGEX_UWORD;
 						format:@"Could not get pattern text from pattern."];
 		}
 
-		return [[NSString alloc] initWithBytes:p length:len encoding:[NSString nativeUTF16Encoding]];
+		return [[[NSString alloc] initWithBytes:p length:len encoding:[NSString nativeUTF16Encoding]] autorelease];
 	}
 
 	return nil;

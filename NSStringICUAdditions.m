@@ -77,7 +77,7 @@ typedef struct URegularExpression URegularExpression;
 }
 
 -(void *)UTF16String {
-	unsigned int length = [self length];
+	NSUInteger length = [self length];
 	UChar *utf16String = NSAllocateCollectable((length+1)*sizeof(UChar), 0);
 	[self getCharacters:utf16String range:NSMakeRange(0, length)];
 	utf16String[length] = 0;
@@ -85,7 +85,7 @@ typedef struct URegularExpression URegularExpression;
 }
 
 -(void *)copyUTF16String {
-	unsigned int length = [self length];
+	NSUInteger length = [self length];
 	UChar *utf16String = malloc((length+1)*sizeof(UChar));
 	[self getCharacters:utf16String range:NSMakeRange(0, length)];
 	utf16String[length] = 0;

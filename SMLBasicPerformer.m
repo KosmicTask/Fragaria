@@ -116,10 +116,11 @@ static id sharedInstance = nil;
 {
     CFUUIDRef uuid = CFUUIDCreate(NULL);
     CFStringRef uuidString = CFUUIDCreateString(NULL, uuid);
-    NSMakeCollectable(uuid);
+    CFRelease(uuid);
+    
+    // Again, not happy with this in non-gc environments.
 	NSMakeCollectable(uuidString);
-
-    return (NSString *)uuidString;
+    return [(NSString *)uuidString autorelease];
 }
 
 /*
@@ -157,7 +158,6 @@ static id sharedInstance = nil;
 {
 	NSString *resolvedPath = nil;
 	CFURLRef url = CFURLCreateWithFileSystemPath(NULL, (CFStringRef)path, kCFURLPOSIXPathStyle, NO);
-	NSMakeCollectable(url);
 	
 	if (url != NULL) {
 		FSRef fsRef;
@@ -165,20 +165,22 @@ static id sharedInstance = nil;
 			Boolean targetIsFolder, wasAliased;
 			if (FSResolveAliasFile (&fsRef, true, &targetIsFolder, &wasAliased) == noErr && wasAliased) {
 				CFURLRef resolvedURL = CFURLCreateFromFSRef(NULL, &fsRef);
-				NSMakeCollectable(resolvedURL);
 				if (resolvedURL != NULL) {
 					resolvedPath = (NSString*)CFURLCopyFileSystemPath(resolvedURL, kCFURLPOSIXPathStyle);
-					NSMakeCollectable(resolvedPath);
+                    CFRelease(resolvedURL);
 				}
 			}
 		}
+        CFRelease(url);
 	}
 	
 	if (resolvedPath==nil) {
 		return path;
 	}
 	
-	return resolvedPath;
+    // Not sure I'm happy with this line in a non-gc environment.
+    NSMakeCollectable(resolvedPath);
+	return [resolvedPath autorelease];
 }
 
 @end

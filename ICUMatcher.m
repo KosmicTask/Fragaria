@@ -36,10 +36,10 @@ typedef struct URegularExpression URegularExpression;
 @implementation ICUMatcher
 
 +(ICUMatcher *)matcherWithPattern:(ICUPattern *)p overString:(NSString *)stringToSearchOver {
-	return [[[ICUMatcher class] alloc] initWithPattern:p overString:stringToSearchOver];
+	return [[[[ICUMatcher class] alloc] initWithPattern:p overString:stringToSearchOver] autorelease];
 }
 
--(ICUMatcher *)initWithPattern:(ICUPattern *)p overString:(NSString *)aStringToSearch; {
+-(ICUMatcher *)initWithPattern:(ICUPattern *)p overString:(NSString *)aStringToSearch {
 	if(![super init])
 		return nil;
 
@@ -113,7 +113,7 @@ typedef struct URegularExpression URegularExpression;
 
 		CheckStatus(status);
 
-		NSString *result = [[NSString alloc] initWithBytes:dest length:buffSize*sizeof(UChar) encoding:[NSString nativeUTF16Encoding]];
+		NSString *result = [[[NSString alloc] initWithBytes:dest length:buffSize*sizeof(UChar) encoding:[NSString nativeUTF16Encoding]] autorelease];
 		NSZoneFree([self zone], dest);
 		return result;
 	}
@@ -147,7 +147,7 @@ typedef struct URegularExpression URegularExpression;
 	UErrorCode status = 0;
 	UChar *replacementText = [aReplacementString UTF16String];
 	URegularExpression *re = [[self pattern] re];
-	unsigned int searchTextLength = [[[self pattern] stringToSearch] length];
+	NSUInteger searchTextLength = [[[self pattern] stringToSearch] length];
 	
 	BOOL replacementCompleted = NO;
 	int resultLength = 0;
@@ -190,9 +190,9 @@ typedef struct URegularExpression URegularExpression;
 		}
 	}
 	
-	NSString *result = [[NSString alloc] initWithBytes:destString
+	NSString *result = [[[NSString alloc] initWithBytes:destString
 												 length:resultLength * sizeof(UChar)
-											   encoding:[NSString nativeUTF16Encoding]];
+											   encoding:[NSString nativeUTF16Encoding]] autorelease];
 	NSZoneFree([self zone], destString);
 	return result;	
 }

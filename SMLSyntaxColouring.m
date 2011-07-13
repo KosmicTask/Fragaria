@@ -75,7 +75,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		// retain the document
 		document = theDocument;
 		
-		undoManager = [[NSUndoManager alloc] init];
+		undoManager = [[[NSUndoManager alloc] init] autorelease];
 
 		// configure the document text view
 		NSTextView *textView = [document valueForKey:@"firstTextView"];
@@ -98,19 +98,19 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		letterCharacterSet = [NSCharacterSet letterCharacterSet];
 		
 		// keyword start character set
-		NSMutableCharacterSet *temporaryCharacterSet = [[NSCharacterSet letterCharacterSet] mutableCopy];
+		NSMutableCharacterSet *temporaryCharacterSet = [[[NSCharacterSet letterCharacterSet] mutableCopy] autorelease];
 		[temporaryCharacterSet addCharactersInString:@"_:@#"];
 		keywordStartCharacterSet = [temporaryCharacterSet copy];
 		
 		// keyword end character set
-		temporaryCharacterSet = [[NSCharacterSet whitespaceAndNewlineCharacterSet] mutableCopy];
+		temporaryCharacterSet = [[[NSCharacterSet whitespaceAndNewlineCharacterSet] mutableCopy] autorelease];
 		[temporaryCharacterSet formUnionWithCharacterSet:[NSCharacterSet symbolCharacterSet]];
 		[temporaryCharacterSet formUnionWithCharacterSet:[NSCharacterSet punctuationCharacterSet]];
 		[temporaryCharacterSet removeCharactersInString:@"_"];
 		keywordEndCharacterSet = [temporaryCharacterSet copy];
 		
 		// attributes character set
-		temporaryCharacterSet = [[NSCharacterSet alphanumericCharacterSet] mutableCopy];
+		temporaryCharacterSet = [[[NSCharacterSet alphanumericCharacterSet] mutableCopy] autorelease];
 		[temporaryCharacterSet addCharactersInString:@" -"]; // If there are two spaces before an attribute
 		attributesCharacterSet = [temporaryCharacterSet copy];
 		
@@ -402,25 +402,25 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 	}
 	
 	if ([syntaxDictionary valueForKey:@"excludeFromKeywordStartCharacterSet"]) {
-		NSMutableCharacterSet *temporaryCharacterSet = [keywordStartCharacterSet mutableCopy];
+		NSMutableCharacterSet *temporaryCharacterSet = [[keywordStartCharacterSet mutableCopy] autorelease];
 		[temporaryCharacterSet removeCharactersInString:[syntaxDictionary valueForKey:@"excludeFromKeywordStartCharacterSet"]];
 		keywordStartCharacterSet = [temporaryCharacterSet copy];
 	}
 	
 	if ([syntaxDictionary valueForKey:@"excludeFromKeywordEndCharacterSet"]) {
-		NSMutableCharacterSet *temporaryCharacterSet = [keywordEndCharacterSet mutableCopy];
+		NSMutableCharacterSet *temporaryCharacterSet = [[keywordEndCharacterSet mutableCopy] autorelease];
 		[temporaryCharacterSet removeCharactersInString:[syntaxDictionary valueForKey:@"excludeFromKeywordEndCharacterSet"]];
 		keywordEndCharacterSet = [temporaryCharacterSet copy];
 	}
 	
 	if ([syntaxDictionary valueForKey:@"includeInKeywordStartCharacterSet"]) {
-		NSMutableCharacterSet *temporaryCharacterSet = [keywordStartCharacterSet mutableCopy];
+		NSMutableCharacterSet *temporaryCharacterSet = [[keywordStartCharacterSet mutableCopy] autorelease];
 		[temporaryCharacterSet addCharactersInString:[syntaxDictionary valueForKey:@"includeInKeywordStartCharacterSet"]];
 		keywordStartCharacterSet = [temporaryCharacterSet copy];
 	}
 	
 	if ([syntaxDictionary valueForKey:@"includeInKeywordEndCharacterSet"]) {
-		NSMutableCharacterSet *temporaryCharacterSet = [keywordEndCharacterSet mutableCopy];
+		NSMutableCharacterSet *temporaryCharacterSet = [[keywordEndCharacterSet mutableCopy] autorelease];
 		[temporaryCharacterSet addCharactersInString:[syntaxDictionary valueForKey:@"includeInKeywordEndCharacterSet"]];
 		keywordEndCharacterSet = [temporaryCharacterSet copy];
 	}

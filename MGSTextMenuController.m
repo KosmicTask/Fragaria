@@ -42,11 +42,10 @@ static id sharedInstance = nil;
  */
 + (MGSTextMenuController *)sharedInstance
 { 
-	if (sharedInstance == nil) { 
-		[[self alloc] init];  // assignment occurs below
-	}
-	
-	return sharedInstance; 
+    if (sharedInstance == nil) {
+        sharedInstance = [[super allocWithZone:NULL] init];
+    }
+    return sharedInstance;
 } 
 
 /*
@@ -58,12 +57,8 @@ static id sharedInstance = nil;
  */
 + (id)allocWithZone:(NSZone *)zone
 {
-	if (sharedInstance == nil) {
-		sharedInstance = [super allocWithZone:zone];
-		return sharedInstance;  // assignment and return on first allocation
-	}
-	
-    return nil; //on subsequent allocation attempts return nil
+#pragma unused(zone)
+	return [[self sharedInstance] retain];
 } 
 
 #pragma mark -

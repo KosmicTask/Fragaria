@@ -99,7 +99,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	[self updateIBeamCursor];	
 	NSTrackingArea *trackingArea = [[NSTrackingArea alloc] initWithRect:[self frame] options:(NSTrackingMouseEnteredAndExited | NSTrackingActiveWhenFirstResponder) owner:self userInfo:nil];
 	[self addTrackingArea:trackingArea];
-	
+	[trackingArea autorelease];
+    
 	NSUserDefaultsController *defaultsController = [NSUserDefaultsController sharedUserDefaultsController];
 	[defaultsController addObserver:self forKeyPath:@"values.TextFont" options:NSKeyValueObservingOptionNew context:@"TextFontChanged"];
 	[defaultsController addObserver:self forKeyPath:@"values.TextColourWell" options:NSKeyValueObservingOptionNew context:@"TextColourChanged"];
@@ -811,7 +812,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	} else {
 		NSImage *cursorImage = [[NSCursor IBeamCursor] image];
 		[cursorImage lockFocus];
-		[[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextColourWell"]] set];
+		[(NSColor *)[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextColourWell"]] set];
 		NSRectFillUsingOperation(NSMakeRect(0, 0, [cursorImage size].width, [cursorImage size].height), NSCompositeSourceAtop);
 		[cursorImage unlockFocus];
 		[self setColouredIBeamCursor:[[NSCursor alloc] initWithImage:cursorImage hotSpot:[[NSCursor IBeamCursor] hotSpot]]];

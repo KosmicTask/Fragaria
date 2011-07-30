@@ -36,7 +36,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	MGSFragaria *fragaria;
 }
 
-@property (assign) NSCursor *colouredIBeamCursor;
+@property (retain) NSCursor *colouredIBeamCursor;
 @property (assign) MGSFragaria *fragaria;
 
 - (void)setDefaults;

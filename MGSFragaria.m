@@ -14,7 +14,7 @@
 
 // BOOL
 NSString * const MGSFOIsSyntaxColoured = @"isSyntaxColoured";
-NSString * const MGSFOShowLineNumberGutter = @"showLineNumberGutter";
+NSString * const MGSFOShowLineNumberGutter = @"showLinNSCursoreNumberGutter";
 NSString * const MGSFOIsEdited = @"isEdited";
 
 // string
@@ -41,7 +41,7 @@ static MGSFragaria *_currentInstance;
 
 // class extension
 @interface MGSFragaria()
-@property MGSExtraInterfaceController *extraInterfaceController;
+@property (nonatomic, readwrite, assign) MGSExtraInterfaceController *extraInterfaceController;
 @end
 
 @implementation MGSFragaria

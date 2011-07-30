@@ -206,7 +206,7 @@ static id sharedInstance = nil;
 		[definitionNames addObject:name];
 	}
 	
-	self.syntaxDefinitionNames = [definitionNames copy];
+	self.syntaxDefinitionNames = [[definitionNames copy] autorelease];
 
 }
 

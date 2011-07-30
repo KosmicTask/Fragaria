@@ -31,10 +31,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)insertFetchRequests;
 - (NSArray *)fetchAll:(NSString *)key;
 - (void)removeAllItemsFromMenu:(NSMenu *)menu;
-- (NSString *)createUUID;
 - (void)insertSortOrderNumbersForArrayController:(NSArrayController *)arrayController;
 - (NSString *)thousandFormatedStringFromNumber:(NSNumber *)number;
-- (NSString *)resolveAliasInPath:(NSString *)path;
+- (NSString *)copyResolveAliasInPath:(NSString *)path;
 
 
 @end

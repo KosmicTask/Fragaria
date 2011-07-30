@@ -109,18 +109,16 @@ static id sharedInstance = nil;
 
 /*
  
- - createUUID
+ - newUUID
  
  */
-- (NSString *)createUUID
+- (NSString *)newUUID
 {
     CFUUIDRef uuid = CFUUIDCreate(NULL);
     CFStringRef uuidString = CFUUIDCreateString(NULL, uuid);
     CFRelease(uuid);
     
-    // Again, not happy with this in non-gc environments.
-	NSMakeCollectable(uuidString);
-    return [(NSString *)uuidString autorelease];
+    return NSMakeCollectable(uuidString);
 }
 
 /*
@@ -154,7 +152,7 @@ static id sharedInstance = nil;
  - resolveAliasInPath:
  
  */
-- (NSString *)resolveAliasInPath:(NSString *)path
+- (NSString *)copyResolveAliasInPath:(NSString *)path
 {
 	NSString *resolvedPath = nil;
 	CFURLRef url = CFURLCreateWithFileSystemPath(NULL, (CFStringRef)path, kCFURLPOSIXPathStyle, NO);
@@ -178,9 +176,7 @@ static id sharedInstance = nil;
 		return path;
 	}
 	
-    // Not sure I'm happy with this line in a non-gc environment.
-    NSMakeCollectable(resolvedPath);
-	return [resolvedPath autorelease];
+	return  NSMakeCollectable(resolvedPath);
 }
 
 @end

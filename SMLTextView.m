@@ -400,7 +400,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[style removeTabStop:item];
 	}
 	[style setDefaultTabInterval:sizeOfTab];
-	NSDictionary *attributes = [[NSDictionary alloc] initWithObjectsAndKeys:style, NSParagraphStyleAttributeName, nil];
+	NSDictionary *attributes = [[[NSDictionary alloc] initWithObjectsAndKeys:style, NSParagraphStyleAttributeName, nil] autorelease];
 	[self setTypingAttributes:attributes];
 }
 
@@ -815,7 +815,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[(NSColor *)[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextColourWell"]] set];
 		NSRectFillUsingOperation(NSMakeRect(0, 0, [cursorImage size].width, [cursorImage size].height), NSCompositeSourceAtop);
 		[cursorImage unlockFocus];
-		[self setColouredIBeamCursor:[[NSCursor alloc] initWithImage:cursorImage hotSpot:[[NSCursor IBeamCursor] hotSpot]]];
+        NSCursor *cursor = [[[NSCursor alloc] initWithImage:cursorImage hotSpot:[[NSCursor IBeamCursor] hotSpot]] autorelease];
+		[self setColouredIBeamCursor:cursor];
 	}
 }
 

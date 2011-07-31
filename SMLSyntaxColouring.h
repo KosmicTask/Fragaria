@@ -50,6 +50,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 			*beginSecondMultiLineComment, *endSecondMultiLineComment, *functionDefinition, *removeFromFunction;
 	NSString *searchString;
 
+    NSMutableArray *singleLineComments;
+    NSMutableArray *multiLineComments;
+    
 	unichar firstStringUnichar;
 	unichar secondStringUnichar;
 

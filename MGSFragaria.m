@@ -14,7 +14,7 @@
 
 // BOOL
 NSString * const MGSFOIsSyntaxColoured = @"isSyntaxColoured";
-NSString * const MGSFOShowLineNumberGutter = @"showLinNSCursoreNumberGutter";
+NSString * const MGSFOShowLineNumberGutter = @"showLineNumberGutter";
 NSString * const MGSFOIsEdited = @"isEdited";
 
 // string

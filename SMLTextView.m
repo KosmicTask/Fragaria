@@ -48,6 +48,20 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	return self;
 }
 
+- (void)dealloc
+{
+    [pageGuideColour release];
+    pageGuideColour = nil;
+    
+    [colouredIBeamCursor release];
+    colouredIBeamCursor = nil;
+    
+    [fragaria release];
+    fragaria = nil;
+    
+    [super dealloc];
+}
+
 
 #pragma mark -
 #pragma mark Accessors

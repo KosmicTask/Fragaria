@@ -36,7 +36,7 @@ static id sharedInstance = nil;
 + (SMLBasicPerformer *)sharedInstance
 { 
 	if (sharedInstance == nil) { 
-		sharedInstance = [[self alloc] init];
+		sharedInstance = [[[self alloc] init] retain];
 	}
 	
 	return sharedInstance;
@@ -53,13 +53,24 @@ static id sharedInstance = nil;
 - (id)init 
 {
     if (sharedInstance == nil) {
-        sharedInstance = [super init];
+        sharedInstance = [[super init] retain];
 		
-		thousandFormatter = [[NSNumberFormatter alloc] init];
+		thousandFormatter = [[[NSNumberFormatter alloc] init] retain];
 		[thousandFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
 		[thousandFormatter setFormat:@"#,##0"];	
     }
     return sharedInstance;
+}
+
+- (void)dealloc
+{
+    [thousandFormatter release];
+    thousandFormatter = nil;
+    
+    [fetchRequests release];
+    fetchRequests = nil;
+    
+    [super dealloc];
 }
 
 #pragma mark -

@@ -54,7 +54,7 @@ static id sharedInstance = nil;
 + (MGSSyntaxController *)sharedInstance
 { 
 	if (sharedInstance == nil) { 
-		sharedInstance = [[self alloc] init];
+		sharedInstance = [[[self alloc] init] retain];
 	}
 	
 	return sharedInstance;
@@ -78,11 +78,22 @@ static id sharedInstance = nil;
 - (id)init 
 {
     if (sharedInstance == nil) {
-        sharedInstance = [super init];
+        sharedInstance = [[super init] retain];
 		
 		[self insertSyntaxDefinitions];
 	}
     return sharedInstance;
+}
+
+- (void)dealloc
+{
+    [syntaxDefinitions release];
+    syntaxDefinitions = nil;
+    
+    [syntaxDefinitionNames release];
+    syntaxDefinitionNames = nil;
+    
+    [super dealloc];
 }
 
 /*

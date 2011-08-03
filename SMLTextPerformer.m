@@ -37,7 +37,7 @@ static id sharedInstance = nil;
 + (SMLTextPerformer *)sharedInstance
 { 
 	if (sharedInstance == nil) { 
-		sharedInstance = [[self alloc] init];
+		sharedInstance = [[[self alloc] init] retain];
 	}
 	
 	return sharedInstance;
@@ -54,15 +54,32 @@ static id sharedInstance = nil;
 - (id)init 
 {
     if (sharedInstance == nil) {
-        sharedInstance = [super init];
+        sharedInstance = [[super init] retain];
 
-		darkSideLineEnding = [[NSString alloc] initWithFormat:@"%C%C", 0x000D, 0x000A];
-		macLineEnding = [[NSString alloc] initWithFormat:@"%C", 0x000D];
-		unixLineEnding = [[NSString alloc] initWithFormat:@"%C", 0x000A];
+		darkSideLineEnding = [[[NSString alloc] initWithFormat:@"%C%C", 0x000D, 0x000A] retain];
+		macLineEnding = [[[NSString alloc] initWithFormat:@"%C", 0x000D] retain];
+		unixLineEnding = [[[NSString alloc] initWithFormat:@"%C", 0x000A] retain];
 		
-		newLineSymbolString = [[NSString alloc] initWithFormat:@"%C", 0x23CE];
+		newLineSymbolString = [[[NSString alloc] initWithFormat:@"%C", 0x23CE] retain];
     }
     return sharedInstance;
+}
+
+- (void)dealloc
+{
+    [darkSideLineEnding release];
+    darkSideLineEnding = nil;
+    
+    [macLineEnding release];
+    macLineEnding = nil;
+    
+    [unixLineEnding release];
+    unixLineEnding = nil;
+    
+    [newLineSymbolString release];
+    newLineSymbolString = nil;
+    
+    [super dealloc];
 }
 
 #pragma mark -

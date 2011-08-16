@@ -577,12 +577,21 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		 
 		 */
 		NSTextStorage *textStorage = [self textStorage];
-		NSRange all = NSMakeRange(0, [textStorage length]); 
+		NSRange all = NSMakeRange(0, [textStorage length]);
+        BOOL textIsEmpty = ([textStorage length] == 0 ? YES : NO);
+
 		if ([self shouldChangeTextInRange:all replacementString:text]) {
 			[textStorage beginEditing];
 			[textStorage replaceCharactersInRange:all withString:text];
 			[textStorage endEditing];
+            
+            // reset the default font if text was empty as the font gets reset to system default.
+            if (textIsEmpty) {
+                [self setFont:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextFont"]]];
+            }
+
 			[self didChangeText];
+            
 			NSUndoManager *undoManager = [self undoManager];
 			
 			// TODO: this doesn't seem to be having the desired effect

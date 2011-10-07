@@ -75,7 +75,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		// retain the document
 		document = [theDocument retain];
 		
-		undoManager = [[[NSUndoManager alloc] init] retain];
+		undoManager = [[NSUndoManager alloc] init];
 
 		// configure the document text view
 		NSTextView *textView = [document valueForKey:@"firstTextView"];
@@ -417,12 +417,12 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 	
 	// If the plist file is malformed be sure to set the values to something
 	if ([syntaxDictionary valueForKey:@"keywords"]) {
-		keywords = [[[NSSet alloc] initWithArray:[syntaxDictionary valueForKey:@"keywords"]] retain];
+		keywords = [[NSSet alloc] initWithArray:[syntaxDictionary valueForKey:@"keywords"]];
 		[keywordsAndAutocompleteWordsTemporary addObjectsFromArray:[syntaxDictionary valueForKey:@"keywords"]];
 	}
 	
 	if ([syntaxDictionary valueForKey:@"autocompleteWords"]) {
-		autocompleteWords = [[[NSSet alloc] initWithArray:[syntaxDictionary valueForKey:@"autocompleteWords"]] retain];
+		autocompleteWords = [[NSSet alloc] initWithArray:[syntaxDictionary valueForKey:@"autocompleteWords"]];
 		[keywordsAndAutocompleteWordsTemporary addObjectsFromArray:[syntaxDictionary valueForKey:@"autocompleteWords"]];
 	}
 	

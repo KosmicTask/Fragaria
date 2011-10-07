@@ -43,7 +43,7 @@ static id sharedInstance = nil;
 + (MGSTextMenuController *)sharedInstance
 { 
     if (sharedInstance == nil) {
-        sharedInstance = [[[super allocWithZone:NULL] init] retain];
+        sharedInstance = [[super allocWithZone:NULL] init];
     }
     return sharedInstance;
 } 

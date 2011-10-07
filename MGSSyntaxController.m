@@ -54,7 +54,7 @@ static id sharedInstance = nil;
 + (MGSSyntaxController *)sharedInstance
 { 
 	if (sharedInstance == nil) { 
-		sharedInstance = [[[self alloc] init] retain];
+		sharedInstance = [[self alloc] init];
 	}
 	
 	return sharedInstance;

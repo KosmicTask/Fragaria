@@ -436,7 +436,7 @@ static MGSFragaria *_currentInstance;
 - (MGSExtraInterfaceController *)extraInterfaceController
 {
 	if (!extraInterfaceController) {
-		extraInterfaceController = [[[MGSExtraInterfaceController alloc] init] retain];
+		extraInterfaceController = [[MGSExtraInterfaceController alloc] init];
 	}
 	
 	return extraInterfaceController;

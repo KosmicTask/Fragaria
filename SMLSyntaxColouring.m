@@ -526,6 +526,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		secondSingleLineComment = @"";
 	}
     [secondSingleLineComment retain];
+    
     [singleLineComments addObject:secondSingleLineComment];
     [singleLineComments retain];
 	
@@ -544,6 +545,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 	}
     [endFirstMultiLineComment retain];
     multiLineComments = [[NSMutableArray arrayWithCapacity:2] retain];
+
 	[multiLineComments addObject:[NSArray arrayWithObjects:beginFirstMultiLineComment, endFirstMultiLineComment, nil]];
 	
 	if ([syntaxDictionary valueForKey:@"beginSecondMultiLineComment"]) {

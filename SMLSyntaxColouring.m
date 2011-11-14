@@ -56,7 +56,9 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
  */
 - (id)init
 {
-	[self initWithDocument:nil];
+	if (!(self = [self initWithDocument:nil])) {
+        return nil;
+    }
 	
 	return self;
 }

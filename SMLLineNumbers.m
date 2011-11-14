@@ -33,7 +33,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
  */
 - (id)init
 {
-	[self initWithDocument:nil];
+	if (!(self = [self initWithDocument:nil])) {
+        return nil;
+    }
 	
 	return self;
 }

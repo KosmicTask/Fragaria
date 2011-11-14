@@ -62,6 +62,17 @@ static id sharedInstance = nil;
     return sharedInstance;
 }
 
+- (void)dealloc
+{
+    [thousandFormatter release];
+    thousandFormatter = nil;
+    
+    [fetchRequests release];
+    fetchRequests = nil;
+    
+    [super dealloc];
+}
+
 #pragma mark -
 #pragma mark Data fetching
 

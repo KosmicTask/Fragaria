@@ -53,8 +53,9 @@ unsigned const ICUUnicodeWordBoundaries = UREGEX_UWORD;
 
 -(id)initWithString:(NSString *)aPattern flags:(unsigned)f {
 
-	if(![super init])
+	if(!(self = [super init])) {
 		return nil;
+    }
 
 	textToSearch = NULL;
 	flags = f;

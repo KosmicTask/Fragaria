@@ -78,11 +78,22 @@ static id sharedInstance = nil;
 - (id)init 
 {
     if (sharedInstance == nil) {
-        sharedInstance = [super init];
+        sharedInstance = [[super init] retain];
 		
 		[self insertSyntaxDefinitions];
 	}
     return sharedInstance;
+}
+
+- (void)dealloc
+{
+    [syntaxDefinitions release];
+    syntaxDefinitions = nil;
+    
+    [syntaxDefinitionNames release];
+    syntaxDefinitionNames = nil;
+    
+    [super dealloc];
 }
 
 /*
@@ -183,7 +194,7 @@ static id sharedInstance = nil;
 	 build a dictionary of definitions keyed by lowercase definition name
 	 
 	 */
-	syntaxDefinitions = [NSMutableDictionary dictionaryWithCapacity:30];
+	syntaxDefinitions = [[NSMutableDictionary dictionaryWithCapacity:30] retain];
 	NSMutableArray *definitionNames = [NSMutableArray arrayWithCapacity:30];
 	
 	NSInteger idx = 0;

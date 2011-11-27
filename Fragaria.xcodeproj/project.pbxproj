@@ -562,7 +562,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0410;
+				LastUpgradeCheck = 0420;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Fragaria" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -784,7 +784,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = MGSFragaria;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.6;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -812,7 +812,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = MGSFragaria;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.6;
 				VERSIONING_SYSTEM = "apple-generic";
 				ZERO_LINK = NO;
 			};
@@ -875,7 +875,7 @@
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "icu/**";
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
@@ -914,7 +914,7 @@
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "icu/**";
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
 				WARNING_CFLAGS = (

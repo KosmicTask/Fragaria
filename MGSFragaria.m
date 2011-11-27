@@ -77,7 +77,7 @@ static MGSFragaria *_currentInstance;
 + (void)setCurrentInstance:(MGSFragaria *)anInstance
 {
 	NSAssert([anInstance isKindOfClass:[self class]], @"bad class");
-	_currentInstance = anInstance;
+	_currentInstance = [anInstance retain];
 }
 
 
@@ -90,13 +90,13 @@ static MGSFragaria *_currentInstance;
 {
 	[MGSPreferencesController initializeValues];
 	
-	objectSetterKeys = [NSSet setWithObjects:MGSFOIsSyntaxColoured, MGSFOShowLineNumberGutter, MGSFOIsEdited,
+	objectSetterKeys = [[NSSet setWithObjects:MGSFOIsSyntaxColoured, MGSFOShowLineNumberGutter, MGSFOIsEdited,
 						MGSFOSyntaxDefinitionName, MGSFODelegate,
-						nil];
+						nil] retain];
 	
-	objectGetterKeys = [NSMutableSet setWithObjects:ro_MGSFOTextView, ro_MGSFOScrollView, ro_MGSFOGutterScrollView, 
+	objectGetterKeys = [[NSMutableSet setWithObjects:ro_MGSFOTextView, ro_MGSFOScrollView, ro_MGSFOGutterScrollView, 
 						ro_MGSFOLineNumbers, ro_MGSFOLineNumbers, 
-						nil];
+						nil] retain];
 	[(NSMutableSet *)objectGetterKeys unionSet:objectSetterKeys];
 }
 
@@ -206,6 +206,8 @@ static MGSFragaria *_currentInstance;
 		} else {
 			_docSpec = [[self class] createDocSpec];
 		}
+        [_docSpec retain];
+        [_currentInstance retain];
 	}
 
 	return self;
@@ -219,6 +221,17 @@ static MGSFragaria *_currentInstance;
 - (id)init
 {
 	return [self initWithObject:nil];
+}
+
+- (void)dealloc
+{
+    [_docSpec release];
+    _docSpec = nil;
+    
+    [extraInterfaceController release];
+    extraInterfaceController = nil;
+    
+    [super dealloc];
 }
 
 

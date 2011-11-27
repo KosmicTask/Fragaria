@@ -194,7 +194,7 @@ static id sharedInstance = nil;
 	 build a dictionary of definitions keyed by lowercase definition name
 	 
 	 */
-	syntaxDefinitions = [NSMutableDictionary dictionaryWithCapacity:30];
+	syntaxDefinitions = [[NSMutableDictionary dictionaryWithCapacity:30] retain];
 	NSMutableArray *definitionNames = [NSMutableArray arrayWithCapacity:30];
 	
 	NSInteger idx = 0;

@@ -285,6 +285,11 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
     [endVariable release];
     endVariable = nil;
     
+    [variableRegex release];
+    variableRegex = nil;
+    [variablePattern release];
+    variablePattern = nil;
+    
     [letterCharacterSet release];
     letterCharacterSet = nil;
     

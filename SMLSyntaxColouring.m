@@ -244,6 +244,11 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
     [secondSingleLineComment release];
     secondSingleLineComment = nil;
     
+    [singleLineCommentRegex release];
+    singleLineCommentRegex = nil;
+    [singleLineCommentPattern release];
+    singleLineCommentPattern = nil;
+    
     [beginFirstMultiLineComment release];
     beginFirstMultiLineComment = nil;
     
@@ -543,7 +548,16 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
     
     [singleLineComments addObject:secondSingleLineComment];
     [singleLineComments retain];
-	
+
+    // single line comment regex definitions
+	if ([syntaxDictionary valueForKey:@"singleLineCommentRegex"]) {
+		singleLineCommentRegex = [syntaxDictionary valueForKey:@"singleLineCommentRegex"];
+	} else {
+		singleLineCommentRegex = @"";
+        singleLineCommentPattern = nil;
+	}
+    [singleLineCommentRegex retain];
+    
     // multi line comment definitions
 	if ([syntaxDictionary valueForKey:@"beginFirstMultiLineComment"]) {
 		beginFirstMultiLineComment = [syntaxDictionary valueForKey:@"beginFirstMultiLineComment"];
@@ -673,7 +687,10 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		
 		secondStringPattern = [[ICUPattern alloc] initWithString:[NSString stringWithFormat:@"\\W%@[^%@\\\\]*+(?:\\\\(?:.|$)[^%@\\\\]*+)*+%@", secondString, secondString, secondString, secondString]];
 	}
-	if (variableRegex != nil && ![variableRegex isEqualToString:@""]) {
+    if (singleLineCommentRegex != nil && ![singleLineCommentRegex isEqualToString:@""]) {
+        singleLineCommentPattern = [[ICUPattern alloc] initWithString:singleLineCommentRegex];
+    }
+    if (variableRegex != nil && ![variableRegex isEqualToString:@""]) {
         variablePattern = [[ICUPattern alloc] initWithString:variableRegex];
     }
 }
@@ -1184,7 +1201,14 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
             }
 		}
         
-		//
+        // Single line comment regex
+        if (singleLineCommentPattern != nil) {
+            [self recolourFromLocation:rangeLocation 
+                          withinString:searchString 
+                            andPattern:singleLineCommentPattern
+                             andColour:commentsColour];    
+        }
+        
 		// Multi-line comments
         //
         for (NSArray *multiLineComment in multiLineComments) {

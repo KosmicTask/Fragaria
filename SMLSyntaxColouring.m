@@ -33,6 +33,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)prepareRegularExpressions;
 - (void)applyColourDefaults;
 - (void)recolourRange:(NSRange)range;
+- (void) recolourFromLocation:(NSUInteger)location 
+                 withinString:(NSString *)string 
+                   andPattern:(ICUPattern *)pattern 
+                    andColour:(NSDictionary *)colour;
 - (void)removeAllColours;
 - (void)removeColoursFromRange:(NSRange)range;
 - (NSString *)guessSyntaxDefinitionExtensionFromFirstLine:(NSString *)firstLine;
@@ -491,6 +495,14 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 	}
     [endVariable retain];
 	
+    if ([syntaxDictionary valueForKey:@"variableRegex"]) {
+		variableRegex = [syntaxDictionary valueForKey:@"variableRegex"];
+	} else {
+		variableRegex = @"";
+        variablePattern = nil;
+	}
+    [variableRegex retain];
+    
 	if ([syntaxDictionary valueForKey:@"firstString"]) {
 		firstString = [syntaxDictionary valueForKey:@"firstString"];
 		if (![[syntaxDictionary valueForKey:@"firstString"] isEqualToString:@""]) {
@@ -661,6 +673,9 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		
 		secondStringPattern = [[ICUPattern alloc] initWithString:[NSString stringWithFormat:@"\\W%@[^%@\\\\]*+(?:\\\\(?:.|$)[^%@\\\\]*+)*+%@", secondString, secondString, secondString, secondString]];
 	}
+	if (variableRegex != nil && ![variableRegex isEqualToString:@""]) {
+        variablePattern = [[ICUPattern alloc] initWithString:variableRegex];
+    }
 }
 
 
@@ -1031,7 +1046,14 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 			}
 		}	
 
-		//
+        // Variable regex
+        if (variablePattern != nil) {
+            [self recolourFromLocation:rangeLocation
+                          withinString:searchString 
+                            andPattern:variablePattern
+                             andColour:variablesColour];
+        }
+
 		// Second string, first pass
         //
 		if (![secondString isEqualToString:@""] && [[SMLDefaults valueForKey:@"ColourStrings"] boolValue] == YES) {
@@ -1255,6 +1277,35 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		NSLog(@"Syntax colouring exception: %@", exception);
 	}
 	
+}
+
+- (void) recolourFromLocation:(NSUInteger)location 
+                 withinString:(NSString *)string 
+                   andPattern:(ICUPattern *)pattern 
+                    andColour:(NSDictionary *)colour {
+    
+    ICUMatcher *matcher;
+    @try {
+        matcher = [[ICUMatcher alloc] initWithPattern:pattern overString:string];
+    }
+    @catch (NSException *exception) {
+        [matcher release];
+        return;
+    }
+    
+    NSRange foundRange;
+    
+    while ([matcher findNext]) {
+        foundRange = [matcher rangeOfMatch];
+        if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:foundRange.location + location 
+                                                      effectiveRange:NULL] isEqualToDictionary:stringsColour]) {
+            continue;
+        }
+        [self setColour:colour range:NSMakeRange(foundRange.location + location, foundRange.length)];
+    }
+
+    [matcher release];    
+    return;
 }
 
 /*

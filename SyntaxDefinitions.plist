@@ -364,6 +364,14 @@
 	</dict>
 	<dict>
 		<key>name</key>
+		<string>Markdown</string>
+		<key>file</key>
+		<string>markdown</string>
+		<key>extensions</key>
+		<string>md</string>
+	</dict>
+	<dict>
+		<key>name</key>
 		<string>Matlab</string>
 		<key>file</key>
 		<string>matlab</string>

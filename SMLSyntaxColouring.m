@@ -598,16 +598,17 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 
 	
 	if ([syntaxDictionary valueForKey:@"functionDefinition"]) {
-		self.functionDefinition = [syntaxDictionary valueForKey:@"functionDefinition"];
+		functionDefinition = [syntaxDictionary valueForKey:@"functionDefinition"];
 	} else {
-		self.functionDefinition = @"";
+		functionDefinition = @"";
+        functionPattern = nil;
 	}
     [functionDefinition retain];
 	
 	if ([syntaxDictionary valueForKey:@"removeFromFunction"]) {
-		self.removeFromFunction = [syntaxDictionary valueForKey:@"removeFromFunction"];
+		removeFromFunction = [syntaxDictionary valueForKey:@"removeFromFunction"];
 	} else {
-		self.removeFromFunction = @"";
+		removeFromFunction = @"";
 	}
     [removeFromFunction retain];
 	
@@ -692,6 +693,9 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		
 		secondStringPattern = [[ICUPattern alloc] initWithString:[NSString stringWithFormat:@"\\W%@[^%@\\\\]*+(?:\\\\(?:.|$)[^%@\\\\]*+)*+%@", secondString, secondString, secondString, secondString]];
 	}
+    if (functionDefinition != nil && ![functionDefinition isEqualToString:@""]) {
+        functionPattern = [[ICUPattern alloc] initWithString:functionDefinition];
+    }
     if (singleLineCommentRegex != nil && ![singleLineCommentRegex isEqualToString:@""]) {
         singleLineCommentPattern = [[ICUPattern alloc] initWithString:singleLineCommentRegex];
     }
@@ -1301,6 +1305,14 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 			}
 		}
 
+        
+        // Functions
+        if (functionPattern != nil) {
+            [self recolourFromLocation:rangeLocation 
+                          withinString:searchString 
+                            andPattern:functionPattern 
+                             andColour:stringsColour];
+        }
 	}
 	@catch (NSException *exception) {
 		NSLog(@"Syntax colouring exception: %@", exception);

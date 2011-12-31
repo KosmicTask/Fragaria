@@ -46,7 +46,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSString *endInstruction;
 	NSString *firstString;
 	NSString *secondString;
-	NSString *firstSingleLineComment, *secondSingleLineComment, *beginFirstMultiLineComment, *endFirstMultiLineComment, 
+	NSString *firstSingleLineComment, *secondSingleLineComment, *singleLineCommentRegex, *beginFirstMultiLineComment, *endFirstMultiLineComment, 
 			*beginSecondMultiLineComment, *endSecondMultiLineComment, *functionDefinition, *removeFromFunction, *variableRegex;
 	NSString *searchString;
 
@@ -69,8 +69,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
     
 	ICUPattern *firstStringPattern;
 	ICUPattern *secondStringPattern;	
-	ICUMatcher *firstStringMatcher;
-	ICUMatcher *secondStringMatcher;
+    ICUMatcher *firstStringMatcher;
+	
+    ICUPattern *secondStringPattern;	
+	ICUMatcher *secondStringMatcher;	
+
+    ICUPattern *singleLineCommentPattern;
 	
 	NSTimer *liveUpdatePreviewTimer;
 	NSTimer *autocompleteWordsTimer;

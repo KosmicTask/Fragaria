@@ -47,7 +47,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSString *firstString;
 	NSString *secondString;
 	NSString *firstSingleLineComment, *secondSingleLineComment, *beginFirstMultiLineComment, *endFirstMultiLineComment, 
-			*beginSecondMultiLineComment, *endSecondMultiLineComment, *functionDefinition, *removeFromFunction;
+			*beginSecondMultiLineComment, *endSecondMultiLineComment, *functionDefinition, *removeFromFunction, *variableRegex;
 	NSString *searchString;
 
     NSMutableArray *singleLineComments;
@@ -65,6 +65,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSCharacterSet *endVariable;
 	NSCharacterSet *letterCharacterSet, *keywordStartCharacterSet, *keywordEndCharacterSet;
 	
+    ICUPattern *variablePattern;
+    
 	ICUPattern *firstStringPattern;
 	ICUPattern *secondStringPattern;	
 	ICUMatcher *firstStringMatcher;

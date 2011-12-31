@@ -538,6 +538,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		firstSingleLineComment = [syntaxDictionary valueForKey:@"firstSingleLineComment"];
 	} else {
 		firstSingleLineComment = @"";
+        firstStringPattern = nil;
 	}
     [firstSingleLineComment retain];
     
@@ -1005,9 +1006,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 			}
 		}
 			
-		//
 		// Autocomplete
-        //
 		if ([autocompleteWords count] != 0 && [[SMLDefaults valueForKey:@"ColourAutocomplete"] boolValue] == YES) {
 			[scanner setScanLocation:0];
 			while (![scanner isAtEnd]) {
@@ -1081,8 +1080,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
         }
 
 		// Second string, first pass
-        //
-		if (![secondString isEqualToString:@""] && [[SMLDefaults valueForKey:@"ColourStrings"] boolValue] == YES) {
+        if (![secondString isEqualToString:@""] && [[SMLDefaults valueForKey:@"ColourStrings"] boolValue] == YES) {
 			@try {
 				secondStringMatcher = [[ICUMatcher alloc] initWithPattern:secondStringPattern overString:searchString];
 			}
@@ -1116,10 +1114,8 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 			}
 		}
 		
-		//
 		// Attributes
-        //
-		if ([[SMLDefaults valueForKey:@"ColourAttributes"] boolValue] == YES) {
+        if ([[SMLDefaults valueForKey:@"ColourAttributes"] boolValue] == YES) {
 			[scanner setScanLocation:0];
 			while (![scanner isAtEnd]) {
 				[scanner scanUpToString:@" " intoString:nil];
@@ -1219,7 +1215,6 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
         }
         
 		// Multi-line comments
-        //
         for (NSArray *multiLineComment in multiLineComments) {
             
             NSString *beginMultiLineComment = [multiLineComment objectAtIndex:0];
@@ -1285,10 +1280,8 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
             }
 		}
         
-		//
 		// Second string, second pass
-        //
-		if (![secondString isEqualToString:@""] && [[SMLDefaults valueForKey:@"ColourStrings"] boolValue] == YES) {
+        if (![secondString isEqualToString:@""] && [[SMLDefaults valueForKey:@"ColourStrings"] boolValue] == YES) {
 			@try {
 				[secondStringMatcher reset];
 			}

@@ -68,7 +68,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
     ICUPattern *variablePattern;
     
 	ICUPattern *firstStringPattern;
-	ICUPattern *secondStringPattern;	
     ICUMatcher *firstStringMatcher;
 	
     ICUPattern *secondStringPattern;	

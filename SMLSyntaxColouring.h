@@ -75,7 +75,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	ICUMatcher *secondStringMatcher;	
 
     ICUPattern *singleLineCommentPattern;
-	
+    
+    ICUPattern *functionPattern;
+    
 	NSTimer *liveUpdatePreviewTimer;
 	NSTimer *autocompleteWordsTimer;
 

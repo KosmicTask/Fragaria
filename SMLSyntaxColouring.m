@@ -33,6 +33,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)prepareRegularExpressions;
 - (void)applyColourDefaults;
 - (void)recolourRange:(NSRange)range;
+- (void) recolourFromLocation:(NSUInteger)location 
+                 withinString:(NSString *)string 
+                   andPattern:(ICUPattern *)pattern 
+                    andColour:(NSDictionary *)colour;
 - (void)removeAllColours;
 - (void)removeColoursFromRange:(NSRange)range;
 - (NSString *)guessSyntaxDefinitionExtensionFromFirstLine:(NSString *)firstLine;
@@ -240,6 +244,11 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
     [secondSingleLineComment release];
     secondSingleLineComment = nil;
     
+    [singleLineCommentRegex release];
+    singleLineCommentRegex = nil;
+    [singleLineCommentPattern release];
+    singleLineCommentPattern = nil;
+    
     [beginFirstMultiLineComment release];
     beginFirstMultiLineComment = nil;
     
@@ -275,6 +284,11 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
     
     [endVariable release];
     endVariable = nil;
+    
+    [variableRegex release];
+    variableRegex = nil;
+    [variablePattern release];
+    variablePattern = nil;
     
     [letterCharacterSet release];
     letterCharacterSet = nil;
@@ -491,6 +505,14 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 	}
     [endVariable retain];
 	
+    if ([syntaxDictionary valueForKey:@"variableRegex"]) {
+		variableRegex = [syntaxDictionary valueForKey:@"variableRegex"];
+	} else {
+		variableRegex = @"";
+        variablePattern = nil;
+	}
+    [variableRegex retain];
+    
 	if ([syntaxDictionary valueForKey:@"firstString"]) {
 		firstString = [syntaxDictionary valueForKey:@"firstString"];
 		if (![[syntaxDictionary valueForKey:@"firstString"] isEqualToString:@""]) {
@@ -516,6 +538,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		firstSingleLineComment = [syntaxDictionary valueForKey:@"firstSingleLineComment"];
 	} else {
 		firstSingleLineComment = @"";
+        firstStringPattern = nil;
 	}
     [firstSingleLineComment retain];
     
@@ -531,7 +554,16 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
     
     [singleLineComments addObject:secondSingleLineComment];
     [singleLineComments retain];
-	
+
+    // single line comment regex definitions
+	if ([syntaxDictionary valueForKey:@"singleLineCommentRegex"]) {
+		singleLineCommentRegex = [syntaxDictionary valueForKey:@"singleLineCommentRegex"];
+	} else {
+		singleLineCommentRegex = @"";
+        singleLineCommentPattern = nil;
+	}
+    [singleLineCommentRegex retain];
+    
     // multi line comment definitions
 	if ([syntaxDictionary valueForKey:@"beginFirstMultiLineComment"]) {
 		beginFirstMultiLineComment = [syntaxDictionary valueForKey:@"beginFirstMultiLineComment"];
@@ -567,16 +599,17 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 
 	
 	if ([syntaxDictionary valueForKey:@"functionDefinition"]) {
-		self.functionDefinition = [syntaxDictionary valueForKey:@"functionDefinition"];
+		functionDefinition = [syntaxDictionary valueForKey:@"functionDefinition"];
 	} else {
-		self.functionDefinition = @"";
+		functionDefinition = @"";
+        functionPattern = nil;
 	}
     [functionDefinition retain];
 	
 	if ([syntaxDictionary valueForKey:@"removeFromFunction"]) {
-		self.removeFromFunction = [syntaxDictionary valueForKey:@"removeFromFunction"];
+		removeFromFunction = [syntaxDictionary valueForKey:@"removeFromFunction"];
 	} else {
-		self.removeFromFunction = @"";
+		removeFromFunction = @"";
 	}
     [removeFromFunction retain];
 	
@@ -661,6 +694,15 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		
 		secondStringPattern = [[ICUPattern alloc] initWithString:[NSString stringWithFormat:@"\\W%@[^%@\\\\]*+(?:\\\\(?:.|$)[^%@\\\\]*+)*+%@", secondString, secondString, secondString, secondString]];
 	}
+    if (functionDefinition != nil && ![functionDefinition isEqualToString:@""]) {
+        functionPattern = [[ICUPattern alloc] initWithString:functionDefinition];
+    }
+    if (singleLineCommentRegex != nil && ![singleLineCommentRegex isEqualToString:@""]) {
+        singleLineCommentPattern = [[ICUPattern alloc] initWithString:singleLineCommentRegex];
+    }
+    if (variableRegex != nil && ![variableRegex isEqualToString:@""]) {
+        variablePattern = [[ICUPattern alloc] initWithString:variableRegex];
+    }
 }
 
 
@@ -964,9 +1006,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 			}
 		}
 			
-		//
 		// Autocomplete
-        //
 		if ([autocompleteWords count] != 0 && [[SMLDefaults valueForKey:@"ColourAutocomplete"] boolValue] == YES) {
 			[scanner setScanLocation:0];
 			while (![scanner isAtEnd]) {
@@ -1031,10 +1071,16 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 			}
 		}	
 
-		//
+        // Variable regex
+        if (variablePattern != nil) {
+            [self recolourFromLocation:rangeLocation
+                          withinString:searchString 
+                            andPattern:variablePattern
+                             andColour:variablesColour];
+        }
+
 		// Second string, first pass
-        //
-		if (![secondString isEqualToString:@""] && [[SMLDefaults valueForKey:@"ColourStrings"] boolValue] == YES) {
+        if (![secondString isEqualToString:@""] && [[SMLDefaults valueForKey:@"ColourStrings"] boolValue] == YES) {
 			@try {
 				secondStringMatcher = [[ICUMatcher alloc] initWithPattern:secondStringPattern overString:searchString];
 			}
@@ -1068,10 +1114,8 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 			}
 		}
 		
-		//
 		// Attributes
-        //
-		if ([[SMLDefaults valueForKey:@"ColourAttributes"] boolValue] == YES) {
+        if ([[SMLDefaults valueForKey:@"ColourAttributes"] boolValue] == YES) {
 			[scanner setScanLocation:0];
 			while (![scanner isAtEnd]) {
 				[scanner scanUpToString:@" " intoString:nil];
@@ -1162,9 +1206,15 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
             }
 		}
         
-		//
+        // Single line comment regex
+        if (singleLineCommentPattern != nil) {
+            [self recolourFromLocation:rangeLocation 
+                          withinString:searchString 
+                            andPattern:singleLineCommentPattern
+                             andColour:commentsColour];    
+        }
+        
 		// Multi-line comments
-        //
         for (NSArray *multiLineComment in multiLineComments) {
             
             NSString *beginMultiLineComment = [multiLineComment objectAtIndex:0];
@@ -1230,10 +1280,8 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
             }
 		}
         
-		//
 		// Second string, second pass
-        //
-		if (![secondString isEqualToString:@""] && [[SMLDefaults valueForKey:@"ColourStrings"] boolValue] == YES) {
+        if (![secondString isEqualToString:@""] && [[SMLDefaults valueForKey:@"ColourStrings"] boolValue] == YES) {
 			@try {
 				[secondStringMatcher reset];
 			}
@@ -1250,11 +1298,48 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 			}
 		}
 
+        
+        // Functions
+        if (functionPattern != nil) {
+            [self recolourFromLocation:rangeLocation 
+                          withinString:searchString 
+                            andPattern:functionPattern 
+                             andColour:stringsColour];
+        }
 	}
 	@catch (NSException *exception) {
 		NSLog(@"Syntax colouring exception: %@", exception);
 	}
 	
+}
+
+- (void) recolourFromLocation:(NSUInteger)location 
+                 withinString:(NSString *)string 
+                   andPattern:(ICUPattern *)pattern 
+                    andColour:(NSDictionary *)colour {
+    
+    ICUMatcher *matcher;
+    @try {
+        matcher = [[ICUMatcher alloc] initWithPattern:pattern overString:string];
+    }
+    @catch (NSException *exception) {
+        [matcher release];
+        return;
+    }
+    
+    NSRange foundRange;
+    
+    while ([matcher findNext]) {
+        foundRange = [matcher rangeOfMatch];
+        if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:foundRange.location + location 
+                                                      effectiveRange:NULL] isEqualToDictionary:stringsColour]) {
+            continue;
+        }
+        [self setColour:colour range:NSMakeRange(foundRange.location + location, foundRange.length)];
+    }
+
+    [matcher release];    
+    return;
 }
 
 /*

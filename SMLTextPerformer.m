@@ -65,6 +65,23 @@ static id sharedInstance = nil;
     return sharedInstance;
 }
 
+- (void)dealloc
+{
+    [darkSideLineEnding release];
+    darkSideLineEnding = nil;
+    
+    [macLineEnding release];
+    macLineEnding = nil;
+    
+    [unixLineEnding release];
+    unixLineEnding = nil;
+    
+    [newLineSymbolString release];
+    newLineSymbolString = nil;
+    
+    [super dealloc];
+}
+
 #pragma mark -
 #pragma mark Text manipulation
 

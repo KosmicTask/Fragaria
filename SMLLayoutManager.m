@@ -53,6 +53,20 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	return self;
 }
 
+- (void)dealloc
+{
+    [attributes release];
+    attributes = nil;
+    
+    [tabCharacter release];
+    tabCharacter = nil;
+    
+    [newLineCharacter release];
+    newLineCharacter = nil;
+    
+    [super dealloc];
+}
+
 #pragma mark -
 #pragma mark KVO
 /*

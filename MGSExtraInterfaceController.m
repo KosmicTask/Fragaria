@@ -26,7 +26,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 @implementation MGSExtraInterfaceController
 
-@synthesize openPanelAccessoryView, openPanelEncodingsPopUp, commandResultWindow, commandResultTextView, newProjectWindow;
+@synthesize openPanelAccessoryView, openPanelEncodingsPopUp, commandResultWindow, commandResultTextView, projectWindow;
 
 #pragma mark -
 #pragma mark Instance methods

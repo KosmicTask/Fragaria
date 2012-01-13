@@ -54,8 +54,9 @@ static id sharedInstance = nil;
 - (id)init 
 {
     if (sharedInstance == nil) {
-        sharedInstance = [super init];
-
+        self = [super init];
+        sharedInstance = self;
+        
 		darkSideLineEnding = [[NSString alloc] initWithFormat:@"%C%C", 0x000D, 0x000A];
 		macLineEnding = [[NSString alloc] initWithFormat:@"%C", 0x000D];
 		unixLineEnding = [[NSString alloc] initWithFormat:@"%C", 0x000A];

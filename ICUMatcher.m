@@ -40,9 +40,12 @@ typedef struct URegularExpression URegularExpression;
 }
 
 -(ICUMatcher *)initWithPattern:(ICUPattern *)p overString:(NSString *)aStringToSearch {
-	if(![super init])
+	self = [super init];
+    
+    if (!self) {
 		return nil;
-
+    }
+    
 	[self setPattern:p];
 	[[self pattern] setStringToSearch:aStringToSearch];
 

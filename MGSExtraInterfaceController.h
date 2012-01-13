@@ -36,7 +36,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	IBOutlet NSWindow *commandResultWindow;
 	IBOutlet NSTextView *commandResultTextView;
 	
-	IBOutlet NSWindow *newProjectWindow;
+	IBOutlet NSWindow *projectWindow;
 	IBOutlet NSPanel *regularExpressionsHelpPanel;
 }
 
@@ -45,7 +45,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 @property (readonly) IBOutlet NSPopUpButton *openPanelEncodingsPopUp;
 @property (readonly) IBOutlet NSWindow *commandResultWindow;
 @property (readonly) IBOutlet NSTextView *commandResultTextView;
-@property (readonly) IBOutlet NSWindow *newProjectWindow;
+@property (readonly) IBOutlet NSWindow *projectWindow;
 
 - (void)displayEntab;
 - (void)displayDetab;

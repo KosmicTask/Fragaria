@@ -57,7 +57,6 @@
 		AB69B80C118B8D0400903D1D /* MGSPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB69B80A118B8D0400903D1D /* MGSPreferencesController.m */; };
 		ABA812DC11B6855200A29990 /* LICENSE-2.0.txt in Resources */ = {isa = PBXBuildFile; fileRef = ABA812DB11B6855200A29990 /* LICENSE-2.0.txt */; };
 		ABD0FDB01193281600E6AFE6 /* MGSFragaria.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB69B62B118B745700903D1D /* MGSFragaria.framework */; };
-		ABDED9C4128AB4E0002EE039 /* MGSScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDED9C2128AB4E0002EE039 /* MGSScanner.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -562,7 +561,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0410;
+				LastUpgradeCheck = 0420;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Fragaria" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -658,7 +657,6 @@
 				AB41C1011191FDFE004F0CB5 /* SMLLineNumbers.m in Sources */,
 				AB41C1051191FFCB004F0CB5 /* MGSFragaria.m in Sources */,
 				AB5E6A4A11B65AC20026B4B9 /* SMLGutterTextView.m in Sources */,
-				ABDED9C4128AB4E0002EE039 /* MGSScanner.m in Sources */,
 				AB472B6F129972E400202CB5 /* MGSTextMenuController.m in Sources */,
 				AB472B9E12997B1F00202CB5 /* SMLBasicPerformer.m in Sources */,
 				AB472BE91299AF3800202CB5 /* SMLTextPerformer.m in Sources */,

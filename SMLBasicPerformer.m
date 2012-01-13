@@ -53,8 +53,9 @@ static id sharedInstance = nil;
 - (id)init 
 {
     if (sharedInstance == nil) {
-        sharedInstance = [super init];
-		
+        self = [super init];
+		sharedInstance = self;
+        
 		thousandFormatter = [[NSNumberFormatter alloc] init];
 		[thousandFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
 		[thousandFormatter setFormat:@"#,##0"];	

@@ -56,7 +56,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
  */
 - (id)init
 {
-	[self initWithDocument:nil];
+	self = [self initWithDocument:nil];
 	
 	return self;
 }
@@ -653,9 +653,9 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 	if (searchStringLength == 0) {
 		return;
 	}
-	MGSScanner *scanner = [[NSScanner alloc] initWithString:searchString];
+	NSScanner *scanner = [[NSScanner alloc] initWithString:searchString];
 	[scanner setCharactersToBeSkipped:nil];
-	MGSScanner *completeDocumentScanner = [[NSScanner alloc] initWithString:completeString];
+	NSScanner *completeDocumentScanner = [[NSScanner alloc] initWithString:completeString];
 	[completeDocumentScanner setCharactersToBeSkipped:nil];
 	
 	NSUInteger completeStringLength = [completeString length];

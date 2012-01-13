@@ -33,7 +33,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
  */
 - (id)init
 {
-	[self initWithDocument:nil];
+	self = [self initWithDocument:nil];
 	
 	return self;
 }

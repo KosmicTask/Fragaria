@@ -681,7 +681,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 				beginning = [scanner scanLocation];
 				endOfLine = NSMaxRange([searchString lineRangeForRange:NSMakeRange(beginning, 0)]);
 				if (![scanner scanUpToString:endCommand intoString:nil] || [scanner scanLocation] >= endOfLine) {
-					[scanner setScanLocation:endOfLine];
+					[scanner mgs_setScanLocation:endOfLine];
 					continue; // Don't colour it if it hasn't got a closing tag
 				} else {
 					// To avoid problems with strings like <yada <%=yada%> yada> we need to balance the number of begin- and end-tags
@@ -704,9 +704,9 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 						commandLocation++;
 					}
 					if (commandLocation < endOfLine) {
-						[scanner setScanLocation:commandLocation + searchSyntaxLength];
+						[scanner mgs_setScanLocation:commandLocation + searchSyntaxLength];
 					} else {
-						[scanner setScanLocation:endOfLine];
+						[scanner mgs_setScanLocation:endOfLine];
 					}
 				}
 				
@@ -738,16 +738,16 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 				if (beginning == NSNotFound) {
 					break;
 				}
-				[completeDocumentScanner setScanLocation:beginning];
+				[completeDocumentScanner mgs_setScanLocation:beginning];
 				if (![completeDocumentScanner scanUpToString:endInstruction intoString:nil] || [completeDocumentScanner scanLocation] >= completeStringLength) {
 					if (shouldOnlyColourTillTheEndOfLine) {
-						[completeDocumentScanner setScanLocation:NSMaxRange([completeString lineRangeForRange:NSMakeRange(beginning, 0)])];
+						[completeDocumentScanner mgs_setScanLocation:NSMaxRange([completeString lineRangeForRange:NSMakeRange(beginning, 0)])];
 					} else {
-						[completeDocumentScanner setScanLocation:completeStringLength];
+						[completeDocumentScanner mgs_setScanLocation:completeStringLength];
 					}
 				} else {
 					if ([completeDocumentScanner scanLocation] + searchSyntaxLength <= completeStringLength) {
-						[completeDocumentScanner setScanLocation:[completeDocumentScanner scanLocation] + searchSyntaxLength];
+						[completeDocumentScanner mgs_setScanLocation:[completeDocumentScanner scanLocation] + searchSyntaxLength];
 					}
 				}
 				
@@ -763,12 +763,12 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		// Keywords
         //
 		if ([keywords count] != 0 && [[SMLDefaults valueForKey:@"ColourKeywords"] boolValue] == YES) {
-			[scanner setScanLocation:0];
+			[scanner mgs_setScanLocation:0];
 			while (![scanner isAtEnd]) {
 				[scanner scanUpToCharactersFromSet:keywordStartCharacterSet intoString:nil];
 				beginning = [scanner scanLocation];
 				if ((beginning + 1) < searchStringLength) {
-					[scanner setScanLocation:(beginning + 1)];
+					[scanner mgs_setScanLocation:(beginning + 1)];
 				}
 				[scanner scanUpToCharactersFromSet:keywordEndCharacterSet intoString:nil];
 				
@@ -798,12 +798,12 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		// Autocomplete
         //
 		if ([autocompleteWords count] != 0 && [[SMLDefaults valueForKey:@"ColourAutocomplete"] boolValue] == YES) {
-			[scanner setScanLocation:0];
+			[scanner mgs_setScanLocation:0];
 			while (![scanner isAtEnd]) {
 				[scanner scanUpToCharactersFromSet:keywordStartCharacterSet intoString:nil];
 				beginning = [scanner scanLocation];
 				if ((beginning + 1) < searchStringLength) {
-					[scanner setScanLocation:(beginning + 1)];
+					[scanner mgs_setScanLocation:(beginning + 1)];
 				}
 				[scanner scanUpToCharactersFromSet:keywordEndCharacterSet intoString:nil];
 				
@@ -834,26 +834,26 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		// Variables
         //
 		if (beginVariable != nil && [[SMLDefaults valueForKey:@"ColourVariables"] boolValue] == YES) {
-			[scanner setScanLocation:0];
+			[scanner mgs_setScanLocation:0];
 			while (![scanner isAtEnd]) {
 				[scanner scanUpToCharactersFromSet:beginVariable intoString:nil];
 				beginning = [scanner scanLocation];
 				if (beginning + 1 < searchStringLength) {
 					if ([firstSingleLineComment isEqualToString:@"%"] && [searchString characterAtIndex:beginning + 1] == '%') { // To avoid a problem in LaTex with \%
 						if ([scanner scanLocation] < searchStringLength) {
-							[scanner setScanLocation:beginning + 1];
+							[scanner mgs_setScanLocation:beginning + 1];
 						}
 						continue;
 					}
 				}
 				endOfLine = NSMaxRange([searchString lineRangeForRange:NSMakeRange(beginning, 0)]);
 				if (![scanner scanUpToCharactersFromSet:endVariable intoString:nil] || [scanner scanLocation] >= endOfLine) {
-					[scanner setScanLocation:endOfLine];
+					[scanner mgs_setScanLocation:endOfLine];
 					length = [scanner scanLocation] - beginning;
 				} else {
 					length = [scanner scanLocation] - beginning;
 					if ([scanner scanLocation] < searchStringLength) {
-						[scanner setScanLocation:[scanner scanLocation] + 1];
+						[scanner mgs_setScanLocation:[scanner scanLocation] + 1];
 					}
 				}
 				
@@ -902,12 +902,12 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		// Attributes
         //
 		if ([[SMLDefaults valueForKey:@"ColourAttributes"] boolValue] == YES) {
-			[scanner setScanLocation:0];
+			[scanner mgs_setScanLocation:0];
 			while (![scanner isAtEnd]) {
 				[scanner scanUpToString:@" " intoString:nil];
 				beginning = [scanner scanLocation];
 				if (beginning + 1 < searchStringLength) {
-					[scanner setScanLocation:beginning + 1];
+					[scanner mgs_setScanLocation:beginning + 1];
 				} else {
 					break;
 				}
@@ -919,7 +919,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 				end = [scanner scanLocation];
 				
 				if (end + 1 < searchStringLength) {
-					[scanner setScanLocation:[scanner scanLocation] + 1];
+					[scanner mgs_setScanLocation:[scanner scanLocation] + 1];
 				}
 				
 				if ([completeString characterAtIndex:end + rangeLocation] == '=') {
@@ -935,7 +935,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
             if (![singleLineComment isEqualToString:@""] && [[SMLDefaults valueForKey:@"ColourComments"] boolValue] == YES) {
                 
                 // reset scanner
-                [scanner setScanLocation:0];
+                [scanner mgs_setScanLocation:0];
                 searchSyntaxLength = [singleLineComment length];
                 
                 // scan
@@ -948,27 +948,27 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
                     // common case handling
                     if ([singleLineComment isEqualToString:@"//"]) {
                         if (beginning > 0 && [searchString characterAtIndex:beginning - 1] == ':') {
-                            [scanner setScanLocation:beginning + 1];
+                            [scanner mgs_setScanLocation:beginning + 1];
                             continue; // To avoid http:// ftp:// file:// etc.
                         }
                     } else if ([singleLineComment isEqualToString:@"#"]) {
                         if (searchStringLength > 1) {
                             rangeOfLine = [searchString lineRangeForRange:NSMakeRange(beginning, 0)];
                             if ([searchString rangeOfString:@"#!" options:NSLiteralSearch range:rangeOfLine].location != NSNotFound) {
-                                [scanner setScanLocation:NSMaxRange(rangeOfLine)];
+                                [scanner mgs_setScanLocation:NSMaxRange(rangeOfLine)];
                                 continue; // Don't treat the line as a comment if it begins with #!
                             } else if (beginning > 0 && [searchString characterAtIndex:beginning - 1] == '$') {
-                                [scanner setScanLocation:beginning + 1];
+                                [scanner mgs_setScanLocation:beginning + 1];
                                 continue; // To avoid $#
                             } else if (beginning > 0 && [searchString characterAtIndex:beginning - 1] == '&') {
-                                [scanner setScanLocation:beginning + 1];
+                                [scanner mgs_setScanLocation:beginning + 1];
                                 continue; // To avoid &#
                             }
                         }
                     } else if ([singleLineComment isEqualToString:@"%"]) {
                         if (searchStringLength > 1) {
                             if (beginning > 0 && [searchString characterAtIndex:beginning - 1] == '\\') {
-                                [scanner setScanLocation:beginning + 1];
+                                [scanner mgs_setScanLocation:beginning + 1];
                                 continue; // To avoid \% in LaTex
                             }
                         }
@@ -977,14 +977,14 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
                     // If the comment is within an already coloured string then disregard it
                     if (beginning + rangeLocation + searchSyntaxLength < completeStringLength) {
                         if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:beginning + rangeLocation effectiveRange:NULL] isEqualToDictionary:stringsColour]) {
-                            [scanner setScanLocation:beginning + 1];
+                            [scanner mgs_setScanLocation:beginning + 1];
                             continue; 
                         }
                     }
                     
                     // this is a single line comment so we can scan to the end of the line
                     endOfLine = NSMaxRange([searchString lineRangeForRange:NSMakeRange(beginning, 0)]);
-                    [scanner setScanLocation:endOfLine];
+                    [scanner mgs_setScanLocation:endOfLine];
                     
                     // colour the comment
                     [self setColour:commentsColour range:NSMakeRange(beginning + rangeLocation, [scanner scanLocation] - beginning)];
@@ -1007,7 +1007,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
                 if (beginLocationInMultiLine == NSNotFound || (endLocationInMultiLine != NSNotFound && beginLocationInMultiLine < endLocationInMultiLine)) {
                     beginLocationInMultiLine = rangeLocation;
                 }			
-                [completeDocumentScanner setScanLocation:beginLocationInMultiLine];
+                [completeDocumentScanner mgs_setScanLocation:beginLocationInMultiLine];
                 searchSyntaxLength = [endMultiLineComment length];
                 
                 while (![completeDocumentScanner isAtEnd]) {
@@ -1019,24 +1019,24 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
                     if (beginning == NSNotFound) {
                         break;
                     }
-                    [completeDocumentScanner setScanLocation:beginning];
+                    [completeDocumentScanner mgs_setScanLocation:beginning];
                     if (beginning + 1 < completeStringLength) {
                         if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:beginning effectiveRange:NULL] isEqualToDictionary:stringsColour]) {
-                            [completeDocumentScanner setScanLocation:beginning + 1];
+                            [completeDocumentScanner mgs_setScanLocation:beginning + 1];
                             beginLocationInMultiLine++;
                             continue; // If the comment is within a string disregard it
                         }
                     }
                     if (![completeDocumentScanner scanUpToString:endMultiLineComment intoString:nil] || [completeDocumentScanner scanLocation] >= completeStringLength) {
                         if (shouldOnlyColourTillTheEndOfLine) {
-                            [completeDocumentScanner setScanLocation:NSMaxRange([completeString lineRangeForRange:NSMakeRange(beginning, 0)])];
+                            [completeDocumentScanner mgs_setScanLocation:NSMaxRange([completeString lineRangeForRange:NSMakeRange(beginning, 0)])];
                         } else {
-                            [completeDocumentScanner setScanLocation:completeStringLength];
+                            [completeDocumentScanner mgs_setScanLocation:completeStringLength];
                         }
                         length = [completeDocumentScanner scanLocation] - beginning;
                     } else {
                         if ([completeDocumentScanner scanLocation] < completeStringLength)
-                            [completeDocumentScanner setScanLocation:[completeDocumentScanner scanLocation] + searchSyntaxLength];
+                            [completeDocumentScanner mgs_setScanLocation:[completeDocumentScanner scanLocation] + searchSyntaxLength];
                         length = [completeDocumentScanner scanLocation] - beginning;
                         if ([endMultiLineComment isEqualToString:@"-->"]) {
                             [completeDocumentScanner scanUpToCharactersFromSet:letterCharacterSet intoString:nil]; // Search for the first letter after -->
@@ -1046,7 +1046,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
                                     continue; // If the comment --> is followed by </script> or </style> it is probably not a real comment
                                 }
                             }
-                            [completeDocumentScanner setScanLocation:beginning + length]; // Reset the scanner position
+                            [completeDocumentScanner mgs_setScanLocation:beginning + length]; // Reset the scanner position
                         }
                     }
 

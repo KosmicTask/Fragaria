@@ -10,5 +10,5 @@
 
 
 @interface NSScanner (Fragaria)
-
+- (void)mgs_setScanLocation:(NSUInteger)idx;
 @end

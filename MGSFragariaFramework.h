@@ -22,5 +22,4 @@
 #import "MGSPreferencesController.h"
 #import "MGSSyntaxController.h"
 #import "NSScanner+Fragaria.h"
-#import "MGSScanner.h"
 #import "MGSFragariaPreferences.h"

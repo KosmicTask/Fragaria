@@ -11,4 +11,24 @@
 
 @implementation  NSScanner (Fragaria)
 
+/*
+ 
+ mgs_setScanLocation:
+ 
+ */
+- (void)mgs_setScanLocation:(NSUInteger)idx 
+{
+    /*
+     
+     NSScanner raises if the index is beyond the end of the string.
+     
+     */
+    NSUInteger maxIndex = [[self string] length];
+	if (idx > maxIndex) {
+        NSLog(@"Invalid scan location %u > max of %u", idx, maxIndex);
+		idx = maxIndex;
+	}
+	
+	[self setScanLocation:idx];
+}
 @end

@@ -19,7 +19,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 #import "SMLStandardHeader.h"
 #import "SMLTextPerformer.h"
-#import "SMLTextPerformer.h"
+#import "NSScanner+Fragaria.h"
 
 @implementation SMLTextPerformer
 

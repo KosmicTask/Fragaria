@@ -299,6 +299,10 @@ static MGSFragaria *_currentInstance;
 	// update line numbers
 	[[_docSpec valueForKey:ro_MGSFOLineNumbers] updateLineNumbersForClipView:[[_docSpec valueForKey:ro_MGSFOScrollView] contentView] checkWidth:NO recolour:YES];
 	
+    // issues on 10.8
+    // https://github.com/mugginsoft/Fragaria/issues/8#issuecomment-5391009
+    [textScrollView setFrame:NSMakeRect(gutterWidth, 0, [contentView bounds].size.width - gutterWidth, [contentView bounds].size.height)];
+    [gutterScrollView setFrame:NSMakeRect(0, 0, gutterWidth, contentSize.height)];
 }
 
 #pragma mark -

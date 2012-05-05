@@ -27,7 +27,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 @interface SMLSyntaxColouring : NSObject <NSTextStorageDelegate, NSTextViewDelegate> {
 	
 	id document;
-	NSUndoManager *undoManager;
 	
 	SMLLayoutManager *firstLayoutManager, *secondLayoutManager, *thirdLayoutManager, *fourthLayoutManager;
 	
@@ -36,22 +35,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSDictionary *commandsColour, *commentsColour, *instructionsColour, *keywordsColour, *autocompleteWordsColour, 
 					*stringsColour, *variablesColour, *attributesColour, *lineHighlightColour;
 	
-	NSSet *keywords;
-	NSSet *autocompleteWords;
-	NSArray *keywordsAndAutocompleteWords;
-
-	NSString *beginCommand;
-	NSString *endCommand;
-	NSString *beginInstruction;
-	NSString *endInstruction;
-	NSString *firstString;
-	NSString *secondString;
-	NSString *firstSingleLineComment, *secondSingleLineComment, *beginFirstMultiLineComment, *endFirstMultiLineComment, 
-			*beginSecondMultiLineComment, *endSecondMultiLineComment, *functionDefinition, *removeFromFunction;
-	NSString *searchString;
-
-    NSMutableArray *singleLineComments;
-    NSMutableArray *multiLineComments;
     
 	unichar firstStringUnichar;
 	unichar secondStringUnichar;
@@ -60,10 +43,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	BOOL keywordsCaseSensitive;
 	BOOL recolourKeywordIfAlreadyColoured;
 	
-	NSCharacterSet *attributesCharacterSet;
-	NSCharacterSet *beginVariable;
-	NSCharacterSet *endVariable;
-	NSCharacterSet *letterCharacterSet, *keywordStartCharacterSet, *keywordEndCharacterSet;
+
 	
 	ICUPattern *firstStringPattern;
 	ICUPattern *secondStringPattern;	
@@ -77,15 +57,42 @@ Unless required by applicable law or agreed to in writing, software distributed 
 }
 
 @property BOOL reactToChanges;
-@property (readonly) NSUndoManager *undoManager;
+@property (retain) NSUndoManager *undoManager;
 
+
+@property (retain) SMLLayoutManager *secondLayoutManager;
+@property (retain) SMLLayoutManager *thirdLayoutManager;
+@property (retain) SMLLayoutManager *fourthLayoutManager;
+
+@property (retain) 	NSCharacterSet *attributesCharacterSet;
+@property (retain) 	NSCharacterSet *beginVariable;
+@property (retain) 	NSCharacterSet *endVariable;
+@property (retain) 	NSCharacterSet *letterCharacterSet;
+@property (retain) 	NSCharacterSet *keywordStartCharacterSet;
+@property (retain) 	NSCharacterSet *keywordEndCharacterSet;
+
+@property (copy) NSString *beginCommand;
+@property (copy) NSString *endCommand;
+@property (copy) NSString *beginInstruction;
+@property (copy) NSString *endInstruction;
+@property (copy) NSString *firstString;
+@property (copy) NSString *secondString;
+@property (copy) NSString *firstSingleLineComment;
+@property (copy) NSString *secondSingleLineComment;
+@property (copy) NSString *beginFirstMultiLineComment;
+@property (copy) NSString *endFirstMultiLineComment;
+@property (copy) NSString *beginSecondMultiLineComment;
+@property (copy) NSString *endSecondMultiLineComment;
 @property (copy) NSString *functionDefinition;
 @property (copy) NSString *removeFromFunction;
+@property (copy) NSString *searchString;
 
-@property (assign) SMLLayoutManager *secondLayoutManager;
-@property (assign) SMLLayoutManager *thirdLayoutManager;
-@property (assign) SMLLayoutManager *fourthLayoutManager;
+@property (retain) NSMutableArray *singleLineComments;
+@property (retain) NSMutableArray *multiLineComments;
 
+@property (retain) NSArray* keywordsAndAutocompleteWords;
+@property (retain) NSSet *keywords;
+@property (retain) NSSet *autocompleteWords;
 - (id)initWithDocument:(id)document;
 - (void)pageRecolourTextView:(SMLTextView *)textView;
 - (void)pageRecolour;

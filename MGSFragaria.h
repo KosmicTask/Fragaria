@@ -41,11 +41,11 @@ extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 @interface MGSFragaria : NSObject
 {
 	@private
-	id _docSpec;
 	MGSExtraInterfaceController *extraInterfaceController;
 }
 
 @property (nonatomic, readonly, assign) MGSExtraInterfaceController *extraInterfaceController;
+@property (nonatomic,retain) id docSpec;
 
 + (id)currentInstance;
 + (void)setCurrentInstance:(MGSFragaria *)anInstance;
@@ -68,7 +68,10 @@ extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 - (NSAttributedString *)attributedString;
 - (NSAttributedString *)attributedStringWithTemporaryAttributesApplied;
 - (NSString *)string;
-- (id)docSpec;
+
 - (NSTextView *)textView;
 - (MGSTextMenuController *)textMenuController;
+
+
+
 @end

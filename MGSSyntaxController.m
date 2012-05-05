@@ -37,7 +37,9 @@ NSString * const KMGSSyntaxDefinitionsFolder = @"Syntax Definitions";
 - (NSDictionary *)syntaxDefinitionWithName:(NSString *)name;
 - (NSBundle *)bundle;
 
-@property (assign) NSArray *syntaxDefinitionNames;
+@property (retain) NSArray *syntaxDefinitionNames;
+@property (retain) NSMutableDictionary *syntaxDefinitions;
+
 @end
 
 @implementation MGSSyntaxController
@@ -94,7 +96,7 @@ static id sharedInstance = nil;
 {
 	// key is lowercase name
 	NSString *name = [[self class] standardSyntaxDefinitionName];
-	NSDictionary *definition = [syntaxDefinitions objectForKey:[name lowercaseString]];
+	NSDictionary *definition = [self.syntaxDefinitions objectForKey:[name lowercaseString]];
 	NSAssert(definition, @"standard syntax definition not found");
 	return definition;
 }
@@ -107,7 +109,7 @@ static id sharedInstance = nil;
 - (NSDictionary *)syntaxDefinitionWithName:(NSString *)name
 {
 	// key is lowercase name
-	NSDictionary *definition = [syntaxDefinitions objectForKey:[name lowercaseString]];
+	NSDictionary *definition = [self.syntaxDefinitions objectForKey:[name lowercaseString]];
 	if (!definition) {
 		definition = [self standardSyntaxDefinition];
 	}
@@ -141,7 +143,7 @@ static id sharedInstance = nil;
 	
 	extension = [extension lowercaseString];
 	
-	for (id item in syntaxDefinitions) {
+	for (id item in self.syntaxDefinitions) {
 		NSString *extensions = [item valueForKey:@"extensions"];
 		
 		if (!extensions || [extensions isEqualToString:@""]) {
@@ -183,7 +185,7 @@ static id sharedInstance = nil;
 	 build a dictionary of definitions keyed by lowercase definition name
 	 
 	 */
-	syntaxDefinitions = [NSMutableDictionary dictionaryWithCapacity:30];
+	self.syntaxDefinitions = [NSMutableDictionary dictionaryWithCapacity:30];
 	NSMutableArray *definitionNames = [NSMutableArray arrayWithCapacity:30];
 	
 	NSInteger idx = 0;
@@ -202,7 +204,7 @@ static id sharedInstance = nil;
 		idx++;
 		
 		// key is lowercase name
-		[syntaxDefinitions setObject:syntaxDefinition forKey:[name lowercaseString]];
+		[self.syntaxDefinitions setObject:syntaxDefinition forKey:[name lowercaseString]];
 		[definitionNames addObject:name];
 	}
 	

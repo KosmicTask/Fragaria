@@ -24,6 +24,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 @implementation SMLLineNumbers
 
+@synthesize attributes;
+@synthesize document;
 #pragma mark -
 #pragma mark Instance methods
 /*
@@ -48,10 +50,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 {
 	if ((self = [super init])) {
 		
-		document = theDocument;
+		self.document = theDocument;
 		zeroPoint = NSMakePoint(0, 0);
 		
-		attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextFont"]], NSFontAttributeName, nil];
+		self.attributes = [[[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextFont"]], NSFontAttributeName, nil] autorelease];
 		NSUserDefaultsController *defaultsController = [NSUserDefaultsController sharedUserDefaultsController];
 		[defaultsController addObserver:self forKeyPath:@"values.TextFont" options:NSKeyValueObservingOptionNew context:@"TextFontChanged"];
 	}
@@ -69,7 +71,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
 	if ([(NSString *)context isEqualToString:@"TextFontChanged"]) {
-		attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextFont"]], NSFontAttributeName, nil];
+		self.attributes = [[[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextFont"]], NSFontAttributeName, nil] autorelease];
 	} else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 	}
@@ -98,15 +100,15 @@ Unless required by applicable law or agreed to in writing, software distributed 
 {
 	[self updateLineNumbersForClipView:[[document valueForKey:@"firstTextScrollView"] contentView] checkWidth:checkWidth recolour:recolour];
 
-	if ([document valueForKey:@"secondTextScrollView"] != nil) {
+	if ([self.document valueForKey:@"secondTextScrollView"] != nil) {
 		[self updateLineNumbersForClipView:[[document valueForKey:@"secondTextScrollView"] contentView] checkWidth:checkWidth recolour:recolour];
 	}
 	
-	if ([document valueForKey:@"singleDocumentWindow"] != nil) {
+	if ([self.document valueForKey:@"singleDocumentWindow"] != nil) {
 		[self updateLineNumbersForClipView:[[document valueForKey:@"thirdTextScrollView"] contentView] checkWidth:checkWidth recolour:recolour];
 	}
 	
-	if ([document valueForKey:@"fourthTextScrollView"] != nil) {
+	if ([self.document valueForKey:@"fourthTextScrollView"] != nil) {
 		[self updateLineNumbersForClipView:[[document valueForKey:@"fourthTextScrollView"] contentView] checkWidth:checkWidth recolour:recolour];
 	}
 }

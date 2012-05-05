@@ -34,19 +34,22 @@ NSString * const MGSFODelegate = @"delegate";
 NSString * const ro_MGSFOLineNumbers = @"lineNumbers"; // readonly
 NSString * const ro_MGSFOSyntaxColouring = @"syntaxColouring"; // readonly
 
-static NSSet *objectGetterKeys;
-static NSSet *objectSetterKeys;
-
 static MGSFragaria *_currentInstance;
 
 // class extension
 @interface MGSFragaria()
 @property (nonatomic, readwrite, assign) MGSExtraInterfaceController *extraInterfaceController;
+@property (nonatomic,retain) NSSet* objectGetterKeys;
+@property (nonatomic,retain) NSSet* objectSetterKeys;
+
 @end
 
 @implementation MGSFragaria
 
 @synthesize extraInterfaceController;
+@synthesize docSpec;
+@synthesize objectSetterKeys;
+@synthesize objectGetterKeys;
 
 #pragma mark -
 #pragma mark Class methods
@@ -89,15 +92,6 @@ static MGSFragaria *_currentInstance;
 + (void)initialize
 {
 	[MGSPreferencesController initializeValues];
-	
-	objectSetterKeys = [NSSet setWithObjects:MGSFOIsSyntaxColoured, MGSFOShowLineNumberGutter, MGSFOIsEdited,
-						MGSFOSyntaxDefinitionName, MGSFODelegate,
-						nil];
-	
-	objectGetterKeys = [NSMutableSet setWithObjects:ro_MGSFOTextView, ro_MGSFOScrollView, ro_MGSFOGutterScrollView, 
-						ro_MGSFOLineNumbers, ro_MGSFOLineNumbers, 
-						nil];
-	[(NSMutableSet *)objectGetterKeys unionSet:objectSetterKeys];
 }
 
 /*
@@ -202,10 +196,22 @@ static MGSFragaria *_currentInstance;
 		_currentInstance = self;
 		
 		if (object) {
-			_docSpec = object;
+			self.docSpec = object;
 		} else {
-			_docSpec = [[self class] createDocSpec];
+			self.docSpec = [[self class] createDocSpec];
 		}
+        
+        
+        // Create the Sets containing the valid setter/getter combinations for the Docspec
+        
+        self.objectSetterKeys = [NSSet setWithObjects:MGSFOIsSyntaxColoured, MGSFOShowLineNumberGutter, MGSFOIsEdited,
+                            MGSFOSyntaxDefinitionName, MGSFODelegate,
+                            nil];
+        
+        self.objectGetterKeys = [NSMutableSet setWithObjects:ro_MGSFOTextView, ro_MGSFOScrollView, ro_MGSFOGutterScrollView,
+                            ro_MGSFOLineNumbers, ro_MGSFOLineNumbers, 
+                            nil];
+        [(NSMutableSet *)self.objectGetterKeys unionSet:self.objectSetterKeys];
 	}
 
 	return self;
@@ -243,11 +249,11 @@ static MGSFragaria *_currentInstance;
 	[textScrollView setPostsFrameChangedNotifications:YES];
 	
 	// create line numbers
-	SMLLineNumbers *lineNumbers = [[[SMLLineNumbers alloc] initWithDocument:_docSpec] autorelease];
+	SMLLineNumbers *lineNumbers = [[[SMLLineNumbers alloc] initWithDocument:self.docSpec] autorelease];
 	[[NSNotificationCenter defaultCenter] addObserver:lineNumbers selector:@selector(viewBoundsDidChange:) name:NSViewBoundsDidChangeNotification object:[textScrollView contentView]];
 	[[NSNotificationCenter defaultCenter] addObserver:lineNumbers selector:@selector(viewBoundsDidChange:) name:NSViewFrameDidChangeNotification object:[textScrollView contentView]];
 	
-	[_docSpec setValue:lineNumbers forKey:ro_MGSFOLineNumbers];
+	[self.docSpec setValue:lineNumbers forKey:ro_MGSFOLineNumbers];
 	
 	// create textview
 	SMLTextView *textView = nil;
@@ -282,22 +288,22 @@ static MGSFragaria *_currentInstance;
 	[gutterScrollView setDocumentView:gutterTextView];
 	
 	// update the docSpec
-	[_docSpec setValue:textView forKey:ro_MGSFOTextView];
-	[_docSpec setValue:textScrollView forKey:ro_MGSFOScrollView];
-	[_docSpec setValue:gutterScrollView forKey:ro_MGSFOGutterScrollView];
+	[self.docSpec setValue:textView forKey:ro_MGSFOTextView];
+	[self.docSpec setValue:textScrollView forKey:ro_MGSFOScrollView];
+	[self.docSpec setValue:gutterScrollView forKey:ro_MGSFOGutterScrollView];
 	
 	// add syntax colouring
-	SMLSyntaxColouring *syntaxColouring = [[[SMLSyntaxColouring alloc] initWithDocument:_docSpec] autorelease];
-	[_docSpec setValue:syntaxColouring forKey:ro_MGSFOSyntaxColouring];
+	SMLSyntaxColouring *syntaxColouring = [[[SMLSyntaxColouring alloc] initWithDocument:self.docSpec] autorelease];
+	[self.docSpec setValue:syntaxColouring forKey:ro_MGSFOSyntaxColouring];
 	
 	// add views to content view
-	[contentView addSubview:[_docSpec valueForKey:ro_MGSFOScrollView]];
-	if ([[_docSpec valueForKey:MGSFOShowLineNumberGutter] boolValue] == YES) {
-		[contentView addSubview:[_docSpec valueForKey:ro_MGSFOGutterScrollView]];
+	[contentView addSubview:[self.docSpec valueForKey:ro_MGSFOScrollView]];
+	if ([[self.docSpec valueForKey:MGSFOShowLineNumberGutter] boolValue] == YES) {
+		[contentView addSubview:[self.docSpec valueForKey:ro_MGSFOGutterScrollView]];
 	}
 	
 	// update line numbers
-	[[_docSpec valueForKey:ro_MGSFOLineNumbers] updateLineNumbersForClipView:[[_docSpec valueForKey:ro_MGSFOScrollView] contentView] checkWidth:NO recolour:YES];
+	[[self.docSpec valueForKey:ro_MGSFOLineNumbers] updateLineNumbersForClipView:[[self.docSpec valueForKey:ro_MGSFOScrollView] contentView] checkWidth:NO recolour:YES];
 	
     // issues on 10.8
     // https://github.com/mugginsoft/Fragaria/issues/8#issuecomment-5391009
@@ -307,15 +313,8 @@ static MGSFragaria *_currentInstance;
 
 #pragma mark -
 #pragma mark Document specification
-/*
- 
- - docSpec
- 
- */
-- (id)docSpec
-{
-	return _docSpec;
-}
+
+
 
 /*
  
@@ -324,8 +323,8 @@ static MGSFragaria *_currentInstance;
  */
 - (void)setObject:(id)object forKey:(id)key
 {
-	if ([objectSetterKeys containsObject:key]) {
-		[(id)_docSpec setValue:object forKey:key];
+	if ([self.objectSetterKeys containsObject:key]) {
+		[(id)self.docSpec setValue:object forKey:key];
 	}
 }
 
@@ -336,8 +335,8 @@ static MGSFragaria *_currentInstance;
  */
 - (id)objectForKey:(id)key
 {
-	if ([objectGetterKeys containsObject:key]) {
-		return [_docSpec valueForKey:key];
+	if ([self.objectGetterKeys containsObject:key]) {
+		return [self.docSpec valueForKey:key];
 	}
 	
 	return nil;
@@ -354,7 +353,7 @@ static MGSFragaria *_currentInstance;
  */
 - (void)setString:(NSString *)aString
 {
-	[[self class] docSpec:_docSpec setString:aString];
+	[[self class] docSpec:self.docSpec setString:aString];
 }
 
 /*
@@ -364,7 +363,7 @@ static MGSFragaria *_currentInstance;
  */
 - (void)setString:(NSString *)aString options:(NSDictionary *)options
 {
-	[[self class] docSpec:_docSpec setString:aString options:options];
+	[[self class] docSpec:self.docSpec setString:aString options:options];
 }
 /*
  
@@ -373,7 +372,7 @@ static MGSFragaria *_currentInstance;
  */
 - (NSAttributedString *)attributedString
 {
-	return [[self class] attributedStringForDocSpec:_docSpec];
+	return [[self class] attributedStringForDocSpec:self.docSpec];
 }
 
 /*
@@ -383,7 +382,7 @@ static MGSFragaria *_currentInstance;
  */
 - (NSAttributedString *)attributedStringWithTemporaryAttributesApplied
 {
-	return [[self class] attributedStringWithTemporaryAttributesAppliedForDocSpec:_docSpec];
+	return [[self class] attributedStringWithTemporaryAttributesAppliedForDocSpec:self.docSpec];
 }
 
 /*
@@ -393,7 +392,7 @@ static MGSFragaria *_currentInstance;
  */
 - (NSString *)string
 {
-	return [[self class] stringForDocSpec:_docSpec];
+	return [[self class] stringForDocSpec:self.docSpec];
 }
 
 /*

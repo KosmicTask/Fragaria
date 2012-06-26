@@ -140,14 +140,22 @@ Unless required by applicable law or agreed to in writing, software distributed 
 }
 
 /*
- 
  - setString:
- 
  */
 - (void)setString:(NSString *)aString
 {
 	[super setString:aString];
 	[[fragaria objectForKey:ro_MGSFOLineNumbers] updateLineNumbersCheckWidth:YES recolour:YES];
+}
+
+/*
+ - appendString:
+ */
+- (void)appendString:(NSString *)aString
+{
+    NSMutableString * string = [NSMutableString stringWithString:[super string]];
+    [string appendString:aString];
+    [self setString:string];
 }
 
 #pragma mark -

@@ -201,7 +201,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 			lineNumber++;
 			[lineNumbersString appendFormat:@"%i\n", lineNumber];
 		} else {
-			[lineNumbersString appendFormat:@"%C\n", 0x00B7];
+			[lineNumbersString appendFormat:@"%d\n", 0x00B7];
 			indexNonWrap = idx;
 		}
 		

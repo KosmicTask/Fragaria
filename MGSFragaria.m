@@ -406,6 +406,37 @@ static MGSFragaria *_currentInstance;
 	return [self objectForKey:ro_MGSFOTextView];
 }
 
+/*
+ 
+ - setSyntaxColoured
+ 
+ */
+- (void)setSyntaxColoured:(BOOL)value
+{
+    [self setObject:[NSNumber numberWithBool:value] forKey:MGSFOIsSyntaxColoured];
+ 
+    [self reloadString];
+}
+/*
+ 
+ - isSyntaxColoured
+ 
+ */
+- (BOOL)isSyntaxColoured
+{
+    return [[self objectForKey:MGSFOIsSyntaxColoured] booleanValue];
+}
+
+/*
+ 
+ - reloadString
+ 
+ */
+- (void)reloadString
+{
+    [self setString:[self string]];
+}
+
 #pragma mark -
 #pragma mark Controllers
 

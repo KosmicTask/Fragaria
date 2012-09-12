@@ -71,4 +71,7 @@ extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 - (id)docSpec;
 - (NSTextView *)textView;
 - (MGSTextMenuController *)textMenuController;
+- (void)setSyntaxColoured:(BOOL)value;
+- (BOOL)isSyntaxColoured;
+- (void)reloadString;
 @end

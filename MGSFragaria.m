@@ -424,7 +424,8 @@ static MGSFragaria *_currentInstance;
  */
 - (BOOL)isSyntaxColoured
 {
-    return [[self objectForKey:MGSFOIsSyntaxColoured] booleanValue];
+    NSNumber *value = [self objectForKey:MGSFOIsSyntaxColoured];
+    return [value boolValue];
 }
 
 /*

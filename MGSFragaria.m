@@ -147,6 +147,17 @@ static MGSFragaria *_currentInstance;
 
 /*
  
+ + docSpec:setAttributedString
+ 
+ */
++ (void)docSpec:(id)docSpec setAttributedString:(NSAttributedString *)string 
+{
+	// set text view string
+	[(SMLTextView *)[docSpec valueForKey:ro_MGSFOTextView] setAttributedString:string];
+}
+
+/*
+ 
  + docSpec:setAttributedString:options:
  
  */
@@ -376,6 +387,16 @@ static MGSFragaria *_currentInstance;
 - (void)setString:(NSString *)aString options:(NSDictionary *)options
 {
 	[[self class] docSpec:_docSpec setString:aString options:options];
+}
+
+/*
+ 
+ - setAttributedString:
+ 
+ */
+- (void)setAttributedString:(NSAttributedString *)aString 
+{
+	[[self class] docSpec:_docSpec setAttributedString:aString];
 }
 
 /*

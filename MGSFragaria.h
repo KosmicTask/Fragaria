@@ -54,6 +54,7 @@ extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 + (id)createDocSpec;
 + (void)docSpec:(id)docSpec setString:(NSString *)string;
 + (void)docSpec:(id)docSpec setString:(NSString *)string options:(NSDictionary *)options;
++ (void)docSpec:(id)docSpec setAttributedString:(NSAttributedString *)string options:(NSDictionary *)options;
 + (NSString *)stringForDocSpec:(id)docSpec;
 + (NSAttributedString *)attributedStringForDocSpec:(id)docSpec;
 + (NSAttributedString *)attributedStringWithTemporaryAttributesAppliedForDocSpec:(id)docSpec;

@@ -139,16 +139,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 }
 
-/*
- 
- - setString:
- 
- */
-- (void)setString:(NSString *)aString
-{
-	[super setString:aString];
-	[[fragaria objectForKey:ro_MGSFOLineNumbers] updateLineNumbersCheckWidth:YES recolour:YES];
-}
 
 #pragma mark -
 #pragma mark KVO
@@ -559,6 +549,17 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 /*
  
+ - setString:
+ 
+ */
+- (void)setString:(NSString *)aString
+{
+	[super setString:aString];
+	[[fragaria objectForKey:ro_MGSFOLineNumbers] updateLineNumbersCheckWidth:YES recolour:YES];
+}
+
+/*
+ 
  - setString:options:
  
  */
@@ -603,6 +604,20 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	}
 	
 }
+
+/*
+ 
+ - setAttributedString:
+ 
+ */
+- (void)setAttributedString:(NSAttributedString *)text
+{
+    NSTextStorage *textStorage = [self textStorage];
+    [textStorage setAttributedString:text];
+    [[fragaria objectForKey:ro_MGSFOLineNumbers] updateLineNumbersCheckWidth:YES recolour:YES];
+  
+}
+
 /*
  
  - setAttributedString:options:
@@ -646,8 +661,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 			
 		}
 	} else {
-        [textStorage setAttributedString:text];
-        [[fragaria objectForKey:ro_MGSFOLineNumbers] updateLineNumbersCheckWidth:YES recolour:YES];
+        [self setAttributedString:text];
 	}
 	
 }

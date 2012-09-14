@@ -639,6 +639,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		 This details how to make programatic changes to the textStorage object.
 		 
 		 */
+        
+        /*
+         
+         code here reflects what occurs in - setString:options:
+         
+         may be over complicated
+         
+         */
 		NSRange all = NSMakeRange(0, [textStorage length]);
         BOOL textIsEmpty = ([textStorage length] == 0 ? YES : NO);
         

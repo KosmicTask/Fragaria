@@ -21,7 +21,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 #import "SMLStandardHeader.h"
-
+#import "MGSFragariaPreferences.h"
 #import "SMLGutterTextView.h"
 
 @implementation SMLGutterTextView
@@ -46,15 +46,15 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[self setAlignment:NSRightTextAlignment];
 		[self setEditable:NO];
 		[self setSelectable:NO];
-		[[self textContainer] setContainerSize:NSMakeSize([[SMLDefaults valueForKey:@"GutterWidth"] integerValue], FLT_MAX)];
+		[[self textContainer] setContainerSize:NSMakeSize([[SMLDefaults valueForKey:MGSFragariaPrefsGutterWidth] integerValue], FLT_MAX)];
 		[self setVerticallyResizable:YES];
 		[self setHorizontallyResizable:YES];
 		[self setAutoresizingMask:NSViewHeightSizable];
 		
-		[self setFont:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextFont"]]];
-		[self setTextColor:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"GutterTextColourWell"]]];
+		[self setFont:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]]];
+		[self setTextColor:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsGutterTextColourWell]]];
 		[self setInsertionPointColor:[NSColor textColor]];
-		//[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextColourWell"]]];
+		//[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextColourWell]]];
 		[self setBackgroundColor:[NSColor colorWithCalibratedWhite:0.94f alpha:1.0f]];
 
 		NSUserDefaultsController *defaultsController = [NSUserDefaultsController sharedUserDefaultsController];
@@ -73,7 +73,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
 	if ([(NSString *)context isEqualToString:@"TextFontChanged"]) {
-		[self setFont:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextFont"]]];
+		[self setFont:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]]];
 	} else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 	}

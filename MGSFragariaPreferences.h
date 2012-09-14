@@ -11,67 +11,68 @@
 
 // color data
 // [NSArchiver archivedDataWithRootObject:[NSColor whiteColor]]
-extern NSString * const MGSPrefsCommandsColourWell;
-extern NSString * const MGSPrefsCommentsColourWell;
-extern NSString * const MGSPrefsInstructionsColourWell;
-extern NSString * const MGSPrefsKeywordsColourWell;
-extern NSString * const MGSPrefsAutocompleteColourWell;
-extern NSString * const MGSPrefsVariablesColourWell;
-extern NSString * const MGSPrefsStringsColourWell;
-extern NSString * const MGSPrefsAttributesColourWell;
-extern NSString * const MGSPrefsBackgroundColourWell;
-extern NSString * const MGSPrefsTextColourWell;
-extern NSString * const MGSPrefsGutterTextColourWell;
-extern NSString * const MGSPrefsInvisibleCharactersColourWell;
-extern NSString * const MGSPrefsHighlightLineColourWell;
+extern NSString * const MGSFragariaPrefsCommandsColourWell;
+extern NSString * const MGSFragariaPrefsCommentsColourWell;
+extern NSString * const MGSFragariaPrefsInstructionsColourWell;
+extern NSString * const MGSFragariaPrefsKeywordsColourWell;
+extern NSString * const MGSFragariaPrefsAutocompleteColourWell;
+extern NSString * const MGSFragariaPrefsVariablesColourWell;
+extern NSString * const MGSFragariaPrefsStringsColourWell;
+extern NSString * const MGSFragariaPrefsAttributesColourWell;
+extern NSString * const MGSFragariaPrefsBackgroundColourWell;
+extern NSString * const MGSFragariaPrefsTextColourWell;
+extern NSString * const MGSFragariaPrefsGutterTextColourWell;
+extern NSString * const MGSFragariaPrefsInvisibleCharactersColourWell;
+extern NSString * const MGSFragariaPrefsHighlightLineColourWell;
 
 // bool
-extern NSString * const MGSPrefsColourCommands;
-extern NSString * const MGSPrefsColourComments;
-extern NSString * const MGSPrefsColourInstructions;
-extern NSString * const MGSPrefsColourKeywords;
-extern NSString * const MGSPrefsColourAutocomplete;
-extern NSString * const MGSPrefsColourVariables;
-extern NSString * const MGSPrefsColourStrings;	
-extern NSString * const MGSPrefsColourAttributes;	
-extern NSString * const MGSPrefsLiveUpdatePreview;
-extern NSString * const MGSPrefsShowFullPathInWindowTitle;
-extern NSString * const MGSPrefsShowLineNumberGutter;
-extern NSString * const MGSPrefsSyntaxColourNewDocuments;
-extern NSString * const MGSPrefsLineWrapNewDocuments;
-extern NSString * const MGSPrefsIndentNewLinesAutomatically;
-extern NSString * const MGSPrefsOnlyColourTillTheEndOfLine;
-extern NSString * const MGSPrefsShowMatchingBraces;
-extern NSString * const MGSPrefsShowInvisibleCharacters;
-extern NSString * const MGSPrefsIndentWithSpaces;
-extern NSString * const MGSPrefsColourMultiLineStrings;
-extern NSString * const MGSPrefsAutocompleteSuggestAutomatically;
-extern NSString * const MGSPrefsAutocompleteIncludeStandardWords;
-extern NSString * const MGSPrefsAutoSpellCheck;
-extern NSString * const MGSPrefsAutoGrammarCheck;
-extern NSString * const MGSPrefsSmartInsertDelete;
-extern NSString * const MGSPrefsAutomaticLinkDetection;
-extern NSString * const MGSPrefsAutomaticQuoteSubstitution;
-extern NSString * const MGSPrefsUseTabStops;
-extern NSString * const MGSPrefsHighlightCurrentLine;
-extern NSString * const MGSPrefsAutomaticallyIndentBraces;
-extern NSString * const MGSPrefsAutoInsertAClosingParenthesis;
-extern NSString * const MGSPrefsAutoInsertAClosingBrace;
+extern NSString * const MGSFragariaPrefsColourCommands;
+extern NSString * const MGSFragariaPrefsColourComments;
+extern NSString * const MGSFragariaPrefsColourInstructions;
+extern NSString * const MGSFragariaPrefsColourKeywords;
+extern NSString * const MGSFragariaPrefsColourAutocomplete;
+extern NSString * const MGSFragariaPrefsColourVariables;
+extern NSString * const MGSFragariaPrefsColourStrings;	
+extern NSString * const MGSFragariaPrefsColourAttributes;	
+extern NSString * const MGSFragariaPrefsLiveUpdatePreview;
+extern NSString * const MGSFragariaPrefsShowFullPathInWindowTitle;
+extern NSString * const MGSFragariaPrefsShowLineNumberGutter;
+extern NSString * const MGSFragariaPrefsSyntaxColourNewDocuments;
+extern NSString * const MGSFragariaPrefsLineWrapNewDocuments;
+extern NSString * const MGSFragariaPrefsIndentNewLinesAutomatically;
+extern NSString * const MGSFragariaPrefsOnlyColourTillTheEndOfLine;
+extern NSString * const MGSFragariaPrefsShowMatchingBraces;
+extern NSString * const MGSFragariaPrefsShowInvisibleCharacters;
+extern NSString * const MGSFragariaPrefsIndentWithSpaces;
+extern NSString * const MGSFragariaPrefsColourMultiLineStrings;
+extern NSString * const MGSFragariaPrefsAutocompleteSuggestAutomatically;
+extern NSString * const MGSFragariaPrefsAutocompleteIncludeStandardWords;
+extern NSString * const MGSFragariaPrefsAutoSpellCheck;
+extern NSString * const MGSFragariaPrefsAutoGrammarCheck;
+extern NSString * const MGSFragariaPrefsSmartInsertDelete;
+extern NSString * const MGSFragariaPrefsAutomaticLinkDetection;
+extern NSString * const MGSFragariaPrefsAutomaticQuoteSubstitution;
+extern NSString * const MGSFragariaPrefsUseTabStops;
+extern NSString * const MGSFragariaPrefsHighlightCurrentLine;
+extern NSString * const MGSFragariaPrefsAutomaticallyIndentBraces;
+extern NSString * const MGSFragariaPrefsAutoInsertAClosingParenthesis;
+extern NSString * const MGSFragariaPrefsAutoInsertAClosingBrace;
 
 // integer
-extern NSString * const MGSPrefsGutterWidth;
-extern NSString * const MGSPrefsTabWidth;
-extern NSString * const MGSPrefsIndentWidth;
-extern NSString * const MGSPrefsShowPageGuideAtColumn;	
+extern NSString * const MGSFragariaPrefsGutterWidth;
+extern NSString * const MGSFragariaPrefsTabWidth;
+extern NSString * const MGSFragariaPrefsIndentWidth;
+extern NSString * const MGSFragariaPrefsShowPageGuideAtColumn;	
+extern NSString * const MGSFragariaPrefsSpacesPerTabEntabDetab;
 
 // float
-extern NSString * const MGSPrefsAutocompleteAfterDelay;	
-extern NSString * const MGSPrefsLiveUpdatePreviewDelay;
+extern NSString * const MGSFragariaPrefsAutocompleteAfterDelay;	
+extern NSString * const MGSFragariaPrefsLiveUpdatePreviewDelay;
 
 // font data
 // [NSArchiver archivedDataWithRootObject:[NSFont fontWithName:@"Menlo" size:11]]
-extern NSString * const MGSPrefsTextFont;
+extern NSString * const MGSFragariaPrefsTextFont;
 
 // string
-extern NSString * const MGSPrefsSyntaxColouringPopUpString;
+extern NSString * const MGSFragariaPrefsSyntaxColouringPopUpString;
 

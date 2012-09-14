@@ -167,7 +167,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 	if ([(NSString *)context isEqualToString:@"ColoursChanged"]) {
 		[self applyColourDefaults];
 		[self pageRecolour];
-		if ([[SMLDefaults valueForKey:@"HighlightCurrentLine"] boolValue] == YES) {
+		if ([[SMLDefaults valueForKey:MGSFragariaPrefsHighlightCurrentLine] boolValue] == YES) {
 			NSRange range = [[self completeString] lineRangeForRange:[[document valueForKey:@"firstTextView"] selectedRange]];
 			[self highlightLineRange:range];
 			lastLineHighlightRange = range;
@@ -221,7 +221,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 	NSString *definitionName = [document valueForKey:@"syntaxDefinition"];
 	if (definitionName) return definitionName;
 
-	NSString *defaultDefinitionName  = [SMLDefaults valueForKey:@"SyntaxColouringPopUpString"];
+	NSString *defaultDefinitionName  = [SMLDefaults valueForKey:MGSFragariaPrefsSyntaxColouringPopUpString];
 	NSString *documentExtension = [[document valueForKey:@"name"] pathExtension];
 	
 	if ([[SMLDefaults valueForKey:@"SyntaxColouringMatrix"] integerValue] == 1) { // Always use...
@@ -481,7 +481,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
  */
 - (void)prepareRegularExpressions
 {
-	if ([[SMLDefaults valueForKey:@"ColourMultiLineStrings"] boolValue] == NO) {
+	if ([[SMLDefaults valueForKey:MGSFragariaPrefsColourMultiLineStrings] boolValue] == NO) {
 		firstStringPattern = [[ICUPattern alloc] initWithString:[NSString stringWithFormat:@"\\W%@[^%@\\\\\\r\\n]*+(?:\\\\(?:.|$)[^%@\\\\\\r\\n]*+)*+%@", firstString, firstString, firstString, firstString]];
 		
 		secondStringPattern = [[ICUPattern alloc] initWithString:[NSString stringWithFormat:@"\\W%@[^%@\\\\\\r\\n]*+(?:\\\\(?:.|$)[^%@\\\\]*+)*+%@", secondString, secondString, secondString, secondString]];
@@ -627,8 +627,8 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		return;
 	}
 	
-	BOOL shouldOnlyColourTillTheEndOfLine = [[SMLDefaults valueForKey:@"OnlyColourTillTheEndOfLine"] boolValue];
-	BOOL shouldColourMultiLineStrings = [[SMLDefaults valueForKey:@"ColourMultiLineStrings"] boolValue];
+	BOOL shouldOnlyColourTillTheEndOfLine = [[SMLDefaults valueForKey:MGSFragariaPrefsOnlyColourTillTheEndOfLine] boolValue];
+	BOOL shouldColourMultiLineStrings = [[SMLDefaults valueForKey:MGSFragariaPrefsColourMultiLineStrings] boolValue];
 	NSString *completeString = [self completeString];
 	
 	NSRange effectiveRange = range;
@@ -672,7 +672,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
         //
 		// Commands
         //
-		if (![beginCommand isEqualToString:@""] && [[SMLDefaults valueForKey:@"ColourCommands"] boolValue] == YES) {
+		if (![beginCommand isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourCommands] boolValue] == YES) {
 			searchSyntaxLength = [endCommand length];
 			unichar beginCommandCharacter = [beginCommand characterAtIndex:0];
 			unichar endCommandCharacter = [endCommand characterAtIndex:0];
@@ -718,7 +718,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
         //
 		// Instructions
         //
-		if (![beginInstruction isEqualToString:@""] && [[SMLDefaults valueForKey:@"ColourInstructions"] boolValue] == YES) {
+		if (![beginInstruction isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourInstructions] boolValue] == YES) {
 			// It takes too long to scan the whole document if it's large, so for instructions, first multi-line comment and second multi-line comment search backwards and begin at the start of the first beginInstruction etc. that it finds from the present position and, below, break the loop if it has passed the scanned range (i.e. after the end instruction)
 			
 			beginLocationInMultiLine = [completeString rangeOfString:beginInstruction options:NSBackwardsSearch range:NSMakeRange(0, rangeLocation)].location;
@@ -762,7 +762,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		//
 		// Keywords
         //
-		if ([keywords count] != 0 && [[SMLDefaults valueForKey:@"ColourKeywords"] boolValue] == YES) {
+		if ([keywords count] != 0 && [[SMLDefaults valueForKey:MGSFragariaPrefsColourKeywords] boolValue] == YES) {
 			[scanner mgs_setScanLocation:0];
 			while (![scanner isAtEnd]) {
 				[scanner scanUpToCharactersFromSet:keywordStartCharacterSet intoString:nil];
@@ -797,7 +797,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		//
 		// Autocomplete
         //
-		if ([autocompleteWords count] != 0 && [[SMLDefaults valueForKey:@"ColourAutocomplete"] boolValue] == YES) {
+		if ([autocompleteWords count] != 0 && [[SMLDefaults valueForKey:MGSFragariaPrefsColourAutocomplete] boolValue] == YES) {
 			[scanner mgs_setScanLocation:0];
 			while (![scanner isAtEnd]) {
 				[scanner scanUpToCharactersFromSet:keywordStartCharacterSet intoString:nil];
@@ -833,7 +833,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		//
 		// Variables
         //
-		if (beginVariable != nil && [[SMLDefaults valueForKey:@"ColourVariables"] boolValue] == YES) {
+		if (beginVariable != nil && [[SMLDefaults valueForKey:MGSFragariaPrefsColourVariables] boolValue] == YES) {
 			[scanner mgs_setScanLocation:0];
 			while (![scanner isAtEnd]) {
 				[scanner scanUpToCharactersFromSet:beginVariable intoString:nil];
@@ -864,7 +864,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		//
 		// Second string, first pass
         //
-		if (![secondString isEqualToString:@""] && [[SMLDefaults valueForKey:@"ColourStrings"] boolValue] == YES) {
+		if (![secondString isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourStrings] boolValue] == YES) {
 			@try {
 				secondStringMatcher = [[ICUMatcher alloc] initWithPattern:secondStringPattern overString:searchString];
 			}
@@ -881,7 +881,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		//
 		// First string
         //
-		if (![firstString isEqualToString:@""] && [[SMLDefaults valueForKey:@"ColourStrings"] boolValue] == YES) {
+		if (![firstString isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourStrings] boolValue] == YES) {
 			@try {
 				firstStringMatcher = [[ICUMatcher alloc] initWithPattern:firstStringPattern overString:searchString];
 			}
@@ -901,7 +901,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		//
 		// Attributes
         //
-		if ([[SMLDefaults valueForKey:@"ColourAttributes"] boolValue] == YES) {
+		if ([[SMLDefaults valueForKey:MGSFragariaPrefsColourAttributes] boolValue] == YES) {
 			[scanner mgs_setScanLocation:0];
 			while (![scanner isAtEnd]) {
 				[scanner scanUpToString:@" " intoString:nil];
@@ -932,7 +932,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		// Colour single-line comments
         //
         for (NSString *singleLineComment in singleLineComments) {
-            if (![singleLineComment isEqualToString:@""] && [[SMLDefaults valueForKey:@"ColourComments"] boolValue] == YES) {
+            if (![singleLineComment isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourCommands] boolValue] == YES) {
                 
                 // reset scanner
                 [scanner mgs_setScanLocation:0];
@@ -1000,7 +1000,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
             NSString *beginMultiLineComment = [multiLineComment objectAtIndex:0];
             NSString *endMultiLineComment = [multiLineComment objectAtIndex:1];
             
-            if (![beginMultiLineComment isEqualToString:@""] && [[SMLDefaults valueForKey:@"ColourComments"] boolValue] == YES) {
+            if (![beginMultiLineComment isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourCommands] boolValue] == YES) {
             
                 beginLocationInMultiLine = [completeString rangeOfString:beginMultiLineComment options:NSBackwardsSearch range:NSMakeRange(0, rangeLocation)].location;
                 endLocationInMultiLine = [completeString rangeOfString:endMultiLineComment options:NSBackwardsSearch range:NSMakeRange(0, rangeLocation)].location;
@@ -1063,7 +1063,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		//
 		// Second string, second pass
         //
-		if (![secondString isEqualToString:@""] && [[SMLDefaults valueForKey:@"ColourStrings"] boolValue] == YES) {
+		if (![secondString isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourStrings] boolValue] == YES) {
 			@try {
 				[secondStringMatcher reset];
 			}
@@ -1113,23 +1113,23 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
  */
 - (void)applyColourDefaults
 {
-	commandsColour = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"CommandsColourWell"]], NSForegroundColorAttributeName, nil];
+	commandsColour = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsCommandsColourWell]], NSForegroundColorAttributeName, nil];
 	
-	commentsColour = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"CommentsColourWell"]], NSForegroundColorAttributeName, nil];
+	commentsColour = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsCommentsColourWell]], NSForegroundColorAttributeName, nil];
 	
-	instructionsColour = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"InstructionsColourWell"]], NSForegroundColorAttributeName, nil];
+	instructionsColour = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsInstructionsColourWell]], NSForegroundColorAttributeName, nil];
 	
-	keywordsColour = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"KeywordsColourWell"]], NSForegroundColorAttributeName, nil];
+	keywordsColour = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsKeywordsColourWell]], NSForegroundColorAttributeName, nil];
 	
-	autocompleteWordsColour = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"AutocompleteColourWell"]], NSForegroundColorAttributeName, nil];
+	autocompleteWordsColour = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsAutocompleteColourWell]], NSForegroundColorAttributeName, nil];
 	
-	stringsColour = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"StringsColourWell"]], NSForegroundColorAttributeName, nil];
+	stringsColour = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsStringsColourWell]], NSForegroundColorAttributeName, nil];
 	
-	variablesColour = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"VariablesColourWell"]], NSForegroundColorAttributeName, nil];
+	variablesColour = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsVariablesColourWell]], NSForegroundColorAttributeName, nil];
 	
-	attributesColour = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"AttributesColourWell"]], NSForegroundColorAttributeName, nil];
+	attributesColour = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsAttributesColourWell]], NSForegroundColorAttributeName, nil];
 	
-	lineHighlightColour = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"HighlightLineColourWell"]], NSBackgroundColorAttributeName, nil];
+	lineHighlightColour = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsHighlightLineColourWell]], NSBackgroundColorAttributeName, nil];
 }
 
 /*
@@ -1215,22 +1215,22 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		[document setValue:[NSNumber numberWithBool:YES] forKey:MGSFOIsEdited];
 	}
 	
-	if ([[SMLDefaults valueForKey:@"HighlightCurrentLine"] boolValue] == YES) {
+	if ([[SMLDefaults valueForKey:MGSFragariaPrefsHighlightCurrentLine] boolValue] == YES) {
 		[self highlightLineRange:[completeString lineRangeForRange:[textView selectedRange]]];
 	} else if ([[document valueForKey:@"isSyntaxColoured"] boolValue] == YES) {
 		[self pageRecolourTextView:textView];
 	}
 	
 	if (autocompleteWordsTimer != nil) {
-		[autocompleteWordsTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:[[SMLDefaults valueForKey:@"AutocompleteAfterDelay"] floatValue]]];
-	} else if ([[SMLDefaults valueForKey:@"AutocompleteSuggestAutomatically"] boolValue] == YES) {
-		autocompleteWordsTimer = [NSTimer scheduledTimerWithTimeInterval:[[SMLDefaults valueForKey:@"AutocompleteAfterDelay"] floatValue] target:self selector:@selector(autocompleteWordsTimerSelector:) userInfo:textView repeats:NO];
+		[autocompleteWordsTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:[[SMLDefaults valueForKey:MGSFragariaPrefsAutocompleteAfterDelay] floatValue]]];
+	} else if ([[SMLDefaults valueForKey:MGSFragariaPrefsAutocompleteSuggestAutomatically] boolValue] == YES) {
+		autocompleteWordsTimer = [NSTimer scheduledTimerWithTimeInterval:[[SMLDefaults valueForKey:MGSFragariaPrefsAutocompleteAfterDelay] floatValue] target:self selector:@selector(autocompleteWordsTimerSelector:) userInfo:textView repeats:NO];
 	}
 	
 	if (liveUpdatePreviewTimer != nil) {
-		[liveUpdatePreviewTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:[[SMLDefaults valueForKey:@"LiveUpdatePreviewDelay"] floatValue]]];
-	} else if ([[SMLDefaults valueForKey:@"LiveUpdatePreview"] boolValue] == YES) {
-		liveUpdatePreviewTimer = [NSTimer scheduledTimerWithTimeInterval:[[SMLDefaults valueForKey:@"LiveUpdatePreviewDelay"] floatValue] target:self selector:@selector(liveUpdatePreviewTimerSelector:) userInfo:textView repeats:NO];
+		[liveUpdatePreviewTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:[[SMLDefaults valueForKey:MGSFragariaPrefsLiveUpdatePreviewDelay] floatValue]]];
+	} else if ([[SMLDefaults valueForKey:MGSFragariaPrefsLiveUpdatePreview] boolValue] == YES) {
+		liveUpdatePreviewTimer = [NSTimer scheduledTimerWithTimeInterval:[[SMLDefaults valueForKey:MGSFragariaPrefsLiveUpdatePreviewDelay] floatValue] target:self selector:@selector(liveUpdatePreviewTimerSelector:) userInfo:textView repeats:NO];
 	}
 	
 	[[document valueForKey:@"lineNumbers"] updateLineNumbersCheckWidth:NO recolour:NO];
@@ -1335,11 +1335,11 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		
 	NSRange editedRange = [textView selectedRange];
 	
-	if ([[SMLDefaults valueForKey:@"HighlightCurrentLine"] boolValue] == YES) {
+	if ([[SMLDefaults valueForKey:MGSFragariaPrefsHighlightCurrentLine] boolValue] == YES) {
 		[self highlightLineRange:[completeString lineRangeForRange:editedRange]];
 	}
 	
-	if ([[SMLDefaults valueForKey:@"ShowMatchingBraces"] boolValue] == NO) {
+	if ([[SMLDefaults valueForKey:MGSFragariaPrefsShowMatchingBraces] boolValue] == NO) {
 		return;
 	}
 
@@ -1434,7 +1434,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 {
 #pragma unused(idx)
 	if ([keywordsAndAutocompleteWords count] == 0) {
-		if ([[SMLDefaults valueForKey:@"AutocompleteIncludeStandardWords"] boolValue] == NO) {
+		if ([[SMLDefaults valueForKey:MGSFragariaPrefsAutocompleteIncludeStandardWords] boolValue] == NO) {
 			return [NSArray array];
 		} else {
 			return words;
@@ -1443,7 +1443,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 	
 	NSString *matchString = [[theTextView string] substringWithRange:charRange];
 	NSMutableArray *finalWordsArray = [NSMutableArray arrayWithArray:keywordsAndAutocompleteWords];
-	if ([[SMLDefaults valueForKey:@"AutocompleteIncludeStandardWords"] boolValue]) {
+	if ([[SMLDefaults valueForKey:MGSFragariaPrefsAutocompleteIncludeStandardWords] boolValue]) {
 		[finalWordsArray addObjectsFromArray:words];
 	}
 	
@@ -1455,7 +1455,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		}
 	}
 	
-	if ([[SMLDefaults valueForKey:@"AutocompleteIncludeStandardWords"] boolValue]) { // If no standard words are added there's no need to sort it again as it has already been sorted
+	if ([[SMLDefaults valueForKey:MGSFragariaPrefsAutocompleteIncludeStandardWords] boolValue]) { // If no standard words are added there's no need to sort it again as it has already been sorted
 		return [matchArray sortedArrayUsingSelector:@selector(compare:)];
 	} else {
 		return matchArray;
@@ -1536,7 +1536,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 - (void)liveUpdatePreviewTimerSelector:(NSTimer *)theTimer
 {
 #pragma unused(theTimer)
-	if ([[SMLDefaults valueForKey:@"LiveUpdatePreview"] boolValue] == YES) {
+	if ([[SMLDefaults valueForKey:MGSFragariaPrefsLiveUpdatePreview] boolValue] == YES) {
 		// MGS [[SMLPreviewController sharedInstance] liveUpdate];
 	}
 	

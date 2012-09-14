@@ -252,7 +252,7 @@ static MGSFragaria *_currentInstance;
  */
 - (void)embedInView:(NSView *)contentView
 {
-	NSInteger gutterWidth = [[SMLDefaults valueForKey:MGSPrefsGutterWidth] integerValue];
+	NSInteger gutterWidth = [[SMLDefaults valueForKey:MGSFragariaPrefsGutterWidth] integerValue];
 	
 	// create text scrollview
 	NSScrollView *textScrollView = [[[NSScrollView alloc] initWithFrame:NSMakeRect(gutterWidth, 0, [contentView bounds].size.width - gutterWidth, [contentView bounds].size.height)] autorelease];
@@ -273,7 +273,7 @@ static MGSFragaria *_currentInstance;
 	
 	// create textview
 	SMLTextView *textView = nil;
-	if ([[SMLDefaults valueForKey:MGSPrefsLineWrapNewDocuments] boolValue] == YES) {
+	if ([[SMLDefaults valueForKey:MGSFragariaPrefsLineWrapNewDocuments] boolValue] == YES) {
 		textView = [[[SMLTextView alloc] initWithFrame:NSMakeRect(gutterWidth, 0, contentSize.width, contentSize.height)] autorelease];
 		[textView setMinSize:contentSize];
 		[textScrollView setHasHorizontalScroller:NO];

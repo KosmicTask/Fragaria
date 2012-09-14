@@ -299,11 +299,11 @@ static id sharedInstance = nil;
 		NSInteger charactersRemovedInSelection = 0;
 		NSRange rangeOfLine;
 		unichar characterToTest;
-		NSInteger numberOfSpacesPerTab = [[SMLDefaults valueForKey:@"IndentWidth"] integerValue];
+		NSInteger numberOfSpacesPerTab = [[SMLDefaults valueForKey:MGSFragariaPrefsIndentWidth] integerValue];
 		NSInteger numberOfSpacesToDeleteOnFirstLine = -1;
 		for (idx = 0; idx < numberOfLines; idx++) {
 			rangeOfLine = [completeString lineRangeForRange:NSMakeRange(temporaryLocation, 0)];
-			if ([[SMLDefaults valueForKey:@"UseTabStops"] boolValue] == YES && [[SMLDefaults valueForKey:@"IndentWithSpaces"] boolValue] == YES) {
+			if ([[SMLDefaults valueForKey:MGSFragariaPrefsUseTabStops] boolValue] == YES && [[SMLDefaults valueForKey:MGSFragariaPrefsIndentWithSpaces] boolValue] == YES) {
 				NSUInteger startOfLine = rangeOfLine.location;
 				while (startOfLine < NSMaxRange(rangeOfLine) && [completeString characterAtIndex:startOfLine] == ' ' && rangeOfLine.length > 0) {
 					startOfLine++;
@@ -403,10 +403,10 @@ static id sharedInstance = nil;
 	NSRange selectedRange;
 	
 	NSMutableString *replacementString;
-	if ([[SMLDefaults valueForKey:@"IndentWithSpaces"] boolValue] == YES) {
+	if ([[SMLDefaults valueForKey:MGSFragariaPrefsIndentWithSpaces] boolValue] == YES) {
 		replacementString = [NSMutableString string];
-		NSInteger numberOfSpacesPerTab = [[SMLDefaults valueForKey:@"IndentWidth"] integerValue];
-		if ([[SMLDefaults valueForKey:@"UseTabStops"] boolValue] == YES) {
+		NSInteger numberOfSpacesPerTab = [[SMLDefaults valueForKey:MGSFragariaPrefsIndentWidth] integerValue];
+		if ([[SMLDefaults valueForKey:MGSFragariaPrefsUseTabStops] boolValue] == YES) {
 			NSInteger locationOnLine = [textView selectedRange].location - [[textView string] lineRangeForRange:NSMakeRange([textView selectedRange].location, 0)].location;
 			if (numberOfSpacesPerTab != 0) {
 				NSInteger numberOfSpacesLess = locationOnLine % numberOfSpacesPerTab;
@@ -684,7 +684,7 @@ static id sharedInstance = nil;
 	
 	NSArray *array = [SMLCurrentTextView selectedRanges];
 	NSMutableString *searchString = [NSMutableString string];
-	NSInteger numberOfSpaces = [[SMLDefaults valueForKey:@"SpacesPerTabEntabDetab"] integerValue];
+	NSInteger numberOfSpaces = [[SMLDefaults valueForKey:MGSFragariaPrefsSpacesPerTabEntabDetab] integerValue];
 	while (numberOfSpaces--) {
 		[searchString appendString:@" "];
 	}
@@ -725,7 +725,7 @@ static id sharedInstance = nil;
 	
 	NSArray *array = [SMLCurrentTextView selectedRanges];
 	NSMutableString *replacementString = [NSMutableString string];
-	NSInteger numberOfSpaces = [[SMLDefaults valueForKey:@"SpacesPerTabEntabDetab"] integerValue];
+	NSInteger numberOfSpaces = [[SMLDefaults valueForKey:MGSFragariaPrefsSpacesPerTabEntabDetab] integerValue];
 	while (numberOfSpaces--) {
 		[replacementString appendString:@" "];
 	}

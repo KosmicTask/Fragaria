@@ -7,6 +7,7 @@
 //
 #import "MGSFragaria.h"
 #import "MGSFragariaFramework.h"
+#import "FRAFontTransformer.h"
 
 // valid keys for 
 // - (void)setObject:(id)object forKey:(id)key;
@@ -88,7 +89,7 @@ static MGSFragaria *_currentInstance;
  */
 + (void)initialize
 {
-	[MGSPreferencesController initializeValues];
+	[MGSFragariaPreferencesController initializeValues];
 	
 	objectSetterKeys = [NSSet setWithObjects:MGSFOIsSyntaxColoured, MGSFOShowLineNumberGutter, MGSFOIsEdited,
 						MGSFOSyntaxDefinitionName, MGSFODelegate,
@@ -228,6 +229,9 @@ static MGSFragaria *_currentInstance;
 		} else {
 			_docSpec = [[self class] createDocSpec];
 		}
+        
+        FRAFontTransformer *fontTransformer = [[FRAFontTransformer alloc] init];
+        [NSValueTransformer setValueTransformer:fontTransformer forName:@"FontTransformer"];
 	}
 
 	return self;

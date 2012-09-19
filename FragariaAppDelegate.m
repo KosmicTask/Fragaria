@@ -8,7 +8,7 @@
 
 #import "FragariaAppDelegate.h"
 #import "MGSFragaria.h"
-
+#import "MGSFragariaPreferencesController.h"
 
 @implementation FragariaAppDelegate
 
@@ -78,6 +78,20 @@
 	 return YES;
  }
 
+#pragma mark -
+#pragma mark Actions
+
+/*
+ 
+ - showPreferencesWindow
+ 
+ */
+- (IBAction)showPreferencesWindow:(id)sender
+{
+    #pragma unused(sender)
+    
+    [[MGSFragariaPreferencesController sharedInstance] showWindow:self];
+}
 
 #pragma mark -
 #pragma mark Pasteboard handling

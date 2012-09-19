@@ -18,6 +18,7 @@
 	BOOL isEdited;
 }
 
+- (IBAction)showPreferencesWindow:(id)sender;
 - (IBAction)copyToPasteBoard:(id)sender;
 @property (assign) IBOutlet NSWindow *window;
 

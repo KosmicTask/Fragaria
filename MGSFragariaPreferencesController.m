@@ -8,10 +8,17 @@
 
 #import "MGSFragariaFramework.h"
 
+typedef enum {
+    kTextEditingPrefTabIndex = 0,
+    kFontsAndColoursPrefTabIndex = 1
+} MGSPrefTabIndex;
+
 static BOOL MGS_preferencesInitialized = NO;
+static id sharedInstance = nil;
 
-@implementation MGSPreferencesController
+@implementation MGSFragariaPreferencesController
 
+@synthesize fontsAndColoursPrefsViewController, textEditingPrefsViewController;
 
 /*
  
@@ -91,6 +98,67 @@ static BOOL MGS_preferencesInitialized = NO;
 	[defaultsController setInitialValues:dictionary];
 	
 	MGS_preferencesInitialized = YES;
+}
+
+/*
+ 
+ + sharedInstance
+ 
+ */
++ (MGSFragariaPreferencesController *)sharedInstance
+{
+    if (sharedInstance == nil) {
+        sharedInstance = [[super allocWithZone:NULL] init];
+    }
+    return sharedInstance;
+}
+
+/*
+ 
+ + allocWithZone:
+ 
+ alloc with zone for singleton
+ 
+ */
++ (id)allocWithZone:(NSZone *)zone
+{
+#pragma unused(zone)
+	return [[self sharedInstance] retain];
+}
+
+#pragma mark -
+#pragma mark Instance methods
+
+/*
+ 
+ - init
+ 
+ */
+- (id)init
+{
+    if (sharedInstance) return sharedInstance;
+    self = [super initWithWindowNibName:@"MGSPreferences" owner:self];
+    if (self) {
+        
+    }
+    sharedInstance = self;
+    return self;
+}
+
+/*
+ 
+ - windowDidLoad
+ 
+ */
+- (void)windowDidLoad
+{
+    // load view controllers
+    textEditingPrefsViewController = [[MGSFragariaTextEditingPrefsViewController alloc] init];
+    [[tabView tabViewItemAtIndex:kTextEditingPrefTabIndex] setView:[textEditingPrefsViewController view]];
+
+    fontsAndColoursPrefsViewController = [[MGSFragariaFontsAndColoursPrefsViewController alloc] init];
+    [[tabView tabViewItemAtIndex:kFontsAndColoursPrefTabIndex] setView:[fontsAndColoursPrefsViewController view]];
+    
 }
 
 @end

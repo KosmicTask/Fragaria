@@ -57,6 +57,7 @@ extern NSString * const MGSFragariaPrefsHighlightCurrentLine;
 extern NSString * const MGSFragariaPrefsAutomaticallyIndentBraces;
 extern NSString * const MGSFragariaPrefsAutoInsertAClosingParenthesis;
 extern NSString * const MGSFragariaPrefsAutoInsertAClosingBrace;
+extern NSString * const MGSFragariaPrefsShowPageGuide;
 
 // integer
 extern NSString * const MGSFragariaPrefsGutterWidth;
@@ -75,4 +76,24 @@ extern NSString * const MGSFragariaPrefsTextFont;
 
 // string
 extern NSString * const MGSFragariaPrefsSyntaxColouringPopUpString;
+
+#import "MGSFragariaFontsAndColoursPrefsViewController.h"
+#import "MGSFragariaTextEditingPrefsViewController.h"
+
+@interface MGSFragariaPreferences : NSObject {
+    
+    MGSFragariaFontsAndColoursPrefsViewController *fontsAndColoursPrefsViewController;
+    MGSFragariaTextEditingPrefsViewController *textEditingPrefsViewController;
+}
++ (void)initializeValues;
++ (MGSFragariaPreferences *)sharedInstance;
+- (void)changeFont:(id)sender;
+- (void)revertToStandardSettings:(id)sender;
+
+@property (readonly) MGSFragariaFontsAndColoursPrefsViewController *fontsAndColoursPrefsViewController;
+@property (readonly) MGSFragariaTextEditingPrefsViewController *textEditingPrefsViewController;
+
+@end
+
+
 

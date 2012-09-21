@@ -52,10 +52,15 @@
 		AB69B6DA118B7F2A00903D1D /* SMLLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AB69B6D9118B7F2A00903D1D /* SMLLayoutManager.m */; };
 		AB69B74A118B80A000903D1D /* MGSFragaria.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB69B62B118B745700903D1D /* MGSFragaria.framework */; };
 		AB69B754118B830700903D1D /* MGSFragaria.h in Headers */ = {isa = PBXBuildFile; fileRef = AB69B753118B830700903D1D /* MGSFragaria.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		AB69B80C118B8D0400903D1D /* MGSFragariaPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB69B80A118B8D0400903D1D /* MGSFragariaPreferencesController.m */; };
 		ABA812DC11B6855200A29990 /* LICENSE-2.0.txt in Resources */ = {isa = PBXBuildFile; fileRef = ABA812DB11B6855200A29990 /* LICENSE-2.0.txt */; };
+		ABC1D5D0160B06F7008769EB /* MGSPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB69B80A118B8D0400903D1D /* MGSPreferencesController.m */; };
+		ABC1D5D1160B06F9008769EB /* MGSPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB69B80A118B8D0400903D1D /* MGSPreferencesController.m */; };
+		ABC1D5D6160B0801008769EB /* DBPrefsWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC1D5D4160B0801008769EB /* DBPrefsWindowController.h */; };
+		ABC1D5D8160B087E008769EB /* DBPrefsWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC1D5D5160B0801008769EB /* DBPrefsWindowController.m */; };
+		ABC1D5D9160B087F008769EB /* DBPrefsWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC1D5D5160B0801008769EB /* DBPrefsWindowController.m */; };
+		ABC1D5DB160B0C51008769EB /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABC1D5DA160B0C51008769EB /* Preferences.xib */; };
+		ABC1D5DC160B0C51008769EB /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABC1D5DA160B0C51008769EB /* Preferences.xib */; };
 		ABC578D3160350240040B3FB /* MGSFragariaPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC578D2160350240040B3FB /* MGSFragariaPreferences.m */; };
-		ABC578E21603C3020040B3FB /* MGSPreferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABC578DD1603C3000040B3FB /* MGSPreferences.xib */; };
 		ABC578E31603C3020040B3FB /* MGSPreferencesFontsAndColours.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABC578DE1603C3010040B3FB /* MGSPreferencesFontsAndColours.xib */; };
 		ABC578E41603C3020040B3FB /* MGSPreferencesTextEditing.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABC578DF1603C3010040B3FB /* MGSPreferencesTextEditing.xib */; };
 		ABC578E91603D6000040B3FB /* MGSFragariaFontsAndColoursPrefsViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC578E71603D5FF0040B3FB /* MGSFragariaFontsAndColoursPrefsViewController.h */; };
@@ -188,11 +193,13 @@
 		AB69B6CB118B7D3E00903D1D /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = /usr/lib/libicucore.dylib; sourceTree = "<absolute>"; };
 		AB69B6D9118B7F2A00903D1D /* SMLLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SMLLayoutManager.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		AB69B753118B830700903D1D /* MGSFragaria.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSFragaria.h; sourceTree = "<group>"; };
-		AB69B809118B8D0400903D1D /* MGSFragariaPreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSFragariaPreferencesController.h; sourceTree = "<group>"; };
-		AB69B80A118B8D0400903D1D /* MGSFragariaPreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MGSFragariaPreferencesController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		AB69B809118B8D0400903D1D /* MGSPreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSPreferencesController.h; sourceTree = "<group>"; };
+		AB69B80A118B8D0400903D1D /* MGSPreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MGSPreferencesController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		ABA812DB11B6855200A29990 /* LICENSE-2.0.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "LICENSE-2.0.txt"; sourceTree = "<group>"; };
+		ABC1D5D4160B0801008769EB /* DBPrefsWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBPrefsWindowController.h; sourceTree = "<group>"; };
+		ABC1D5D5160B0801008769EB /* DBPrefsWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBPrefsWindowController.m; sourceTree = "<group>"; };
+		ABC1D5DA160B0C51008769EB /* Preferences.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Preferences.xib; sourceTree = "<group>"; };
 		ABC578D2160350240040B3FB /* MGSFragariaPreferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MGSFragariaPreferences.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		ABC578DD1603C3000040B3FB /* MGSPreferences.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MGSPreferences.xib; sourceTree = "<group>"; };
 		ABC578DE1603C3010040B3FB /* MGSPreferencesFontsAndColours.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MGSPreferencesFontsAndColours.xib; sourceTree = "<group>"; };
 		ABC578DF1603C3010040B3FB /* MGSPreferencesTextEditing.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MGSPreferencesTextEditing.xib; sourceTree = "<group>"; };
 		ABC578E71603D5FF0040B3FB /* MGSFragariaFontsAndColoursPrefsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSFragariaFontsAndColoursPrefsViewController.h; sourceTree = "<group>"; };
@@ -329,7 +336,6 @@
 		AB3972FC118C2A5D00AEF388 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				ABC578DD1603C3000040B3FB /* MGSPreferences.xib */,
 				ABC578DE1603C3010040B3FB /* MGSPreferencesFontsAndColours.xib */,
 				ABC578DF1603C3010040B3FB /* MGSPreferencesTextEditing.xib */,
 				ABA812DB11B6855200A29990 /* LICENSE-2.0.txt */,
@@ -437,6 +443,11 @@
 		AB92A4151192B66A0055A3E7 /* Application */ = {
 			isa = PBXGroup;
 			children = (
+				ABC1D5DA160B0C51008769EB /* Preferences.xib */,
+				ABC1D5D4160B0801008769EB /* DBPrefsWindowController.h */,
+				ABC1D5D5160B0801008769EB /* DBPrefsWindowController.m */,
+				AB69B809118B8D0400903D1D /* MGSPreferencesController.h */,
+				AB69B80A118B8D0400903D1D /* MGSPreferencesController.m */,
 				AB648E2311FB37D200AEF7BD /* NSDocument based */,
 				AB648E2211FB37AF00AEF7BD /* Simple */,
 			);
@@ -463,7 +474,6 @@
 				AB3971C9118C1F8A00AEF388 /* MGSSyntaxController.m */,
 				ABC578EC1603D7EC0040B3FB /* MGSFragariaTextEditingPrefsViewController.m */,
 				AB41C1041191FFCB004F0CB5 /* MGSFragaria.m */,
-				AB69B80A118B8D0400903D1D /* MGSFragariaPreferencesController.m */,
 				AB472BF31299BBB100202CB5 /* MGSExtraInterfaceController.m */,
 				AB472B6E129972E400202CB5 /* MGSTextMenuController.m */,
 				ABC578D2160350240040B3FB /* MGSFragariaPreferences.m */,
@@ -498,7 +508,6 @@
 				ABF28AEF14C075D400ECAD48 /* NSScanner+Fragaria.h */,
 				AB69B753118B830700903D1D /* MGSFragaria.h */,
 				AB3971C8118C1F8A00AEF388 /* MGSSyntaxController.h */,
-				AB69B809118B8D0400903D1D /* MGSFragariaPreferencesController.h */,
 				ABD0FD7F119326FE00E6AFE6 /* MGSFragariaFramework.h */,
 				ABD0FE581193543600E6AFE6 /* MGSFragariaPreferences.h */,
 				AB472B7B1299732F00202CB5 /* MGSTextMenuController.h */,
@@ -524,6 +533,7 @@
 				ABC578E91603D6000040B3FB /* MGSFragariaFontsAndColoursPrefsViewController.h in Headers */,
 				ABC578ED1603D7ED0040B3FB /* MGSFragariaTextEditingPrefsViewController.h in Headers */,
 				ABC5799716047B4E0040B3FB /* FRAFontTransformer.h in Headers */,
+				ABC1D5D6160B0801008769EB /* DBPrefsWindowController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -623,6 +633,7 @@
 			files = (
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
+				ABC1D5DC160B0C51008769EB /* Preferences.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -632,6 +643,7 @@
 			files = (
 				AB648E4E11FB3A5300AEF7BD /* MainMenu-Document.xib in Resources */,
 				AB648E4F11FB3A5300AEF7BD /* MyDocument.xib in Resources */,
+				ABC1D5DB160B0C51008769EB /* Preferences.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -650,7 +662,6 @@
 				AB472C851299C33100202CB5 /* SMLGoToLine.xib in Resources */,
 				AB472C881299C34500202CB5 /* SMLDetab.xib in Resources */,
 				AB472C891299C34500202CB5 /* SMLEntab.xib in Resources */,
-				ABC578E21603C3020040B3FB /* MGSPreferences.xib in Resources */,
 				ABC578E31603C3020040B3FB /* MGSPreferencesFontsAndColours.xib in Resources */,
 				ABC578E41603C3020040B3FB /* MGSPreferencesTextEditing.xib in Resources */,
 			);
@@ -665,6 +676,8 @@
 			files = (
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				256AC3DA0F4B6AC300CF3369 /* FragariaAppDelegate.m in Sources */,
+				ABC1D5D0160B06F7008769EB /* MGSPreferencesController.m in Sources */,
+				ABC1D5D8160B087E008769EB /* DBPrefsWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -674,6 +687,8 @@
 			files = (
 				AB648E4011FB38E700AEF7BD /* MyDocument.m in Sources */,
 				AB648E4111FB390300AEF7BD /* main.m in Sources */,
+				ABC1D5D1160B06F9008769EB /* MGSPreferencesController.m in Sources */,
+				ABC1D5D9160B087F008769EB /* DBPrefsWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -687,7 +702,6 @@
 				AB69B675118B76AE00903D1D /* NSStringICUAdditions.m in Sources */,
 				AB69B68F118B78D400903D1D /* SMLTextView.m in Sources */,
 				AB69B6DA118B7F2A00903D1D /* SMLLayoutManager.m in Sources */,
-				AB69B80C118B8D0400903D1D /* MGSFragariaPreferencesController.m in Sources */,
 				AB3971CB118C1F8A00AEF388 /* MGSSyntaxController.m in Sources */,
 				AB41C1011191FDFE004F0CB5 /* SMLLineNumbers.m in Sources */,
 				AB41C1051191FFCB004F0CB5 /* MGSFragaria.m in Sources */,
@@ -921,7 +935,7 @@
 				HEADER_SEARCH_PATHS = "icu/**";
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				ONLY_ACTIVE_ARCH = YES;
-				RUN_CLANG_STATIC_ANALYZER = YES;
+				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = macosx;
 				WARNING_CFLAGS = (
 					"-Wextra",

@@ -41,13 +41,19 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		tabCharacter = [[NSString alloc] initWithCharacters:&tabUnichar length:1];
 		unichar newLineUnichar = 0x00B6;
 		newLineCharacter = [[NSString alloc] initWithCharacters:&newLineUnichar length:1];
-		
+		spaceCharacter = @".";
+        
 		[self setShowInvisibleCharacters:[[SMLDefaults valueForKey:MGSFragariaPrefsShowInvisibleCharacters] boolValue]];
 		[self setAllowsNonContiguousLayout:YES]; // Setting this to YES sometimes causes "an extra toolbar" and other graphical glitches to sometimes appear in the text view when one sets a temporary attribute, reported as ID #5832329 to Apple
 		
 		NSUserDefaultsController *defaultsController = [NSUserDefaultsController sharedUserDefaultsController];
-		[defaultsController addObserver:self forKeyPath:@"values.TextFont" options:NSKeyValueObservingOptionNew context:@"FontOrColourValueChanged"];
-		[defaultsController addObserver:self forKeyPath:@"values.InvisibleCharactersColourWell" options:NSKeyValueObservingOptionNew context:@"FontOrColourValueChanged"];
+        
+        // text font and colour preferences
+		[defaultsController addObserver:self forKeyPath:@"values.FragariaTextFont" options:NSKeyValueObservingOptionNew context:@"FontOrColourValueChanged"];
+		[defaultsController addObserver:self forKeyPath:@"values.FragariaInvisibleCharactersColourWell" options:NSKeyValueObservingOptionNew context:@"FontOrColourValueChanged"];
+        
+        // invisible characters preference
+        [defaultsController addObserver:self forKeyPath:@"values.FragariaShowInvisibleCharacters" options:NSKeyValueObservingOptionNew context:@"InvisibleCharacterValueChanged"];
 
 	}
 	return self;
@@ -63,7 +69,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
 	if ([(NSString *)context isEqualToString:@"FontOrColourValueChanged"]) {
-		attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]], NSFontAttributeName, [NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsInvisibleCharactersColourWell]], NSForegroundColorAttributeName, nil];
+		attributes = [[NSDictionary alloc] initWithObjectsAndKeys:
+                      [NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]], NSFontAttributeName, [NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsInvisibleCharactersColourWell]], NSForegroundColorAttributeName, nil];
+		[[self firstTextView] setNeedsDisplay:YES];
+    } else if ([(NSString *)context isEqualToString:@"InvisibleCharacterValueChanged"]) {
+        [self setShowInvisibleCharacters:[[SMLDefaults valueForKey:MGSFragariaPrefsShowInvisibleCharacters] boolValue]];
 		[[self firstTextView] setNeedsDisplay:YES];
 	} else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -81,28 +91,47 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)drawGlyphsForGlyphRange:(NSRange)glyphRange atPoint:(NSPoint)containerOrigin
 {	
     if (showInvisibleCharacters) {
-		
+        
 		NSPoint pointToDrawAt;
 		NSRect glyphFragment;
 		NSString *completeString = [[self textStorage] string];
 		NSInteger lengthToRedraw = NSMaxRange(glyphRange);	
 		
+        NSTextContainer *textContainer = [self textContainerForGlyphAtIndex:glyphRange.location effectiveRange:NULL];
+        CGFloat padding = [textContainer lineFragmentPadding];
+        
+        NSGraphicsContext *context = [NSGraphicsContext currentContext];
+        NSLog(@"Context isFlipped = % d", [context isFlipped]);
+        
+        NSFont *font = [attributes objectForKey:NSFontAttributeName];
+        CGFloat baseLineOffset = [self defaultBaselineOffsetForFont:font];
+        CGFloat lineHeight =[self defaultLineHeightForFont:font];
+        NSLog(@"baseLineOffset = %f, lineHeight = %f", baseLineOffset, lineHeight);
+        
 		for (NSInteger idx = glyphRange.location; idx < lengthToRedraw; idx++) {
 			unichar characterToCheck = [completeString characterAtIndex:idx];
+            NSString *charString = nil;
+            
 			if (characterToCheck == '\t') {
-				pointToDrawAt = [self locationForGlyphAtIndex:idx];
-				glyphFragment = [self lineFragmentRectForGlyphAtIndex:idx effectiveRange:NULL];
-				pointToDrawAt.x += glyphFragment.origin.x;
-				pointToDrawAt.y = glyphFragment.origin.y;
-				[tabCharacter drawAtPoint:pointToDrawAt withAttributes:attributes];
-				
+				charString = tabCharacter;
+			} else if (characterToCheck == ' ') {
+				charString = spaceCharacter;
 			} else if (characterToCheck == '\n' || characterToCheck == '\r') {
-				pointToDrawAt = [self locationForGlyphAtIndex:idx];
-				glyphFragment = [self lineFragmentRectForGlyphAtIndex:idx effectiveRange:NULL];
-				pointToDrawAt.x += glyphFragment.origin.x;
-				pointToDrawAt.y = glyphFragment.origin.y;
-				[newLineCharacter drawAtPoint:pointToDrawAt withAttributes:attributes];
-			}
+                charString = newLineCharacter;
+			} else {
+                continue;
+            }
+            
+            pointToDrawAt = [self locationForGlyphAtIndex:idx];
+            glyphFragment = [self lineFragmentRectForGlyphAtIndex:idx effectiveRange:NULL];
+            
+           // NSLog(@"pointToDrawAt x = %f, y = %f", pointToDrawAt.x, pointToDrawAt.y);
+           // NSLog(@"glyphFragment x = %f, y = %f, width = %f, height = %f", glyphFragment.origin.x, glyphFragment.origin.y, glyphFragment.size.width, glyphFragment.size.height);
+            
+            pointToDrawAt.x += glyphFragment.origin.x;
+            //pointToDrawAt.y = glyphFragment.origin.y - (glyphFragment.size.height - pointToDrawAt.y);
+            pointToDrawAt.y = glyphFragment.origin.y;
+            [charString drawAtPoint:pointToDrawAt withAttributes:attributes];
 		}
     } 
 	

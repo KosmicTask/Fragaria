@@ -11,4 +11,5 @@
 @interface MGSFragariaFontsAndColoursPrefsViewController : NSViewController
 
 - (IBAction)setFontAction:(id)sender;
+- (void)changeFont:(id)sender;
 @end

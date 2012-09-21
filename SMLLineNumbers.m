@@ -54,7 +54,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		
 		attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]], NSFontAttributeName, nil];
 		NSUserDefaultsController *defaultsController = [NSUserDefaultsController sharedUserDefaultsController];
-		[defaultsController addObserver:self forKeyPath:@"values.TextFont" options:NSKeyValueObservingOptionNew context:@"TextFontChanged"];
+		[defaultsController addObserver:self forKeyPath:@"values.FragariaTextFont" options:NSKeyValueObservingOptionNew context:@"TextFontChanged"];
 	}
 	
     return self;
@@ -202,7 +202,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 			lineNumber++;
 			[lineNumbersString appendFormat:@"%i\n", lineNumber];
 		} else {
-			[lineNumbersString appendFormat:@"%d\n", 0x00B7];
+			[lineNumbersString appendFormat:@"%@\n", @"."];
 			indexNonWrap = idx;
 		}
 		

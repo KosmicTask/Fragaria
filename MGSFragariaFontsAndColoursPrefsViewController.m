@@ -6,6 +6,8 @@
 //
 //
 
+#import "MGSFragaria.h"
+#import "MGSFragariaFramework.h"
 #import "MGSFragariaFontsAndColoursPrefsViewController.h"
 #import "MGSFragariaPreferences.h"
 
@@ -44,4 +46,18 @@
 	[fontManager orderFrontFontPanel:nil];
 }
 
+/*
+ 
+ - changeFont:
+ 
+ */
+- (void)changeFont:(id)sender
+{
+    
+    /* changeFont: is sent up the responder chain by the fontManager so we have to call this
+     method from say the preferences window controller which has been configured as the window delegate */
+	NSFontManager *fontManager = sender;
+	NSFont *panelFont = [fontManager convertFont:[fontManager selectedFont]];
+	[SMLDefaults setValue:[NSArchiver archivedDataWithRootObject:panelFont] forKey:MGSFragariaPrefsTextFont];
+}
 @end

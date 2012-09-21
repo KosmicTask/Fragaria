@@ -58,7 +58,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[self setBackgroundColor:[NSColor colorWithCalibratedWhite:0.94f alpha:1.0f]];
 
 		NSUserDefaultsController *defaultsController = [NSUserDefaultsController sharedUserDefaultsController];
-		[defaultsController addObserver:self forKeyPath:@"values.TextFont" options:NSKeyValueObservingOptionNew context:@"TextFontChanged"];
+		[defaultsController addObserver:self forKeyPath:@"values.FragariaTextFont" options:NSKeyValueObservingOptionNew context:@"TextFontChanged"];
 	}
 	return self;
 }

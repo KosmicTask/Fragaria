@@ -102,14 +102,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	[trackingArea autorelease];
     
 	NSUserDefaultsController *defaultsController = [NSUserDefaultsController sharedUserDefaultsController];
-	[defaultsController addObserver:self forKeyPath:@"values.TextFont" options:NSKeyValueObservingOptionNew context:@"TextFontChanged"];
-	[defaultsController addObserver:self forKeyPath:@"values.TextColourWell" options:NSKeyValueObservingOptionNew context:@"TextColourChanged"];
-	[defaultsController addObserver:self forKeyPath:@"values.BackgroundColourWell" options:NSKeyValueObservingOptionNew context:@"BackgroundColourChanged"];
-	[defaultsController addObserver:self forKeyPath:@"values.SmartInsertDelete" options:NSKeyValueObservingOptionNew context:@"SmartInsertDeleteChanged"];
-	[defaultsController addObserver:self forKeyPath:@"values.TabWidth" options:NSKeyValueObservingOptionNew context:@"TabWidthChanged"];
-	[defaultsController addObserver:self forKeyPath:@"values.ShowPageGuide" options:NSKeyValueObservingOptionNew context:@"PageGuideChanged"];
-	[defaultsController addObserver:self forKeyPath:@"values.ShowPageGuideAtColumn" options:NSKeyValueObservingOptionNew context:@"PageGuideChanged"];
-	[defaultsController addObserver:self forKeyPath:@"values.SmartInsertDelete" options:NSKeyValueObservingOptionNew context:@"SmartInsertDeleteChanged"];
+	[defaultsController addObserver:self forKeyPath:@"values.FragariaTextFont" options:NSKeyValueObservingOptionNew context:@"TextFontChanged"];
+	[defaultsController addObserver:self forKeyPath:@"values.FragariaTextColourWell" options:NSKeyValueObservingOptionNew context:@"TextColourChanged"];
+	[defaultsController addObserver:self forKeyPath:@"values.FragariaBackgroundColourWell" options:NSKeyValueObservingOptionNew context:@"BackgroundColourChanged"];
+	[defaultsController addObserver:self forKeyPath:@"values.FragariaSmartInsertDelete" options:NSKeyValueObservingOptionNew context:@"SmartInsertDeleteChanged"];
+	[defaultsController addObserver:self forKeyPath:@"values.FragariaTabWidth" options:NSKeyValueObservingOptionNew context:@"TabWidthChanged"];
+	[defaultsController addObserver:self forKeyPath:@"values.FragariaShowPageGuide" options:NSKeyValueObservingOptionNew context:@"PageGuideChanged"];
+	[defaultsController addObserver:self forKeyPath:@"values.FragariaShowPageGuideAtColumn" options:NSKeyValueObservingOptionNew context:@"PageGuideChanged"];
+	[defaultsController addObserver:self forKeyPath:@"values.FragariaSmartInsertDelete" options:NSKeyValueObservingOptionNew context:@"SmartInsertDeleteChanged"];
 	
 	lineHeight = [[[self textContainer] layoutManager] defaultLineHeightForFont:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]]];
 }
@@ -168,8 +168,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[self setTabWidth];
 	} else if ([(NSString *)context isEqualToString:@"PageGuideChanged"]) {
 		[self setPageGuideValues];
-	} else if ([(NSString *)context isEqualToString:@"SmartInsertDeleteChanged"]) {
-		[self setSmartInsertDeleteEnabled:[[SMLDefaults valueForKey:MGSFragariaPrefsSmartInsertDelete] boolValue]];
 	} else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 	}
@@ -409,7 +407,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSColor *color = [NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextColourWell]];
 	pageGuideColour = [color colorWithAlphaComponent:([color alphaComponent] / 4)]; // Use the same colour as the text but with more transparency
 	
-	showPageGuide = [[SMLDefaults valueForKey:@"ShowPageGuide"] boolValue];
+	showPageGuide = [[SMLDefaults valueForKey:MGSFragariaPrefsShowPageGuide] boolValue];
 	
 	[self display]; // To reflect the new values in the view
 }
@@ -976,6 +974,61 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	#pragma unused(note)
 	
 	[MGSFragaria setCurrentInstance:self.fragaria];
+}
+
+/*
+ 
+ - setLineWrap:
+ 
+ see /developer/examples/appkit/TextSizingExample
+ 
+ */
+- (void)setLineWrap:(BOOL)wrap
+{
+    // get control properties
+	NSScrollView *textScrollView = [self enclosingScrollView];
+	NSTextContainer *textContainer = [self textContainer];
+    
+    // content view is clipview
+	NSSize contentSize = [textScrollView contentSize];
+    
+    // define wrap properties
+    BOOL hasHorizontalScroller = YES;
+    NSSize containerSize = NSMakeSize(contentSize.width, CGFLOAT_MAX);
+    BOOL widthTracksTextView = YES;
+	NSSize maxSize =  containerSize; // NSMakeSize([self frame].size.width, CGFLOAT_MAX);
+	NSSize minSize =  containerSize;
+    BOOL horizontallyResizable = NO;
+    
+    // define non wrap properties
+	if (!wrap) {
+        containerSize = NSMakeSize(CGFLOAT_MAX, CGFLOAT_MAX);
+        widthTracksTextView = NO;
+        maxSize =  containerSize;
+        minSize = contentSize;
+        horizontallyResizable = YES;
+	}
+    
+#ifdef MGS_DEBUG_TEXT_VIEW
+    
+    NSLog(@"Container size: %@", NSStringFromSize(containerSize));
+    NSLog(@"Max size: %@", NSStringFromSize(maxSize));
+    NSLog(@"Min size: %@", NSStringFromSize(minSize));
+    
+#endif
+    
+    // assign wrap properties
+    [self setMinSize:contentSize];
+    [textScrollView setHasHorizontalScroller:hasHorizontalScroller];
+    [textContainer setContainerSize:containerSize];
+    [textContainer setWidthTracksTextView:widthTracksTextView];
+    [self setMaxSize:maxSize];
+    [self setHorizontallyResizable: horizontallyResizable];
+    
+    // invalidate the glyph layout
+	[[self layoutManager] textContainerChangedGeometry:textContainer];
+    
+    [self setNeedsDisplay:YES];
 }
 
 @end

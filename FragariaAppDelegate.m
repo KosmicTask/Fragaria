@@ -8,7 +8,7 @@
 
 #import "FragariaAppDelegate.h"
 #import "MGSFragaria.h"
-#import "MGSFragariaPreferencesController.h"
+#import "MGSPreferencesController.h"
 
 @implementation FragariaAppDelegate
 
@@ -36,14 +36,11 @@
 	// see MGSFragariaPreferences.h for details
 	//
 	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsAutocompleteSuggestAutomatically];	
-	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsLineWrapNewDocuments];	
 	
 	// define initial object configuration
 	//
 	// see MGSFragaria.h for details
 	//
-	[fragaria setObject:[NSNumber numberWithBool:YES] forKey:MGSFOIsSyntaxColoured];
-	[fragaria setObject:[NSNumber numberWithBool:YES] forKey:MGSFOShowLineNumberGutter];
 	[fragaria setObject:self forKey:MGSFODelegate];
 	
 	// define our syntax definition
@@ -90,7 +87,7 @@
 {
     #pragma unused(sender)
     
-    [[MGSFragariaPreferencesController sharedInstance] showWindow:self];
+    [[MGSPreferencesController sharedPrefsWindowController] showWindow:self];
 }
 
 #pragma mark -

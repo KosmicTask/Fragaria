@@ -78,5 +78,7 @@ extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 - (MGSTextMenuController *)textMenuController;
 - (void)setSyntaxColoured:(BOOL)value;
 - (BOOL)isSyntaxColoured;
+- (void)setShowsLineNumbers:(BOOL)value;
+- (BOOL)showsLineNumbers;
 - (void)reloadString;
 @end

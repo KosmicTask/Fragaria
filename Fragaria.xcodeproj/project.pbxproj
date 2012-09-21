@@ -63,9 +63,9 @@
 		ABC578D3160350240040B3FB /* MGSFragariaPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC578D2160350240040B3FB /* MGSFragariaPreferences.m */; };
 		ABC578E31603C3020040B3FB /* MGSPreferencesFontsAndColours.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABC578DE1603C3010040B3FB /* MGSPreferencesFontsAndColours.xib */; };
 		ABC578E41603C3020040B3FB /* MGSPreferencesTextEditing.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABC578DF1603C3010040B3FB /* MGSPreferencesTextEditing.xib */; };
-		ABC578E91603D6000040B3FB /* MGSFragariaFontsAndColoursPrefsViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC578E71603D5FF0040B3FB /* MGSFragariaFontsAndColoursPrefsViewController.h */; };
+		ABC578E91603D6000040B3FB /* MGSFragariaFontsAndColoursPrefsViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC578E71603D5FF0040B3FB /* MGSFragariaFontsAndColoursPrefsViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		ABC578EA1603D6000040B3FB /* MGSFragariaFontsAndColoursPrefsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC578E81603D5FF0040B3FB /* MGSFragariaFontsAndColoursPrefsViewController.m */; };
-		ABC578ED1603D7ED0040B3FB /* MGSFragariaTextEditingPrefsViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC578EB1603D7EB0040B3FB /* MGSFragariaTextEditingPrefsViewController.h */; };
+		ABC578ED1603D7ED0040B3FB /* MGSFragariaTextEditingPrefsViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC578EB1603D7EB0040B3FB /* MGSFragariaTextEditingPrefsViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		ABC578EE1603D7ED0040B3FB /* MGSFragariaTextEditingPrefsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC578EC1603D7EC0040B3FB /* MGSFragariaTextEditingPrefsViewController.m */; };
 		ABC5799716047B4E0040B3FB /* FRAFontTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC5799516047B4E0040B3FB /* FRAFontTransformer.h */; };
 		ABC5799816047B4E0040B3FB /* FRAFontTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC5799616047B4E0040B3FB /* FRAFontTransformer.m */; };
@@ -529,9 +529,9 @@
 				AB257FE5129B1CE300A3FF76 /* MGSExtraInterfaceController.h in Headers */,
 				AB69B754118B830700903D1D /* MGSFragaria.h in Headers */,
 				AB257FCE129B1BF500A3FF76 /* SMLTextView.h in Headers */,
-				ABF28AF114C075D400ECAD48 /* NSScanner+Fragaria.h in Headers */,
 				ABC578E91603D6000040B3FB /* MGSFragariaFontsAndColoursPrefsViewController.h in Headers */,
 				ABC578ED1603D7ED0040B3FB /* MGSFragariaTextEditingPrefsViewController.h in Headers */,
+				ABF28AF114C075D400ECAD48 /* NSScanner+Fragaria.h in Headers */,
 				ABC5799716047B4E0040B3FB /* FRAFontTransformer.h in Headers */,
 				ABC1D5D6160B0801008769EB /* DBPrefsWindowController.h in Headers */,
 			);

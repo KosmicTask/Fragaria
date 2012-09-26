@@ -23,6 +23,33 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 // class extension
 @interface SMLSyntaxColouring()
+
+@property (copy) NSString *functionDefinition;
+@property (copy) NSString *removeFromFunction;
+@property (retain) NSString *secondString;
+@property (retain) NSString *firstString;
+@property (retain) NSString *beginCommand;
+@property (retain) NSString *endCommand;
+@property (retain) NSSet *keywords;
+@property (retain) NSSet *autocompleteWords;
+@property (retain) NSArray *keywordsAndAutocompleteWords;
+@property (retain) NSString *beginInstruction;
+@property (retain) NSString *endInstruction;
+@property (retain) NSCharacterSet *beginVariable;
+@property (retain) NSCharacterSet *endVariable;
+@property (retain) NSString *firstSingleLineComment;
+@property (retain) NSString *secondSingleLineComment;
+@property (retain) NSMutableArray *singleLineComments;
+@property (retain) NSMutableArray *multiLineComments;
+@property (retain) NSString *beginFirstMultiLineComment;
+@property (retain) NSString*endFirstMultiLineComment;
+@property (retain) NSString*beginSecondMultiLineComment;
+@property (retain) NSString*endSecondMultiLineComment;
+@property (retain) NSCharacterSet *keywordStartCharacterSet;
+@property (retain) NSCharacterSet *keywordEndCharacterSet;
+@property (retain) NSCharacterSet *attributesCharacterSet;
+@property (retain) NSCharacterSet *letterCharacterSet;
+
 - (void)parseSyntaxDictionary:(NSDictionary *)syntaxDictionary;
 - (void)applySyntaxDefinition;
 - (NSString *)assignSyntaxDefinition;
@@ -44,7 +71,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 @implementation SMLSyntaxColouring
 
-@synthesize reactToChanges, functionDefinition, removeFromFunction, undoManager;
+@synthesize reactToChanges, functionDefinition, removeFromFunction, undoManager, secondString, firstString, keywords, autocompleteWords, keywordsAndAutocompleteWords, beginCommand, endCommand, beginInstruction, endInstruction, beginVariable, endVariable, firstSingleLineComment, secondSingleLineComment, singleLineComments, multiLineComments, beginFirstMultiLineComment, endFirstMultiLineComment, beginSecondMultiLineComment, endSecondMultiLineComment, keywordStartCharacterSet, keywordEndCharacterSet, attributesCharacterSet, letterCharacterSet;
 
 #pragma mark -
 #pragma mark Instance methods
@@ -74,7 +101,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		// retain the document
 		document = theDocument;
 		
-		undoManager = [[[NSUndoManager alloc] init] autorelease];
+		undoManager = [[NSUndoManager alloc] init];
 
 		// configure the document text view
 		NSTextView *textView = [document valueForKey:@"firstTextView"];
@@ -94,24 +121,24 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[self applyColourDefaults];
 
 		// letter character set
-		letterCharacterSet = [NSCharacterSet letterCharacterSet];
+		self.letterCharacterSet = [NSCharacterSet letterCharacterSet];
 		
 		// keyword start character set
 		NSMutableCharacterSet *temporaryCharacterSet = [[[NSCharacterSet letterCharacterSet] mutableCopy] autorelease];
 		[temporaryCharacterSet addCharactersInString:@"_:@#"];
-		keywordStartCharacterSet = [temporaryCharacterSet copy];
+		self.keywordStartCharacterSet = [[temporaryCharacterSet copy] autorelease];
 		
 		// keyword end character set
 		temporaryCharacterSet = [[[NSCharacterSet whitespaceAndNewlineCharacterSet] mutableCopy] autorelease];
 		[temporaryCharacterSet formUnionWithCharacterSet:[NSCharacterSet symbolCharacterSet]];
 		[temporaryCharacterSet formUnionWithCharacterSet:[NSCharacterSet punctuationCharacterSet]];
 		[temporaryCharacterSet removeCharactersInString:@"_"];
-		keywordEndCharacterSet = [temporaryCharacterSet copy];
+		self.keywordEndCharacterSet = [[temporaryCharacterSet copy] autorelease];
 		
 		// attributes character set
 		temporaryCharacterSet = [[[NSCharacterSet alphanumericCharacterSet] mutableCopy] autorelease];
 		[temporaryCharacterSet addCharactersInString:@" -"]; // If there are two spaces before an attribute
-		attributesCharacterSet = [temporaryCharacterSet copy];
+		self.attributesCharacterSet = [[temporaryCharacterSet copy] autorelease];
 		
 		// configure syntax definition
 		[self applySyntaxDefinition];
@@ -267,20 +294,20 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 	// If the plist file is malformed be sure to set the values to something
 	if ([syntaxDictionary valueForKey:@"keywords"]) {
-		keywords = [[NSSet alloc] initWithArray:[syntaxDictionary valueForKey:@"keywords"]];
+		self.keywords = [[[NSSet alloc] initWithArray:[syntaxDictionary valueForKey:@"keywords"]] autorelease];
 		[keywordsAndAutocompleteWordsTemporary addObjectsFromArray:[syntaxDictionary valueForKey:@"keywords"]];
 	}
 	
 	if ([syntaxDictionary valueForKey:@"autocompleteWords"]) {
-		autocompleteWords = [[NSSet alloc] initWithArray:[syntaxDictionary valueForKey:@"autocompleteWords"]];
+		self.autocompleteWords = [[[NSSet alloc] initWithArray:[syntaxDictionary valueForKey:@"autocompleteWords"]] autorelease];
 		[keywordsAndAutocompleteWordsTemporary addObjectsFromArray:[syntaxDictionary valueForKey:@"autocompleteWords"]];
 	}
 	
 	if ([[SMLDefaults valueForKey:@"ColourAutocompleteWordsAsKeywords"] boolValue] == YES) {
-		keywords = [NSSet setWithArray:keywordsAndAutocompleteWordsTemporary];
+		self.keywords = [NSSet setWithArray:keywordsAndAutocompleteWordsTemporary];
 	}
 	
-	keywordsAndAutocompleteWords = [keywordsAndAutocompleteWordsTemporary sortedArrayUsingSelector:@selector(compare:)];
+	self.keywordsAndAutocompleteWords = [keywordsAndAutocompleteWordsTemporary sortedArrayUsingSelector:@selector(compare:)];
 	
 	if ([syntaxDictionary valueForKey:@"recolourKeywordIfAlreadyColoured"]) {
 		recolourKeywordIfAlreadyColoured = [[syntaxDictionary valueForKey:@"recolourKeywordIfAlreadyColoured"] boolValue];
@@ -291,110 +318,115 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	}
 	
 	if (keywordsCaseSensitive == NO) {
-		NSMutableArray *lowerCaseKeywords = [[NSMutableArray alloc] init];
+		NSMutableArray *lowerCaseKeywords = [[[NSMutableArray alloc] init] autorelease];
 		for (id item in keywords) {
 			[lowerCaseKeywords addObject:[item lowercaseString]];
 		}
 		
-		NSSet *lowerCaseKeywordsSet = [[NSSet alloc] initWithArray:lowerCaseKeywords];
-		keywords = lowerCaseKeywordsSet;
+		NSSet *lowerCaseKeywordsSet = [[[NSSet alloc] initWithArray:lowerCaseKeywords] autorelease];
+		self.keywords = lowerCaseKeywordsSet;
 	}
 	
 	if ([syntaxDictionary valueForKey:@"beginCommand"]) {
-		beginCommand = [syntaxDictionary valueForKey:@"beginCommand"];
+		self.beginCommand = [syntaxDictionary valueForKey:@"beginCommand"];
 	} else { 
-		beginCommand = @"";
+		self.beginCommand = @"";
 	}
-	
+    
 	if ([syntaxDictionary valueForKey:@"endCommand"]) {
-		endCommand = [syntaxDictionary valueForKey:@"endCommand"];
+		self.endCommand = [syntaxDictionary valueForKey:@"endCommand"];
 	} else { 
-		endCommand = @"";
+		self.endCommand = @"";
 	}
-	
+    
 	if ([syntaxDictionary valueForKey:@"beginInstruction"]) {
-		beginInstruction = [syntaxDictionary valueForKey:@"beginInstruction"];
+		self.beginInstruction = [syntaxDictionary valueForKey:@"beginInstruction"];
 	} else {
-		beginInstruction = @"";
+		self.beginInstruction = @"";
 	}
-	
+
 	if ([syntaxDictionary valueForKey:@"endInstruction"]) {
-		endInstruction = [syntaxDictionary valueForKey:@"endInstruction"];
+		self.endInstruction = [syntaxDictionary valueForKey:@"endInstruction"];
 	} else {
-		endInstruction = @"";
+		self.endInstruction = @"";
 	}
 	
 	if ([syntaxDictionary valueForKey:@"beginVariable"]) {
-		beginVariable = [NSCharacterSet characterSetWithCharactersInString:[syntaxDictionary valueForKey:@"beginVariable"]];
-	}
-	
-	if ([syntaxDictionary valueForKey:@"endVariable"]) {
-		endVariable = [NSCharacterSet characterSetWithCharactersInString:[syntaxDictionary valueForKey:@"endVariable"]];
+		self.beginVariable = [NSCharacterSet characterSetWithCharactersInString:[syntaxDictionary valueForKey:@"beginVariable"]];
 	} else {
-		endVariable = [NSCharacterSet characterSetWithCharactersInString:@""];
-	}
+        self.beginVariable = [NSCharacterSet characterSetWithCharactersInString:@""];
+    }
 	
+
+	if ([syntaxDictionary valueForKey:@"endVariable"]) {
+		self.endVariable = [NSCharacterSet characterSetWithCharactersInString:[syntaxDictionary valueForKey:@"endVariable"]];
+	} else {
+		self.endVariable = [NSCharacterSet characterSetWithCharactersInString:@""];
+	}
+
 	if ([syntaxDictionary valueForKey:@"firstString"]) {
-		firstString = [syntaxDictionary valueForKey:@"firstString"];
+		self.firstString = [syntaxDictionary valueForKey:@"firstString"];
 		if (![[syntaxDictionary valueForKey:@"firstString"] isEqualToString:@""]) {
 			firstStringUnichar = [[syntaxDictionary valueForKey:@"firstString"] characterAtIndex:0];
 		}
-	} else { 
-		firstString = @"";
+	} else {
+		self.firstString = @"";
 	}
 	
 	if ([syntaxDictionary valueForKey:@"secondString"]) {
-		secondString = [syntaxDictionary valueForKey:@"secondString"];
+		self.secondString = [syntaxDictionary valueForKey:@"secondString"];
 		if (![[syntaxDictionary valueForKey:@"secondString"] isEqualToString:@""]) {
 			secondStringUnichar = [[syntaxDictionary valueForKey:@"secondString"] characterAtIndex:0];
 		}
 	} else { 
-		secondString = @"";
+		self.secondString = @"";
 	}
 	
     // single line comment definitions
 	if ([syntaxDictionary valueForKey:@"firstSingleLineComment"]) {
-		firstSingleLineComment = [syntaxDictionary valueForKey:@"firstSingleLineComment"];
+		self.firstSingleLineComment = [syntaxDictionary valueForKey:@"firstSingleLineComment"];
 	} else {
-		firstSingleLineComment = @"";
+		self.firstSingleLineComment = @"";
 	}
-    singleLineComments = [NSMutableArray arrayWithCapacity:2];
-    [singleLineComments addObject:firstSingleLineComment];
+    
+    self.singleLineComments = [NSMutableArray arrayWithCapacity:2];
+    [self.singleLineComments addObject:firstSingleLineComment];
 	
 	if ([syntaxDictionary valueForKey:@"secondSingleLineComment"]) {
-		secondSingleLineComment = [syntaxDictionary valueForKey:@"secondSingleLineComment"];
+		self.secondSingleLineComment = [syntaxDictionary valueForKey:@"secondSingleLineComment"];
 	} else {
-		secondSingleLineComment = @"";
+		self.secondSingleLineComment = @"";
 	}
-    [singleLineComments addObject:secondSingleLineComment];
+    [self.singleLineComments addObject:secondSingleLineComment];
 	
     // multi line comment definitions
 	if ([syntaxDictionary valueForKey:@"beginFirstMultiLineComment"]) {
-		beginFirstMultiLineComment = [syntaxDictionary valueForKey:@"beginFirstMultiLineComment"];
+		self.beginFirstMultiLineComment = [syntaxDictionary valueForKey:@"beginFirstMultiLineComment"];
 	} else {
-		beginFirstMultiLineComment = @"";
+		self.beginFirstMultiLineComment = @"";
 	}
 	
 	if ([syntaxDictionary valueForKey:@"endFirstMultiLineComment"]) {
-		endFirstMultiLineComment = [syntaxDictionary valueForKey:@"endFirstMultiLineComment"];
+		self.endFirstMultiLineComment = [syntaxDictionary valueForKey:@"endFirstMultiLineComment"];
 	} else {
-		endFirstMultiLineComment = @"";
+		self.endFirstMultiLineComment = @"";
 	}
-    multiLineComments = [NSMutableArray arrayWithCapacity:2];
-	[multiLineComments addObject:[NSArray arrayWithObjects:beginFirstMultiLineComment, endFirstMultiLineComment, nil]];
+
+    self.multiLineComments = [NSMutableArray arrayWithCapacity:2];
+	[self.multiLineComments addObject:[NSArray arrayWithObjects:self.beginFirstMultiLineComment, self.endFirstMultiLineComment, nil]];
 	
 	if ([syntaxDictionary valueForKey:@"beginSecondMultiLineComment"]) {
-		beginSecondMultiLineComment = [syntaxDictionary valueForKey:@"beginSecondMultiLineComment"];
+		self.beginSecondMultiLineComment = [syntaxDictionary valueForKey:@"beginSecondMultiLineComment"];
 	} else {
-		beginSecondMultiLineComment = @"";
+		self.beginSecondMultiLineComment = @"";
 	}
      
 	if ([syntaxDictionary valueForKey:@"endSecondMultiLineComment"]) {
-		endSecondMultiLineComment = [syntaxDictionary valueForKey:@"endSecondMultiLineComment"];
+		self.endSecondMultiLineComment = [syntaxDictionary valueForKey:@"endSecondMultiLineComment"];
 	} else {
-		endSecondMultiLineComment = @"";
+		self.endSecondMultiLineComment = @"";
 	}
-	[multiLineComments addObject:[NSArray arrayWithObjects:beginSecondMultiLineComment, endSecondMultiLineComment, nil]];
+	[self.multiLineComments addObject:[NSArray arrayWithObjects:self.beginSecondMultiLineComment, self.endSecondMultiLineComment, nil]];
 
 	
 	if ([syntaxDictionary valueForKey:@"functionDefinition"]) {
@@ -412,25 +444,25 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	if ([syntaxDictionary valueForKey:@"excludeFromKeywordStartCharacterSet"]) {
 		NSMutableCharacterSet *temporaryCharacterSet = [[keywordStartCharacterSet mutableCopy] autorelease];
 		[temporaryCharacterSet removeCharactersInString:[syntaxDictionary valueForKey:@"excludeFromKeywordStartCharacterSet"]];
-		keywordStartCharacterSet = [temporaryCharacterSet copy];
+		self.keywordStartCharacterSet = [[temporaryCharacterSet copy] autorelease];
 	}
 	
 	if ([syntaxDictionary valueForKey:@"excludeFromKeywordEndCharacterSet"]) {
 		NSMutableCharacterSet *temporaryCharacterSet = [[keywordEndCharacterSet mutableCopy] autorelease];
 		[temporaryCharacterSet removeCharactersInString:[syntaxDictionary valueForKey:@"excludeFromKeywordEndCharacterSet"]];
-		keywordEndCharacterSet = [temporaryCharacterSet copy];
+		self.keywordEndCharacterSet = [[temporaryCharacterSet copy] autorelease];
 	}
 	
 	if ([syntaxDictionary valueForKey:@"includeInKeywordStartCharacterSet"]) {
 		NSMutableCharacterSet *temporaryCharacterSet = [[keywordStartCharacterSet mutableCopy] autorelease];
 		[temporaryCharacterSet addCharactersInString:[syntaxDictionary valueForKey:@"includeInKeywordStartCharacterSet"]];
-		keywordStartCharacterSet = [temporaryCharacterSet copy];
+		self.keywordStartCharacterSet = [[temporaryCharacterSet copy] autorelease];
 	}
 	
 	if ([syntaxDictionary valueForKey:@"includeInKeywordEndCharacterSet"]) {
 		NSMutableCharacterSet *temporaryCharacterSet = [[keywordEndCharacterSet mutableCopy] autorelease];
 		[temporaryCharacterSet addCharactersInString:[syntaxDictionary valueForKey:@"includeInKeywordEndCharacterSet"]];
-		keywordEndCharacterSet = [temporaryCharacterSet copy];
+		self.keywordEndCharacterSet = [[temporaryCharacterSet copy] autorelease];
 	}
 
 	[self prepareRegularExpressions];
@@ -481,14 +513,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)prepareRegularExpressions
 {
 	if ([[SMLDefaults valueForKey:MGSFragariaPrefsColourMultiLineStrings] boolValue] == NO) {
-		firstStringPattern = [[ICUPattern alloc] initWithString:[NSString stringWithFormat:@"\\W%@[^%@\\\\\\r\\n]*+(?:\\\\(?:.|$)[^%@\\\\\\r\\n]*+)*+%@", firstString, firstString, firstString, firstString]];
+		firstStringPattern = [[ICUPattern alloc] initWithString:[NSString stringWithFormat:@"\\W%@[^%@\\\\\\r\\n]*+(?:\\\\(?:.|$)[^%@\\\\\\r\\n]*+)*+%@", self.firstString, self.firstString, self.firstString, self.firstString]];
 		
-		secondStringPattern = [[ICUPattern alloc] initWithString:[NSString stringWithFormat:@"\\W%@[^%@\\\\\\r\\n]*+(?:\\\\(?:.|$)[^%@\\\\]*+)*+%@", secondString, secondString, secondString, secondString]];
+		secondStringPattern = [[ICUPattern alloc] initWithString:[NSString stringWithFormat:@"\\W%@[^%@\\\\\\r\\n]*+(?:\\\\(?:.|$)[^%@\\\\]*+)*+%@", self.secondString, self.secondString, self.secondString, self.secondString]];
 
 	} else {
-		firstStringPattern = [[ICUPattern alloc] initWithString:[NSString stringWithFormat:@"\\W%@[^%@\\\\]*+(?:\\\\(?:.|$)[^%@\\\\]*+)*+%@", firstString, firstString, firstString, firstString]];
+		firstStringPattern = [[ICUPattern alloc] initWithString:[NSString stringWithFormat:@"\\W%@[^%@\\\\]*+(?:\\\\(?:.|$)[^%@\\\\]*+)*+%@", self.firstString, self.firstString, self.firstString, self.firstString]];
 		
-		secondStringPattern = [[ICUPattern alloc] initWithString:[NSString stringWithFormat:@"\\W%@[^%@\\\\]*+(?:\\\\(?:.|$)[^%@\\\\]*+)*+%@", secondString, secondString, secondString, secondString]];
+		secondStringPattern = [[ICUPattern alloc] initWithString:[NSString stringWithFormat:@"\\W%@[^%@\\\\]*+(?:\\\\(?:.|$)[^%@\\\\]*+)*+%@", self.secondString, self.secondString, self.secondString, self.secondString]];
 	}
 }
 
@@ -611,7 +643,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSUInteger beginning = 0, end = 0, endOfLine = 0, length = 0;
 
 	if (shouldColourMultiLineStrings) { // When multiline strings are coloured it needs to go backwards to find where the string might have started if it's "above" the top of the screen
-		NSInteger beginFirstStringInMultiLine = [completeString rangeOfString:firstString options:NSBackwardsSearch range:NSMakeRange(0, effectiveRange.location)].location;
+		NSInteger beginFirstStringInMultiLine = [completeString rangeOfString:self.firstString options:NSBackwardsSearch range:NSMakeRange(0, effectiveRange.location)].location;
 		if (beginFirstStringInMultiLine != NSNotFound && [[firstLayoutManager temporaryAttributesAtCharacterIndex:beginFirstStringInMultiLine effectiveRange:NULL] isEqualToDictionary:stringsColour]) {
 			NSInteger startOfLine = [completeString lineRangeForRange:NSMakeRange(beginFirstStringInMultiLine, 0)].location;
 			effectiveRange = NSMakeRange(startOfLine, range.length + (range.location - startOfLine));
@@ -625,9 +657,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	if (searchStringLength == 0) {
 		return;
 	}
-	NSScanner *scanner = [[NSScanner alloc] initWithString:searchString];
+	NSScanner *scanner = [[[NSScanner alloc] initWithString:searchString] autorelease];
 	[scanner setCharactersToBeSkipped:nil];
-	NSScanner *completeDocumentScanner = [[NSScanner alloc] initWithString:completeString];
+	NSScanner *completeDocumentScanner = [[[NSScanner alloc] initWithString:completeString] autorelease];
 	[completeDocumentScanner setCharactersToBeSkipped:nil];
 	
 	NSUInteger completeStringLength = [completeString length];
@@ -644,15 +676,15 @@ Unless required by applicable law or agreed to in writing, software distributed 
         //
 		// Commands
         //
-		if (![beginCommand isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourCommands] boolValue] == YES) {
-			searchSyntaxLength = [endCommand length];
-			unichar beginCommandCharacter = [beginCommand characterAtIndex:0];
-			unichar endCommandCharacter = [endCommand characterAtIndex:0];
+		if (![self.beginCommand isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourCommands] boolValue] == YES) {
+			searchSyntaxLength = [self.endCommand length];
+			unichar beginCommandCharacter = [self.beginCommand characterAtIndex:0];
+			unichar endCommandCharacter = [self.endCommand characterAtIndex:0];
 			while (![scanner isAtEnd]) {
-				[scanner scanUpToString:beginCommand intoString:nil];
+				[scanner scanUpToString:self.beginCommand intoString:nil];
 				beginning = [scanner scanLocation];
 				endOfLine = NSMaxRange([searchString lineRangeForRange:NSMakeRange(beginning, 0)]);
-				if (![scanner scanUpToString:endCommand intoString:nil] || [scanner scanLocation] >= endOfLine) {
+				if (![scanner scanUpToString:self.endCommand intoString:nil] || [scanner scanLocation] >= endOfLine) {
 					[scanner mgs_setScanLocation:endOfLine];
 					continue; // Don't colour it if it hasn't got a closing tag
 				} else {
@@ -690,28 +722,28 @@ Unless required by applicable law or agreed to in writing, software distributed 
         //
 		// Instructions
         //
-		if (![beginInstruction isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourInstructions] boolValue] == YES) {
+		if (![self.beginInstruction isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourInstructions] boolValue] == YES) {
 			// It takes too long to scan the whole document if it's large, so for instructions, first multi-line comment and second multi-line comment search backwards and begin at the start of the first beginInstruction etc. that it finds from the present position and, below, break the loop if it has passed the scanned range (i.e. after the end instruction)
 			
-			beginLocationInMultiLine = [completeString rangeOfString:beginInstruction options:NSBackwardsSearch range:NSMakeRange(0, rangeLocation)].location;
-			endLocationInMultiLine = [completeString rangeOfString:endInstruction options:NSBackwardsSearch range:NSMakeRange(0, rangeLocation)].location;
+			beginLocationInMultiLine = [completeString rangeOfString:self.beginInstruction options:NSBackwardsSearch range:NSMakeRange(0, rangeLocation)].location;
+			endLocationInMultiLine = [completeString rangeOfString:self.endInstruction options:NSBackwardsSearch range:NSMakeRange(0, rangeLocation)].location;
 			if (beginLocationInMultiLine == NSNotFound || (endLocationInMultiLine != NSNotFound && beginLocationInMultiLine < endLocationInMultiLine)) {
 				beginLocationInMultiLine = rangeLocation;
 			}			
 
-			searchSyntaxLength = [endInstruction length];
+			searchSyntaxLength = [self.endInstruction length];
 			while (![completeDocumentScanner isAtEnd]) {
 				searchRange = NSMakeRange(beginLocationInMultiLine, range.length);
 				if (NSMaxRange(searchRange) > completeStringLength) {
 					searchRange = NSMakeRange(beginLocationInMultiLine, completeStringLength - beginLocationInMultiLine);
 				}
 				
-				beginning = [completeString rangeOfString:beginInstruction options:NSLiteralSearch range:searchRange].location;
+				beginning = [completeString rangeOfString:self.beginInstruction options:NSLiteralSearch range:searchRange].location;
 				if (beginning == NSNotFound) {
 					break;
 				}
 				[completeDocumentScanner mgs_setScanLocation:beginning];
-				if (![completeDocumentScanner scanUpToString:endInstruction intoString:nil] || [completeDocumentScanner scanLocation] >= completeStringLength) {
+				if (![completeDocumentScanner scanUpToString:self.endInstruction intoString:nil] || [completeDocumentScanner scanLocation] >= completeStringLength) {
 					if (shouldOnlyColourTillTheEndOfLine) {
 						[completeDocumentScanner mgs_setScanLocation:NSMaxRange([completeString lineRangeForRange:NSMakeRange(beginning, 0)])];
 					} else {
@@ -737,12 +769,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		if ([keywords count] != 0 && [[SMLDefaults valueForKey:MGSFragariaPrefsColourKeywords] boolValue] == YES) {
 			[scanner mgs_setScanLocation:0];
 			while (![scanner isAtEnd]) {
-				[scanner scanUpToCharactersFromSet:keywordStartCharacterSet intoString:nil];
+				[scanner scanUpToCharactersFromSet:self.keywordStartCharacterSet intoString:nil];
 				beginning = [scanner scanLocation];
 				if ((beginning + 1) < searchStringLength) {
 					[scanner mgs_setScanLocation:(beginning + 1)];
 				}
-				[scanner scanUpToCharactersFromSet:keywordEndCharacterSet intoString:nil];
+				[scanner scanUpToCharactersFromSet:self.keywordEndCharacterSet intoString:nil];
 				
 				end = [scanner scanLocation];
 				if (end > searchStringLength || beginning == end) {
@@ -769,15 +801,15 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		//
 		// Autocomplete
         //
-		if ([autocompleteWords count] != 0 && [[SMLDefaults valueForKey:MGSFragariaPrefsColourAutocomplete] boolValue] == YES) {
+		if ([self.autocompleteWords count] != 0 && [[SMLDefaults valueForKey:MGSFragariaPrefsColourAutocomplete] boolValue] == YES) {
 			[scanner mgs_setScanLocation:0];
 			while (![scanner isAtEnd]) {
-				[scanner scanUpToCharactersFromSet:keywordStartCharacterSet intoString:nil];
+				[scanner scanUpToCharactersFromSet:self.keywordStartCharacterSet intoString:nil];
 				beginning = [scanner scanLocation];
 				if ((beginning + 1) < searchStringLength) {
 					[scanner mgs_setScanLocation:(beginning + 1)];
 				}
-				[scanner scanUpToCharactersFromSet:keywordEndCharacterSet intoString:nil];
+				[scanner scanUpToCharactersFromSet:self.keywordEndCharacterSet intoString:nil];
 				
 				end = [scanner scanLocation];
 				if (end > searchStringLength || beginning == end) {
@@ -790,7 +822,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 				} else {
 					autocompleteTestString = [completeString substringWithRange:NSMakeRange(beginning + rangeLocation, end - beginning)];
 				}
-				if ([autocompleteWords containsObject:autocompleteTestString]) {
+				if ([self.autocompleteWords containsObject:autocompleteTestString]) {
 					if (!recolourKeywordIfAlreadyColoured) {
 						if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:beginning + rangeLocation effectiveRange:NULL] isEqualToDictionary:commandsColour]) {
 							continue;
@@ -805,13 +837,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		//
 		// Variables
         //
-		if (beginVariable != nil && [[SMLDefaults valueForKey:MGSFragariaPrefsColourVariables] boolValue] == YES) {
+		if (self.beginVariable != nil && [[SMLDefaults valueForKey:MGSFragariaPrefsColourVariables] boolValue] == YES) {
 			[scanner mgs_setScanLocation:0];
 			while (![scanner isAtEnd]) {
-				[scanner scanUpToCharactersFromSet:beginVariable intoString:nil];
+				[scanner scanUpToCharactersFromSet:self.beginVariable intoString:nil];
 				beginning = [scanner scanLocation];
 				if (beginning + 1 < searchStringLength) {
-					if ([firstSingleLineComment isEqualToString:@"%"] && [searchString characterAtIndex:beginning + 1] == '%') { // To avoid a problem in LaTex with \%
+					if ([self.firstSingleLineComment isEqualToString:@"%"] && [searchString characterAtIndex:beginning + 1] == '%') { // To avoid a problem in LaTex with \%
 						if ([scanner scanLocation] < searchStringLength) {
 							[scanner mgs_setScanLocation:beginning + 1];
 						}
@@ -819,7 +851,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 					}
 				}
 				endOfLine = NSMaxRange([searchString lineRangeForRange:NSMakeRange(beginning, 0)]);
-				if (![scanner scanUpToCharactersFromSet:endVariable intoString:nil] || [scanner scanLocation] >= endOfLine) {
+				if (![scanner scanUpToCharactersFromSet:self.endVariable intoString:nil] || [scanner scanLocation] >= endOfLine) {
 					[scanner mgs_setScanLocation:endOfLine];
 					length = [scanner scanLocation] - beginning;
 				} else {
@@ -836,7 +868,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		//
 		// Second string, first pass
         //
-		if (![secondString isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourStrings] boolValue] == YES) {
+		if (![self.secondString isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourStrings] boolValue] == YES) {
 			@try {
 				secondStringMatcher = [[ICUMatcher alloc] initWithPattern:secondStringPattern overString:searchString];
 			}
@@ -853,7 +885,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		//
 		// First string
         //
-		if (![firstString isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourStrings] boolValue] == YES) {
+		if (![self.firstString isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourStrings] boolValue] == YES) {
 			@try {
 				firstStringMatcher = [[ICUMatcher alloc] initWithPattern:firstStringPattern overString:searchString];
 			}
@@ -887,7 +919,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 					continue;
 				}
 				
-				[scanner scanCharactersFromSet:attributesCharacterSet intoString:nil];
+				[scanner scanCharactersFromSet:self.attributesCharacterSet intoString:nil];
 				end = [scanner scanLocation];
 				
 				if (end + 1 < searchStringLength) {
@@ -903,7 +935,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		//
 		// Colour single-line comments
         //
-        for (NSString *singleLineComment in singleLineComments) {
+        for (NSString *singleLineComment in self.singleLineComments) {
             if (![singleLineComment isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourComments] boolValue] == YES) {
                 
                 // reset scanner
@@ -967,7 +999,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		//
 		// Multi-line comments
         //
-        for (NSArray *multiLineComment in multiLineComments) {
+        for (NSArray *multiLineComment in self.multiLineComments) {
             
             NSString *beginMultiLineComment = [multiLineComment objectAtIndex:0];
             NSString *endMultiLineComment = [multiLineComment objectAtIndex:1];
@@ -1011,7 +1043,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
                             [completeDocumentScanner mgs_setScanLocation:[completeDocumentScanner scanLocation] + searchSyntaxLength];
                         length = [completeDocumentScanner scanLocation] - beginning;
                         if ([endMultiLineComment isEqualToString:@"-->"]) {
-                            [completeDocumentScanner scanUpToCharactersFromSet:letterCharacterSet intoString:nil]; // Search for the first letter after -->
+                            [completeDocumentScanner scanUpToCharactersFromSet:self.letterCharacterSet intoString:nil]; // Search for the first letter after -->
                             if ([completeDocumentScanner scanLocation] + 6 < completeStringLength) {// Check if there's actually room for a </script>
                                 if ([completeString rangeOfString:@"</script>" options:NSCaseInsensitiveSearch range:NSMakeRange([completeDocumentScanner scanLocation] - 2, 9)].location != NSNotFound || [completeString rangeOfString:@"</style>" options:NSCaseInsensitiveSearch range:NSMakeRange([completeDocumentScanner scanLocation] - 2, 8)].location != NSNotFound) {
                                     beginLocationInMultiLine = [completeDocumentScanner scanLocation];
@@ -1035,7 +1067,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		//
 		// Second string, second pass
         //
-		if (![secondString isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourStrings] boolValue] == YES) {
+		if (![self.secondString isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourStrings] boolValue] == YES) {
 			@try {
 				[secondStringMatcher reset];
 			}
@@ -1378,7 +1410,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (NSArray *)textView:theTextView completions:(NSArray *)words forPartialWordRange:(NSRange)charRange indexOfSelectedItem:(NSInteger *)idx
 {
 #pragma unused(idx)
-	if ([keywordsAndAutocompleteWords count] == 0) {
+	if ([self.keywordsAndAutocompleteWords count] == 0) {
 		if ([[SMLDefaults valueForKey:MGSFragariaPrefsAutocompleteIncludeStandardWords] boolValue] == NO) {
 			return [NSArray array];
 		} else {
@@ -1387,7 +1419,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	}
 	
 	NSString *matchString = [[theTextView string] substringWithRange:charRange];
-	NSMutableArray *finalWordsArray = [NSMutableArray arrayWithArray:keywordsAndAutocompleteWords];
+	NSMutableArray *finalWordsArray = [NSMutableArray arrayWithArray:self.keywordsAndAutocompleteWords];
 	if ([[SMLDefaults valueForKey:MGSFragariaPrefsAutocompleteIncludeStandardWords] boolValue]) {
 		[finalWordsArray addObjectsFromArray:words];
 	}

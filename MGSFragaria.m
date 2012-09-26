@@ -100,13 +100,13 @@ char kcLineWrapPrefChanged;
 {
 	[MGSFragariaPreferences initializeValues];
 	
-	objectSetterKeys = [NSSet setWithObjects:MGSFOIsSyntaxColoured, MGSFOShowLineNumberGutter, MGSFOIsEdited,
+	objectSetterKeys = [[NSSet setWithObjects:MGSFOIsSyntaxColoured, MGSFOShowLineNumberGutter, MGSFOIsEdited,
 						MGSFOSyntaxDefinitionName, MGSFODelegate,
-						nil];
+						nil] retain];
 	
-	objectGetterKeys = [NSMutableSet setWithObjects:ro_MGSFOTextView, ro_MGSFOScrollView, ro_MGSFOGutterScrollView, 
+	objectGetterKeys = [[NSMutableSet setWithObjects:ro_MGSFOTextView, ro_MGSFOScrollView, ro_MGSFOGutterScrollView,
 						ro_MGSFOLineNumbers, ro_MGSFOLineNumbers, 
-						nil];
+						nil] retain];
 	[(NSMutableSet *)objectGetterKeys unionSet:objectSetterKeys];
 }
 
@@ -125,7 +125,7 @@ char kcLineWrapPrefChanged;
  + createDocSpec
  
  */
-+ (id)createDocSpec 
++ (id)createDocSpec
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
@@ -239,13 +239,13 @@ char kcLineWrapPrefChanged;
 		_currentInstance = self;
 		
 		if (object) {
-			_docSpec = object;
+			_docSpec = [object retain];
 		} else {
-			_docSpec = [[self class] createDocSpec];
+			_docSpec = [[[self class] createDocSpec] retain];
 		}
         
         // register the font transformer
-        FRAFontTransformer *fontTransformer = [[FRAFontTransformer alloc] init];
+        FRAFontTransformer *fontTransformer = [[[FRAFontTransformer alloc] init] autorelease];
         [NSValueTransformer setValueTransformer:fontTransformer forName:@"FontTransformer"];
         
         NSUserDefaultsController *defaultsController = [NSUserDefaultsController sharedUserDefaultsController];
@@ -294,9 +294,9 @@ char kcLineWrapPrefChanged;
 		
 	// create textview
 	SMLTextView *textView = [[[SMLTextView alloc] initWithFrame:NSMakeRect(0, 0, contentSize.width, contentSize.height)] autorelease];
-    [textView setLineWrap:[[SMLDefaults valueForKey:MGSFragariaPrefsLineWrapNewDocuments] boolValue]];
-	[textView setFragaria:self];
+    [textView setFragaria:self];
 	[textScrollView setDocumentView:textView];
+    [textView setLineWrap:[[SMLDefaults valueForKey:MGSFragariaPrefsLineWrapNewDocuments] boolValue]];
 
     // create line numbers
 	SMLLineNumbers *lineNumbers = [[[SMLLineNumbers alloc] initWithDocument:_docSpec] autorelease];
@@ -330,7 +330,7 @@ char kcLineWrapPrefChanged;
 	
 	// update line numbers
 	[[_docSpec valueForKey:ro_MGSFOLineNumbers] updateLineNumbersForClipView:[[_docSpec valueForKey:ro_MGSFOScrollView] contentView] checkWidth:NO recolour:YES];
-	
+    
     // update the gutter view
     [self updateGutterView];
 }
@@ -586,13 +586,12 @@ char kcLineWrapPrefChanged;
  
  */
 - (void) updateGutterView {
-
     id document = _docSpec;
     
     BOOL showGutter = [[_docSpec valueForKey:MGSFOShowLineNumberGutter] boolValue];
 	NSInteger gutterWidth = [[SMLDefaults valueForKey:MGSFragariaPrefsGutterWidth] integerValue];
     NSInteger gutterOffset = (showGutter ? gutterWidth : 0);
-	NSRect frame = NSMakeRect(0, 0, 0, 0);
+	NSRect frame, newFrame;
 	
 	// Update document value first.
 	[document setValue:[NSNumber numberWithUnsignedInt:gutterWidth] forKey:MGSFOGutterWidth];
@@ -609,29 +608,29 @@ char kcLineWrapPrefChanged;
     // Text Scroll View
     if (textScrollView != nil) {
         frame = [textScrollView frame];
-        [textScrollView setFrame:NSMakeRect(gutterOffset, frame.origin.y, contentWidth - gutterOffset, frame.size.height)];
+        newFrame = NSMakeRect(gutterOffset, frame.origin.y, contentWidth - gutterOffset, frame.size.height);
+        [textScrollView setFrame:newFrame];
         [textScrollView setNeedsDisplay:YES];
     }
     
     // Text View
-    // if we adjust the textScrollView then moving the textView is not necessary,
-    // unless it is not embedded in an NSScrollView instance - but this unlikely
     else if (textView != nil) {
-        
-        frame = [textView frame];
-        [textView setFrame:NSMakeRect(gutterOffset, frame.origin.y, contentWidth - gutterOffset, frame.size.height)];
+        frame = [textScrollView frame];
+        newFrame = NSMakeRect(gutterOffset, frame.origin.y, contentWidth - gutterOffset, frame.size.height);
+        [textView setFrame:newFrame];
         [textView setNeedsDisplay:YES];
     }
     
     // Gutter Scroll View
     if (gutterScrollView != nil) {
-        frame = [textScrollView frame];
-        [gutterScrollView setFrame:NSMakeRect(0, frame.origin.y, gutterWidth, frame.size.height)];
-        [gutterScrollView setNeedsDisplay:YES];
+        frame = [gutterScrollView frame];
+        newFrame = NSMakeRect(frame.origin.x, frame.origin.y, gutterWidth, frame.size.height);
+        [gutterScrollView setFrame:newFrame];
 
         // add or remove the gutter sub view
         if (showGutter) {
             [contentView addSubview:gutterScrollView];
+            [gutterScrollView setNeedsDisplay:YES];
         } else {
             [gutterScrollView removeFromSuperview];
         }

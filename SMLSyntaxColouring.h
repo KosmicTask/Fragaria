@@ -33,7 +33,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 	NSInteger lastCursorLocation;
 	
-	NSDictionary *commandsColour, *commentsColour, *instructionsColour, *keywordsColour, *autocompleteWordsColour, 
+	NSDictionary *commandsColour, *commentsColour, *instructionsColour, *keywordsColour, *autocompleteWordsColour,
 					*stringsColour, *variablesColour, *attributesColour, *lineHighlightColour;
 	
 	NSSet *keywords;
@@ -46,8 +46,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSString *endInstruction;
 	NSString *firstString;
 	NSString *secondString;
-	NSString *firstSingleLineComment, *secondSingleLineComment, *beginFirstMultiLineComment, *endFirstMultiLineComment, 
-			*beginSecondMultiLineComment, *endSecondMultiLineComment, *functionDefinition, *removeFromFunction;
+	NSString *firstSingleLineComment, *secondSingleLineComment;
+    NSString *beginFirstMultiLineComment, *endFirstMultiLineComment, *beginSecondMultiLineComment, *endSecondMultiLineComment;
+    NSString *functionDefinition, *removeFromFunction;
 	NSString *searchString;
 
     NSMutableArray *singleLineComments;
@@ -79,8 +80,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 @property BOOL reactToChanges;
 @property (readonly) NSUndoManager *undoManager;
 
-@property (copy) NSString *functionDefinition;
-@property (copy) NSString *removeFromFunction;
 
 
 - (id)initWithDocument:(id)document;

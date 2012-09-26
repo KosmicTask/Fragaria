@@ -44,7 +44,8 @@ typedef enum {
  */
 - (id)init
 {
-	if ((self = [super init])) {
+    self = [super init];
+	if (self) {
 		
         invisibleGlyphs = NULL;
         
@@ -71,7 +72,7 @@ typedef enum {
         
         // assign our custom glyph generator
         if (useGlyphSubstitutionForInvisibleGlyphs) {
-            [self setGlyphGenerator:[[MGSGlyphGenerator alloc] init]];
+            [self setGlyphGenerator:[[[MGSGlyphGenerator alloc] init] autorelease]];
         }
 
 	}
@@ -354,29 +355,35 @@ forStartingGlyphAtIndex:(NSUInteger)glyphIndex
 - (void)resetAttributesAndGlyphs
 {
     // assemble our default attributes
+    [defAttributes release];
     defAttributes = [[NSDictionary alloc] initWithObjectsAndKeys:
                   [NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]], NSFontAttributeName, [NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsInvisibleCharactersColourWell]], NSForegroundColorAttributeName, nil];
 
     // define substitute characters for whitespace chars
     unichar tabUnichar = 0x00AC;
+    [tabCharacter release];
     tabCharacter = [[NSString alloc] initWithCharacters:&tabUnichar length:1];
     unichar newLineUnichar = 0x00B6;
+    [newLineCharacter release];
     newLineCharacter = [[NSString alloc] initWithCharacters:&newLineUnichar length:1];
+    [spaceCharacter release];
     spaceCharacter = @".";
     
     if (drawInvisibleGlyphsUsingCoreText) {
         // all CFTypes can be added to NS collections
         // http://www.mikeash.com/pyblog/friday-qa-2010-01-22-toll-free-bridging-internals.html
-        lineRefs = [NSMutableArray arrayWithCapacity:kNewLineLine+1];
-        NSAttributedString *attrString = [[NSAttributedString alloc] initWithString:tabCharacter attributes:defAttributes];
+        [lineRefs release];
+        lineRefs = [[NSMutableArray arrayWithCapacity:kNewLineLine+1] retain];
+        
+        NSAttributedString *attrString = [[[NSAttributedString alloc] initWithString:tabCharacter attributes:defAttributes] autorelease];
         CTLineRef textLine = CFMakeCollectable(CTLineCreateWithAttributedString((CFAttributedStringRef)attrString));
         [lineRefs addObject:(id)textLine]; // kTabLine
         
-        attrString = [[NSAttributedString alloc] initWithString:spaceCharacter attributes:defAttributes];
+        attrString = [[[NSAttributedString alloc] initWithString:spaceCharacter attributes:defAttributes] autorelease];
         textLine = CFMakeCollectable(CTLineCreateWithAttributedString((CFAttributedStringRef)attrString));
         [lineRefs addObject:(id)textLine]; // kSpaceLine
         
-        attrString = [[NSAttributedString alloc] initWithString:newLineCharacter attributes:defAttributes];
+        attrString = [[[NSAttributedString alloc] initWithString:newLineCharacter attributes:defAttributes] autorelease];
         textLine = CFMakeCollectable(CTLineCreateWithAttributedString((CFAttributedStringRef)attrString));
         [lineRefs addObject:(id)textLine]; // kNewLineLine
     }
@@ -384,7 +391,7 @@ forStartingGlyphAtIndex:(NSUInteger)glyphIndex
     // experimental glyph substitution
     if (useGlyphSubstitutionForInvisibleGlyphs) {
 
-        NSString *glyphString = [NSString stringWithFormat:@"%@%@%@", tabCharacter, spaceCharacter, newLineCharacter];
+        NSString *glyphString = [[NSString stringWithFormat:@"%@%@%@", tabCharacter, spaceCharacter, newLineCharacter] autorelease];
         
         // use NSLayoutManager instance to generate required glyphs using the default attributes
         NSTextStorage *textStorage = [[NSTextStorage alloc] initWithString:glyphString];

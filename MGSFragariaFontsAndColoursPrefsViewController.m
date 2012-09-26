@@ -42,6 +42,7 @@
     NSFont *font = [NSUnarchiver unarchiveObjectWithData:fontData];
 	[fontManager setSelectedFont:font isMultiple:NO];
 	[fontManager orderFrontFontPanel:nil];
+    
 }
 
 /*

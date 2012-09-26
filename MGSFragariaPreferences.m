@@ -113,6 +113,7 @@ static id sharedInstance = nil;
 	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsColourVariables];
 	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsColourStrings];
 	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsColourAttributes];
+    [dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsColourComments];
 	
 	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor whiteColor]] forKey:MGSFragariaPrefsBackgroundColourWell];
 	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor textColor]] forKey:MGSFragariaPrefsTextColourWell];

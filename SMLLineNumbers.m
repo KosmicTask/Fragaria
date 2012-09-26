@@ -20,8 +20,16 @@ Unless required by applicable law or agreed to in writing, software distributed 
 #import "MGSFragaria.h"
 #import "MGSFragariaFramework.h"
 
+@interface SMLLineNumbers()
+@property (retain) NSDictionary *attributes;
+@property (retain) id document;
+@property (retain) NSClipView *updatingLineNumbersForClipView;
+
+@end
 
 @implementation SMLLineNumbers
+
+@synthesize attributes, document, updatingLineNumbersForClipView;
 
 #pragma mark -
 #pragma mark Instance methods
@@ -47,10 +55,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 {
 	if ((self = [super init])) {
 		
-		document = theDocument;
+		self.document = theDocument;
 		zeroPoint = NSMakePoint(0, 0);
 		
-		attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]], NSFontAttributeName, nil];
+		self.attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]], NSFontAttributeName, nil];
 		NSUserDefaultsController *defaultsController = [NSUserDefaultsController sharedUserDefaultsController];
 		[defaultsController addObserver:self forKeyPath:@"values.FragariaTextFont" options:NSKeyValueObservingOptionNew context:@"TextFontChanged"];
 	}
@@ -68,7 +76,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
 	if ([(NSString *)context isEqualToString:@"TextFontChanged"]) {
-		attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]], NSFontAttributeName, nil];
+		self.attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]], NSFontAttributeName, nil];
 	} else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 	}
@@ -132,10 +140,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 	CGFloat addToScrollPoint;
 	
-	if (updatingLineNumbersForClipView == clipView) {
+	if (self.updatingLineNumbersForClipView == clipView) {
 		return;
 	}
-	updatingLineNumbersForClipView = clipView;
+	self.updatingLineNumbersForClipView = clipView;
 	
 	textView = [clipView documentView];
 	
@@ -200,7 +208,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	}
 	
 	if (checkWidth == YES) {
-		widthOfStringInGutter = [lineNumbersString sizeWithAttributes:attributes].width;
+		widthOfStringInGutter = [lineNumbersString sizeWithAttributes:self.attributes].width;
 		
 		if (widthOfStringInGutter > ([[document valueForKey:@"gutterWidth"] integerValue] - 14)) { // Check if the gutterTextView has to be resized
 			[document setValue:[NSNumber numberWithInteger:widthOfStringInGutter + 20] forKey:@"gutterWidth"]; // Make it bigger than need be so it doesn't have to resized soon again
@@ -230,6 +238,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 allDone:
 	
-	updatingLineNumbersForClipView = nil;
+	self.updatingLineNumbersForClipView = nil;
 }
 @end

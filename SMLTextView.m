@@ -24,11 +24,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 // class extension
 @interface SMLTextView()
 - (void)windowDidBecomeMainOrKey:(NSNotification *)note;
+
+@property (retain) NSColor *pageGuideColour;
+
 @end
 
 @implementation SMLTextView
 
-@synthesize colouredIBeamCursor, fragaria;
+@synthesize colouredIBeamCursor, fragaria, pageGuideColour;
 
 #pragma mark -
 #pragma mark Instance methods
@@ -198,7 +201,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	if (showPageGuide == YES) {
 		NSRect bounds = [self bounds]; 
 		if ([self needsToDrawRect:NSMakeRect(pageGuideX, 0, 1, bounds.size.height)] == YES) { // So that it doesn't draw the line if only e.g. the cursor updates
-			[pageGuideColour set];
+			[self.pageGuideColour set];
 			[NSBezierPath strokeRect:NSMakeRect(pageGuideX, 0, 0, bounds.size.height)];
 		}
 	}
@@ -405,7 +408,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	pageGuideX = (sizeOfCharacter * ([[SMLDefaults valueForKey:MGSFragariaPrefsShowPageGuideAtColumn] integerValue] + 1)) - 1.5f; // -1.5 to put it between the two characters and draw only on one pixel and not two (as the system draws it in a special way), and that's also why the width above is set to zero 
 	
 	NSColor *color = [NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextColourWell]];
-	pageGuideColour = [color colorWithAlphaComponent:([color alphaComponent] / 4)]; // Use the same colour as the text but with more transparency
+	self.pageGuideColour = [color colorWithAlphaComponent:([color alphaComponent] / 4)]; // Use the same colour as the text but with more transparency
 	
 	showPageGuide = [[SMLDefaults valueForKey:MGSFragariaPrefsShowPageGuide] boolValue];
 	
@@ -1005,7 +1008,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
         containerSize = NSMakeSize(CGFLOAT_MAX, CGFLOAT_MAX);
         widthTracksTextView = NO;
         maxSize =  containerSize;
-        minSize = contentSize;
         horizontallyResizable = YES;
 	}
     
@@ -1018,7 +1020,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 #endif
     
     // assign wrap properties
-    [self setMinSize:contentSize];
+    [self setMinSize:minSize];
     [textScrollView setHasHorizontalScroller:hasHorizontalScroller];
     [textContainer setContainerSize:containerSize];
     [textContainer setWidthTracksTextView:widthTracksTextView];

@@ -21,11 +21,15 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 @interface SMLLayoutManager : NSLayoutManager {
 	
-	NSDictionary *attributes;
+	NSDictionary *defAttributes;
 	NSString *tabCharacter;
 	NSString *newLineCharacter;
     NSString *spaceCharacter;
 	BOOL showInvisibleCharacters;
+    NSGlyph *invisibleGlyphs;
+    BOOL useGlyphSubstitutionForInvisibleGlyphs;
+    BOOL drawInvisibleGlyphsUsingCoreText;
+    NSMutableArray *lineRefs;
 }
 
 - (NSAttributedString *)attributedStringWithTemporaryAttributesApplied;

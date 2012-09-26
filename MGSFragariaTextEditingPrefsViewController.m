@@ -23,7 +23,7 @@
 - (id)init {
     self = [super initWithNibName:@"MGSPreferencesTextEditing" bundle:[NSBundle bundleForClass:[self class]]];
     if (self) {
-        
+
     }
     return self;
 }

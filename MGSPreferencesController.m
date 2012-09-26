@@ -54,9 +54,9 @@
 {
 	[self addView:generalView label:NSLocalizedString(@"General", @"Preferences tab name")];
 
-	[self addView:textEditingPrefsViewController.view label:NSLocalizedString(@"Text Editing", @"Preferences tab name")];
+	[self addView:textEditingPrefsViewController.view label:NSLocalizedString(@"Text Editing", @"Preferences tab name") image:[NSImage imageNamed:@"General.png"]];
     
-    [self addView:fontsAndColoursPrefsViewController.view label:NSLocalizedString(@"Fonts & Colours", @"Preferences tab name")];
+    [self addView:fontsAndColoursPrefsViewController.view label:NSLocalizedString(@"Fonts & Colours", @"Preferences tab name") image:[NSImage imageNamed:@"General.png"]];
 		
 }
 

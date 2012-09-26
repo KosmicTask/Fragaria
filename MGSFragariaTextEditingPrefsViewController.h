@@ -8,7 +8,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface MGSFragariaTextEditingPrefsViewController : NSViewController
+@interface MGSFragariaTextEditingPrefsViewController : NSViewController {
+    NSImage *toolbarImage;
+}
 
-- (IBAction)changeGutterWidth:(id)sender ;
+- (IBAction)changeGutterWidth:(id)sender;
 @end

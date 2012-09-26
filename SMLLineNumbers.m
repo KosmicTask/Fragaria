@@ -96,18 +96,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)updateLineNumbersCheckWidth:(BOOL)checkWidth recolour:(BOOL)recolour
 {
 	[self updateLineNumbersForClipView:[[document valueForKey:@"firstTextScrollView"] contentView] checkWidth:checkWidth recolour:recolour];
-
-	if ([document valueForKey:@"secondTextScrollView"] != nil) {
-		[self updateLineNumbersForClipView:[[document valueForKey:@"secondTextScrollView"] contentView] checkWidth:checkWidth recolour:recolour];
-	}
-	
-	if ([document valueForKey:@"singleDocumentWindow"] != nil) {
-		[self updateLineNumbersForClipView:[[document valueForKey:@"thirdTextScrollView"] contentView] checkWidth:checkWidth recolour:recolour];
-	}
-	
-	if ([document valueForKey:@"fourthTextScrollView"] != nil) {
-		[self updateLineNumbersForClipView:[[document valueForKey:@"fourthTextScrollView"] contentView] checkWidth:checkWidth recolour:recolour];
-	}
 }
 
 /*
@@ -162,13 +150,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	addToScrollPoint = 0;	
 	if (scrollView == [document valueForKey:@"firstTextScrollView"]) {
 		gutterScrollView = [document valueForKey:@"firstGutterScrollView"];
-	} else if (scrollView == [document valueForKey:@"secondTextScrollView"]) {
-		gutterScrollView = [document valueForKey:@"secondGutterScrollView"];
-		//addToScrollPoint = [[SMLCurrentProject secondContentViewNavigationBar] bounds].size.height;
-	} else if (scrollView == [document valueForKey:@"thirdTextScrollView"]) {
-		gutterScrollView = [document valueForKey:@"thirdGutterScrollView"];
-	} else if (scrollView == [document valueForKey:@"fourthTextScrollView"]) {
-		gutterScrollView = [document valueForKey:@"fourthGutterScrollView"];
 	} else {
 		goto allDone;
 	}

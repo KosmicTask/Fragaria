@@ -24,3 +24,4 @@
 #import "NSScanner+Fragaria.h"
 #import "MGSFragariaPreferences.h"
 #import "MGSGlyphGenerator.h"
+#import "MGSFragariaPreferences.h"

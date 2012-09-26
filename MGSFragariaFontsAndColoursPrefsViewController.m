@@ -8,8 +8,6 @@
 
 #import "MGSFragaria.h"
 #import "MGSFragariaFramework.h"
-#import "MGSFragariaFontsAndColoursPrefsViewController.h"
-#import "MGSFragariaPreferences.h"
 
 @interface MGSFragariaFontsAndColoursPrefsViewController ()
 

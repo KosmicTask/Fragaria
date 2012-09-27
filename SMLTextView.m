@@ -1058,8 +1058,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
     [[fragaria objectForKey:ro_MGSFOLineNumbers] updateLineNumbersForClipView:[[self enclosingScrollView] contentView] checkWidth:NO recolour:YES];
 
     // redraw the display and reposition scrollers
+    NSDisableScreenUpdates();
     [textScrollView display];
     [textScrollView reflectScrolledClipView:textScrollView.contentView];
+    NSEnableScreenUpdates();
     
 }
 

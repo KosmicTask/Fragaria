@@ -34,7 +34,6 @@ extern NSString * const MGSFragariaPrefsColourAutocomplete;
 extern NSString * const MGSFragariaPrefsColourVariables;
 extern NSString * const MGSFragariaPrefsColourStrings;	
 extern NSString * const MGSFragariaPrefsColourAttributes;	
-extern NSString * const MGSFragariaPrefsLiveUpdatePreview;
 extern NSString * const MGSFragariaPrefsShowFullPathInWindowTitle;
 extern NSString * const MGSFragariaPrefsShowLineNumberGutter;
 extern NSString * const MGSFragariaPrefsSyntaxColourNewDocuments;
@@ -68,7 +67,6 @@ extern NSString * const MGSFragariaPrefsSpacesPerTabEntabDetab;
 
 // float
 extern NSString * const MGSFragariaPrefsAutocompleteAfterDelay;	
-extern NSString * const MGSFragariaPrefsLiveUpdatePreviewDelay;
 
 // font data
 // [NSArchiver archivedDataWithRootObject:[NSFont fontWithName:@"Menlo" size:11]]

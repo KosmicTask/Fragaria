@@ -55,7 +55,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (NSString *)assignSyntaxDefinition;
 - (void)performDocumentDelegateSelector:(SEL)selector withObject:(id)object;
 - (void)autocompleteWordsTimerSelector:(NSTimer *)theTimer;
-- (void)liveUpdatePreviewTimerSelector:(NSTimer *)theTimer;
 - (NSString *)completeString;
 - (void)prepareRegularExpressions;
 - (void)applyColourDefaults;
@@ -1204,12 +1203,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		autocompleteWordsTimer = [NSTimer scheduledTimerWithTimeInterval:[[SMLDefaults valueForKey:MGSFragariaPrefsAutocompleteAfterDelay] floatValue] target:self selector:@selector(autocompleteWordsTimerSelector:) userInfo:textView repeats:NO];
 	}
 	
-	if (liveUpdatePreviewTimer != nil) {
-		[liveUpdatePreviewTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:[[SMLDefaults valueForKey:MGSFragariaPrefsLiveUpdatePreviewDelay] floatValue]]];
-	} else if ([[SMLDefaults valueForKey:MGSFragariaPrefsLiveUpdatePreview] boolValue] == YES) {
-		liveUpdatePreviewTimer = [NSTimer scheduledTimerWithTimeInterval:[[SMLDefaults valueForKey:MGSFragariaPrefsLiveUpdatePreviewDelay] floatValue] target:self selector:@selector(liveUpdatePreviewTimerSelector:) userInfo:textView repeats:NO];
-	}
-	
 	[[document valueForKey:@"lineNumbers"] updateLineNumbersCheckWidth:NO recolour:NO];
 	
 }
@@ -1502,24 +1495,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	if (autocompleteWordsTimer) {
 		[autocompleteWordsTimer invalidate];
 		autocompleteWordsTimer = nil;
-	}
-}
-
-/*
- 
- - liveUpdatePreviewTimerSelector:
- 
- */
-- (void)liveUpdatePreviewTimerSelector:(NSTimer *)theTimer
-{
-#pragma unused(theTimer)
-	if ([[SMLDefaults valueForKey:MGSFragariaPrefsLiveUpdatePreview] boolValue] == YES) {
-		// MGS [[SMLPreviewController sharedInstance] liveUpdate];
-	}
-	
-	if (liveUpdatePreviewTimer) {
-		[liveUpdatePreviewTimer invalidate];
-		liveUpdatePreviewTimer = nil;
 	}
 }
 

@@ -33,7 +33,6 @@ NSString * const MGSFragariaPrefsColourAutocomplete = @"FragariaColourAutocomple
 NSString * const MGSFragariaPrefsColourVariables = @"FragariaColourVariables";
 NSString * const MGSFragariaPrefsColourStrings = @"FragariaColourStrings";
 NSString * const MGSFragariaPrefsColourAttributes = @"FragariaColourAttributes";
-NSString * const MGSFragariaPrefsLiveUpdatePreview = @"FragariaLiveUpdatePreview";
 NSString * const MGSFragariaPrefsShowFullPathInWindowTitle = @"FragariaShowFullPathInWindowTitle";
 NSString * const MGSFragariaPrefsShowLineNumberGutter = @"FragariaShowLineNumberGutter";
 NSString * const MGSFragariaPrefsSyntaxColourNewDocuments = @"FragariaSyntaxColourNewDocuments";
@@ -67,7 +66,6 @@ NSString * const MGSFragariaPrefsSpacesPerTabEntabDetab = @"FragariaSpacesPerTab
 
 // float
 NSString * const MGSFragariaPrefsAutocompleteAfterDelay = @"FragariaAutocompleteAfterDelay";
-NSString * const MGSFragariaPrefsLiveUpdatePreviewDelay = @"FragariaLiveUpdatePreviewDelay";
 
 // font
 // persisted as [NSArchiver archivedDataWithRootObject:[NSFont fontWithName:@"Menlo" size:11]]
@@ -155,9 +153,6 @@ static id sharedInstance = nil;
 	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsAutoInsertAClosingParenthesis];
 	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsAutoInsertAClosingBrace];
 	[dictionary setValue:@"Standard" forKey:MGSFragariaPrefsSyntaxColouringPopUpString];
-	
-	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsLiveUpdatePreview];
-	[dictionary setValue:[NSNumber numberWithFloat:1.0f] forKey:MGSFragariaPrefsLiveUpdatePreviewDelay];
 	
 	NSUserDefaultsController *defaultsController = [NSUserDefaultsController sharedUserDefaultsController];
 	[defaultsController setInitialValues:dictionary];

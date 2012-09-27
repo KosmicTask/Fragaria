@@ -71,7 +71,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	ICUMatcher *firstStringMatcher;
 	ICUMatcher *secondStringMatcher;
 	
-	NSTimer *liveUpdatePreviewTimer;
 	NSTimer *autocompleteWordsTimer;
 
 	NSRange lastLineHighlightRange;

@@ -193,7 +193,6 @@
 		AB472C841299C33100202CB5 /* SMLGoToLine.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SMLGoToLine.xib; sourceTree = "<group>"; };
 		AB472C861299C34500202CB5 /* SMLDetab.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SMLDetab.xib; sourceTree = "<group>"; };
 		AB472C871299C34500202CB5 /* SMLEntab.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SMLEntab.xib; sourceTree = "<group>"; };
-		AB5E688611B657250026B4B9 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		AB5E6A4911B65AC20026B4B9 /* SMLGutterTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SMLGutterTextView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		AB648E2A11FB385700AEF7BD /* Fragaria Doc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Fragaria Doc.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB648E2C11FB385700AEF7BD /* Fragaria Document Based App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Fragaria Document Based App-Info.plist"; sourceTree = "<group>"; };
@@ -406,7 +405,6 @@
 				AB648E2C11FB385700AEF7BD /* Fragaria Document Based App-Info.plist */,
 				AB3971E6118C27E700AEF388 /* SyntaxDefinitions.plist */,
 				AB397291118C28E700AEF388 /* Syntax Definitions */,
-				AB5E688611B657250026B4B9 /* README */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1077,7 +1075,7 @@
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "icu/**";
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = macosx;
@@ -1116,7 +1114,7 @@
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "icu/**";
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
 				WARNING_CFLAGS = (

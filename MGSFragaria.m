@@ -298,7 +298,6 @@ char kcLineWrapPrefChanged;
 	SMLTextView *textView = [[[SMLTextView alloc] initWithFrame:NSMakeRect(0, 0, contentSize.width, contentSize.height)] autorelease];
     [textView setFragaria:self];
 	[textScrollView setDocumentView:textView];
-    [textView setLineWrap:[[SMLDefaults valueForKey:MGSFragariaPrefsLineWrapNewDocuments] boolValue]];
 
     // create line numbers
 	SMLLineNumbers *lineNumbers = [[[SMLLineNumbers alloc] initWithDocument:_docSpec] autorelease];
@@ -335,6 +334,11 @@ char kcLineWrapPrefChanged;
     
     // update the gutter view
     [self updateGutterView];
+    
+    // apply default line wrapping
+    [textView updateLineWrap];
+    [textView setLineWrap:[[SMLDefaults valueForKey:MGSFragariaPrefsLineWrapNewDocuments] boolValue]];
+
 }
 
 #pragma mark -

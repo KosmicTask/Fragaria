@@ -24,7 +24,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 // class extension
 @interface SMLTextView()
 - (void)windowDidBecomeMainOrKey:(NSNotification *)note;
-- (void)updateLineWrap;
 
 @property (retain) NSColor *pageGuideColour;
 
@@ -1002,9 +1001,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
  
  - updateLineWrap
  
+ see http://developer.apple.com/library/mac/#samplecode/TextSizingExample
+ 
+ The readme file in the above example has very good info on how to configure NSTextView instances.
  */
 - (void)updateLineWrap {
-    
+        
     // get control properties
 	NSScrollView *textScrollView = [self enclosingScrollView];
 	NSTextContainer *textContainer = [self textContainer];
@@ -1012,42 +1014,53 @@ Unless required by applicable law or agreed to in writing, software distributed 
     // content view is clipview
 	NSSize contentSize = [textScrollView contentSize];
     
-    // define wrap properties
-    BOOL hasHorizontalScroller = YES;
-    NSSize containerSize = NSMakeSize(contentSize.width, CGFLOAT_MAX);
-    BOOL widthTracksTextView = YES;
-	NSSize maxSize =  containerSize; // NSMakeSize([self frame].size.width, CGFLOAT_MAX);
-	NSSize minSize =  containerSize;
-    BOOL horizontallyResizable = NO;
-    
-    // define non wrap properties
-	if (!self.lineWrap) {
-        containerSize = NSMakeSize(CGFLOAT_MAX, CGFLOAT_MAX);
-        widthTracksTextView = NO;
-        maxSize =  containerSize;
-        horizontallyResizable = YES;
-	}
-    
-#ifdef MGS_DEBUG_TEXT_VIEW
-    
-    NSLog(@"Container size: %@", NSStringFromSize(containerSize));
-    NSLog(@"Max size: %@", NSStringFromSize(maxSize));
-    NSLog(@"Min size: %@", NSStringFromSize(minSize));
-    
-#endif
-    
-    // assign wrap properties
-    [self setMinSize:minSize];
-    [textScrollView setHasHorizontalScroller:hasHorizontalScroller];
-    [textContainer setContainerSize:containerSize];
-    [textContainer setWidthTracksTextView:widthTracksTextView];
-    [self setMaxSize:maxSize];
-    [self setHorizontallyResizable: horizontallyResizable];
+    if (self.lineWrap) {
+        
+        // setup text container
+        [textContainer setContainerSize:NSMakeSize(contentSize.width, CGFLOAT_MAX)];
+        [textContainer setWidthTracksTextView:YES];
+        [textContainer setHeightTracksTextView:NO];
+        
+        // setup text view
+        [self setFrameSize:contentSize];
+        [self setHorizontallyResizable: NO];
+        [self setVerticallyResizable: YES];
+        [self setMinSize:NSMakeSize(10, contentSize.height)];
+        [self setMaxSize:NSMakeSize(10, CGFLOAT_MAX)];
+
+        // setup scroll view
+        [textScrollView setHasHorizontalScroller:NO];
+        [textScrollView setHasVerticalScroller:YES];
+    } else {
+
+        // setup text container
+        [textContainer setContainerSize:NSMakeSize(CGFLOAT_MAX, CGFLOAT_MAX)];
+        [textContainer setWidthTracksTextView:NO];
+        [textContainer setHeightTracksTextView:NO];
+        
+        // setup text view
+        [self setFrameSize:contentSize];
+        [self setHorizontallyResizable: YES];
+        [self setVerticallyResizable: YES];
+        [self setMinSize:contentSize];
+        [self setMaxSize:NSMakeSize(CGFLOAT_MAX, CGFLOAT_MAX)];
+        
+        // setup scroll view
+        [textScrollView setHasHorizontalScroller:YES];
+        [textScrollView setHasVerticalScroller:YES];
+    }
+        
     
     // invalidate the glyph layout
 	[[self layoutManager] textContainerChangedGeometry:textContainer];
+
+    // redraw the line numbers
+    [[fragaria objectForKey:ro_MGSFOLineNumbers] updateLineNumbersForClipView:[[self enclosingScrollView] contentView] checkWidth:NO recolour:YES];
+
+    // redraw the display and reposition scrollers
+    [textScrollView display];
+    [textScrollView reflectScrolledClipView:textScrollView.contentView];
     
-    [self setNeedsDisplay:YES];
 }
 
 @end

@@ -7,7 +7,7 @@
 //
 
 #import "MyDocument.h"
-#import "MGSFragaria.h"
+#import <MGSFragaria/MGSFragaria.h>
 
 @implementation MyDocument
 
@@ -54,21 +54,6 @@
 	// create an instance
 	fragaria = [[MGSFragaria alloc] init];
 	
-	//
-	// assign user defaults.
-	// a number of properties are derived from the user defaults system rather than the doc spec.
-	//
-	// see MGSFragariaPreferences.h for details
-	//
-	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsAutocompleteSuggestAutomatically];	
-	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsLineWrapNewDocuments];	
-	
-	// define initial object configuration
-	//
-	// see MGSFragaria.h for details
-	//
-	[fragaria setObject:[NSNumber numberWithBool:YES] forKey:MGSFOIsSyntaxColoured];
-	[fragaria setObject:[NSNumber numberWithBool:YES] forKey:MGSFOShowLineNumberGutter];
 	[fragaria setObject:self forKey:MGSFODelegate];
 	
 	// define our syntax definition
@@ -77,9 +62,30 @@
 	// embed editor in editView
 	[fragaria embedInView:editView];
 	
-	// set text
-	[fragaria setString:@""];
+    //
+	// assign user defaults.
+	// a number of properties are derived from the user defaults system rather than the doc spec.
+	//
+	// see MGSFragariaPreferences.h for details
+	//
+    if (NO) {
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsAutocompleteSuggestAutomatically];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsLineWrapNewDocuments];
+    }
 	
+	// define initial document configuration
+	//
+	// see MGSFragaria.h for details
+	//
+    if (YES) {
+        [fragaria setObject:[NSNumber numberWithBool:YES] forKey:MGSFOIsSyntaxColoured];
+        [fragaria setObject:[NSNumber numberWithBool:YES] forKey:MGSFOShowLineNumberGutter];
+    }
+
+    // set text
+	[fragaria setString:@"// We Don't need the future"];
+	
+
 	// access the NSTextView
 	NSTextView *textView = [fragaria objectForKey:ro_MGSFOTextView];
 	

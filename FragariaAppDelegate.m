@@ -7,7 +7,7 @@
 //
 
 #import "FragariaAppDelegate.h"
-#import "MGSFragaria.h"
+#import <MGSFragaria/MGSFragaria.h>
 #import "MGSPreferencesController.h"
 
 @implementation FragariaAppDelegate
@@ -29,14 +29,6 @@
 	// create an instance
 	fragaria = [[MGSFragaria alloc] init];
 
-	//
-	// assign user defaults.
-	// a number of properties are derived from the user defaults system rather than the doc spec.
-	//
-	// see MGSFragariaPreferences.h for details
-	//
-	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsAutocompleteSuggestAutomatically];	
-	
 	// define initial object configuration
 	//
 	// see MGSFragaria.h for details
@@ -49,14 +41,23 @@
 	// embed editor in editView
 	[fragaria embedInView:editView];
 
+    //
+	// assign user defaults.
+	// a number of properties are derived from the user defaults system rather than the doc spec.
+	//
+	// see MGSFragariaPreferences.h for details
+	//
+	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsAutocompleteSuggestAutomatically];
+
 	// get initial text - in this case a test file from the bundle
 	NSString *path = [[NSBundle mainBundle] pathForResource:@"SMLSyntaxColouring" ofType:@"m"];
 	NSString *fileText = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
 	
 	// set text
-	[fragaria performSelector:@selector(setString:) withObject:fileText afterDelay:0];
-	
-	// access the NSTextView
+	//[fragaria performSelector:@selector(setString:) withObject:fileText afterDelay:0];
+	[fragaria setString:fileText];
+    
+	// access the NSTextView directly
 	NSTextView *textView = [fragaria objectForKey:ro_MGSFOTextView];
 	
 #pragma unused(textView)

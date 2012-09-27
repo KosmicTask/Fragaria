@@ -280,6 +280,8 @@ char kcLineWrapPrefChanged;
  */
 - (void)embedInView:(NSView *)contentView
 {
+    NSAssert(contentView != nil, @"A content view must be provided.");
+    
 	NSInteger gutterWidth = [[SMLDefaults valueForKey:MGSFragariaPrefsGutterWidth] integerValue];
     
 	// create text scrollview

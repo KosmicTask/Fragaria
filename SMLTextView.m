@@ -24,6 +24,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 // class extension
 @interface SMLTextView()
 - (void)windowDidBecomeMainOrKey:(NSNotification *)note;
+- (void)updateLineWrap;
 
 @property (retain) NSColor *pageGuideColour;
 
@@ -31,7 +32,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 @implementation SMLTextView
 
-@synthesize colouredIBeamCursor, fragaria, pageGuideColour;
+@synthesize colouredIBeamCursor, fragaria, pageGuideColour, lineWrap;
 
 #pragma mark -
 #pragma mark Instance methods
@@ -46,7 +47,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		SMLLayoutManager *layoutManager = [[[SMLLayoutManager alloc] init] autorelease];
 		[[self textContainer] replaceLayoutManager:layoutManager];
 		
-		[self setDefaults];	
+		[self setDefaults];
+        
+        // set initial line wrapping
+        lineWrap = YES;
+        [self updateLineWrap];
 	}
 	return self;
 }
@@ -986,8 +991,20 @@ Unless required by applicable law or agreed to in writing, software distributed 
  see /developer/examples/appkit/TextSizingExample
  
  */
-- (void)setLineWrap:(BOOL)wrap
+- (void)setLineWrap:(BOOL)value
 {
+    if (value == lineWrap) return;
+    lineWrap = value;
+    [self updateLineWrap];
+}
+
+/*
+ 
+ - updateLineWrap
+ 
+ */
+- (void)updateLineWrap {
+    
     // get control properties
 	NSScrollView *textScrollView = [self enclosingScrollView];
 	NSTextContainer *textContainer = [self textContainer];
@@ -1004,7 +1021,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
     BOOL horizontallyResizable = NO;
     
     // define non wrap properties
-	if (!wrap) {
+	if (!self.lineWrap) {
         containerSize = NSMakeSize(CGFLOAT_MAX, CGFLOAT_MAX);
         widthTracksTextView = NO;
         maxSize =  containerSize;

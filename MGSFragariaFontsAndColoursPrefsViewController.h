@@ -7,8 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "MGSFragariaPrefsViewController.h"
 
-@interface MGSFragariaFontsAndColoursPrefsViewController : NSViewController
+@interface MGSFragariaFontsAndColoursPrefsViewController : MGSFragariaPrefsViewController
 
 - (IBAction)setFontAction:(id)sender;
 - (void)changeFont:(id)sender;

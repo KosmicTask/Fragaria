@@ -42,4 +42,6 @@
 		[[document valueForKey:ro_MGSFOLineNumbers] updateLineNumbersCheckWidth:YES recolour:YES];
 	}*/
 }
+
+
 @end

@@ -75,6 +75,7 @@ extern NSString * const MGSFragariaPrefsTextFont;
 // string
 extern NSString * const MGSFragariaPrefsSyntaxColouringPopUpString;
 
+#import "MGSFragariaPrefsViewController.h"
 #import "MGSFragariaFontsAndColoursPrefsViewController.h"
 #import "MGSFragariaTextEditingPrefsViewController.h"
 

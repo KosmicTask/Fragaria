@@ -7,8 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "MGSFragariaPrefsViewController.h"
 
-@interface MGSFragariaTextEditingPrefsViewController : NSViewController {
+@interface MGSFragariaTextEditingPrefsViewController : MGSFragariaPrefsViewController {
     NSImage *toolbarImage;
 }
 

@@ -14,6 +14,11 @@
     IBOutlet NSView *generalView;
     MGSFragariaFontsAndColoursPrefsViewController *fontsAndColoursPrefsViewController;
     MGSFragariaTextEditingPrefsViewController *textEditingPrefsViewController;
+    NSString *toolbarIdentifier;
+    NSString *generalIdentifier;
+    NSString *textIdentifier;
+    NSString *fontIdentifier;
+    
 }
 - (IBAction)revertToStandardSettings:(id)sender;
 @end

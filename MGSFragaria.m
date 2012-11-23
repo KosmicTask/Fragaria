@@ -595,12 +595,12 @@ char kcLineWrapPrefChanged;
     id document = _docSpec;
     
     BOOL showGutter = [[_docSpec valueForKey:MGSFOShowLineNumberGutter] boolValue];
-	NSInteger gutterWidth = [[SMLDefaults valueForKey:MGSFragariaPrefsGutterWidth] integerValue];
-    NSInteger gutterOffset = (showGutter ? gutterWidth : 0);
+	NSUInteger gutterWidth = [[SMLDefaults valueForKey:MGSFragariaPrefsGutterWidth] integerValue];
+    NSUInteger gutterOffset = (showGutter ? gutterWidth : 0);
 	NSRect frame, newFrame;
 	
 	// Update document value first.
-	[document setValue:[NSNumber numberWithUnsignedInt:gutterWidth] forKey:MGSFOGutterWidth];
+	[document setValue:[NSNumber numberWithUnsignedInteger:gutterWidth] forKey:MGSFOGutterWidth];
 	
     // get editor views
     NSScrollView *textScrollView = (NSScrollView *)[document valueForKey:ro_MGSFOScrollView];

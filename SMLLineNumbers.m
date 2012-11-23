@@ -187,7 +187,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	while (indexNonWrap <= maxRangeVisibleRange) {
 		if (idx == indexNonWrap) {
 			lineNumber++;
-			[lineNumbersString appendFormat:@"%i\n", lineNumber];
+			[lineNumbersString appendFormat:@"%ld\n", (long)lineNumber];
 		} else {
 			[lineNumbersString appendFormat:@"%@\n", @"."];
 			indexNonWrap = idx;

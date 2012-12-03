@@ -92,8 +92,9 @@ static id sharedInstance = nil;
 		return;
 	}
     
-	
-	NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+    // add to initial values
+    NSUserDefaultsController *defaultsController = [NSUserDefaultsController sharedUserDefaultsController];	
+	NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:[defaultsController initialValues]];
 	
 	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.031f green:0.0f blue:0.855f alpha:1.0f]] forKey:MGSFragariaPrefsCommandsColourWell];
 	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.0f green:0.45f blue:0.0f alpha:1.0f]] forKey:MGSFragariaPrefsCommentsColourWell];
@@ -154,7 +155,6 @@ static id sharedInstance = nil;
 	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsAutoInsertAClosingBrace];
 	[dictionary setValue:@"Standard" forKey:MGSFragariaPrefsSyntaxColouringPopUpString];
 	
-	NSUserDefaultsController *defaultsController = [NSUserDefaultsController sharedUserDefaultsController];
 	[defaultsController setInitialValues:dictionary];
 	
 	MGS_preferencesInitialized = YES;

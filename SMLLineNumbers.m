@@ -183,7 +183,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		}
 	}
 	NSMutableString *lineNumbersString = [[[NSMutableString alloc] init] autorelease];
-	
+
 	while (indexNonWrap <= maxRangeVisibleRange) {
 		if (idx == indexNonWrap) {
 			lineNumber++;
@@ -228,12 +228,22 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[[document valueForKey:@"syntaxColouring"] pageRecolourTextView:textView];
 	}
 	
-	[[gutterScrollView documentView] setString:lineNumbersString];
+	// Fix flickering while rubber banding: Only change the text, if NOT rubber banding.
+	if (visibleRect.origin.y >= 0.0f && visibleRect.origin.y <= textView.frame.size.height - visibleRect.size.height)
+		[[gutterScrollView documentView] setString:lineNumbersString];
 	
 	[[gutterScrollView contentView] setBoundsOrigin:zeroPoint]; // To avert an occasional bug which makes the line numbers disappear
 	currentLineHeight = (NSInteger)[textView lineHeight];
 	if ((NSInteger)visibleRect.origin.y != 0 && currentLineHeight != 0) {
-		[[gutterScrollView contentView] scrollToPoint:NSMakePoint(0, ((NSInteger)visibleRect.origin.y % currentLineHeight) + addToScrollPoint)]; // Move currentGutterScrollView so it aligns with the rows in currentTextView
+		CGFloat y = ((NSInteger)visibleRect.origin.y % currentLineHeight) + addToScrollPoint;  // Align the line numbers with the text.
+		
+		// Don't align, but directly calculate the offset, when rubber banding.
+		if (visibleRect.origin.y < 0.0f)
+			y = visibleRect.origin.y;
+		else if (visibleRect.origin.y > textView.frame.size.height - visibleRect.size.height)
+			y = visibleRect.origin.y - (textView.frame.size.height - visibleRect.size.height);
+		
+		[[gutterScrollView contentView] scrollToPoint:NSMakePoint(0, y)];
 	}
 	
 allDone:

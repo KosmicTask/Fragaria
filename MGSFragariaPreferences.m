@@ -157,6 +157,8 @@ static id sharedInstance = nil;
 	
 	[defaultsController setInitialValues:dictionary];
 	
+	[[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
+	
 	MGS_preferencesInitialized = YES;
 }
 

@@ -86,14 +86,24 @@
 		<string>@synthesize</string>
 		<string>@dynamic</string>
 		<string>@protocol</string>
+		<string>@required</string>
+		<string>@optional</string>
 		<string>@end</string>
 		<string>@private</string>
+		<string>@package</string>
 		<string>@protected</string>
 		<string>@public</string>
 		<string>@class</string>
 		<string>@selector</string>
-		<string>@endcode</string>
+		<string>@encode</string>
 		<string>@defs</string>
+		<string>@try</string>
+		<string>@catch</string>
+		<string>@finally</string>
+		<string>@throw</string>
+		<string>@autoreleasepool</string>
+		<string>@synchronized</string>
+		<string>@compatibility_alias</string>
 		<string>IBOutlet</string>
 		<string>IBAction</string>
 		<string>true</string>

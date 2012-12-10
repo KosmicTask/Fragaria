@@ -88,7 +88,6 @@
 		<string>@protocol</string>
 		<string>@required</string>
 		<string>@optional</string>
-		<string>@dynamic</string>
 		<string>@end</string>
 		<string>@private</string>
 		<string>@package</string>

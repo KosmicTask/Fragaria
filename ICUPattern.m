@@ -198,7 +198,7 @@ unsigned const ICUUnicodeWordBoundaries = UREGEX_UWORD;
 		UChar *destFields[destFieldsCapacity];
 		int numberOfComponents = uregex_split([self re],
 											  destBuf,
-											  destCapacity,
+											  (int32_t)destCapacity,
 											  &requiredCapacity,
 											  destFields,
 											  destFieldsCapacity,

@@ -391,13 +391,13 @@ forStartingGlyphAtIndex:(NSUInteger)glyphIndex
     // experimental glyph substitution
     if (useGlyphSubstitutionForInvisibleGlyphs) {
 
-        NSString *glyphString = [[NSString stringWithFormat:@"%@%@%@", tabCharacter, spaceCharacter, newLineCharacter] autorelease];
+        NSString *glyphString = [NSString stringWithFormat:@"%@%@%@", tabCharacter, spaceCharacter, newLineCharacter];
         
         // use NSLayoutManager instance to generate required glyphs using the default attributes
-        NSTextStorage *textStorage = [[NSTextStorage alloc] initWithString:glyphString];
+        NSTextStorage *textStorage = [[[NSTextStorage alloc] initWithString:glyphString] autorelease];
         [textStorage setAttributes:defAttributes range:NSMakeRange(0, [glyphString length])];
-        NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
-        NSTextContainer *textContainer = [[NSTextContainer alloc] init];
+        NSLayoutManager *layoutManager = [[[NSLayoutManager alloc] init] autorelease];
+        NSTextContainer *textContainer = [[[NSTextContainer alloc] init] autorelease];
         [layoutManager addTextContainer:textContainer];
         [textStorage addLayoutManager:layoutManager];
         

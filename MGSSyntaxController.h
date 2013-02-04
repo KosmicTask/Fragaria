@@ -15,7 +15,7 @@
 	NSArray *syntaxDefinitionNames;
 }
 
-+ (MGSSyntaxController *)sharedInstance;
++ (instancetype)sharedInstance;
 + (NSString *)standardSyntaxDefinitionName;
 - (NSArray *)syntaxDefinitionNames;
 - (void)insertSyntaxDefinitions;

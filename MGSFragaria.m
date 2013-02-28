@@ -247,6 +247,7 @@ static MGSFragaria *_currentInstance;
 	[textScrollView setAutoresizingMask:(NSViewWidthSizable | NSViewHeightSizable)];
 	[[textScrollView contentView] setAutoresizesSubviews:YES];
 	[textScrollView setPostsFrameChangedNotifications:YES];
+    [textScrollView setVerticalScrollElasticity:NSScrollElasticityNone];
 	
 	// create line numbers
 	SMLLineNumbers *lineNumbers = [[[SMLLineNumbers alloc] initWithDocument:self.docSpec] autorelease];

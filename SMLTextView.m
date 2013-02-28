@@ -420,7 +420,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)setPageGuideValues
 {
 	NSDictionary *sizeAttribute = [[[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextFont"]], NSFontAttributeName, nil] autorelease];
-	NSString *sizeString = [NSString stringWithString:@" "];
+	NSString *sizeString = @" ";
 	CGFloat sizeOfCharacter = [sizeString sizeWithAttributes:sizeAttribute].width;
 	pageGuideX = (sizeOfCharacter * ([[SMLDefaults valueForKey:@"ShowPageGuideAtColumn"] integerValue] + 1)) - 1.5f; // -1.5 to put it between the two characters and draw only on one pixel and not two (as the system draws it in a special way), and that's also why the width above is set to zero 
 	

@@ -80,12 +80,16 @@ static id sharedInstance = nil;
  */
 - (id)init 
 {
-    if (sharedInstance == nil) {
-        sharedInstance = [super init];
-		
-		[self insertSyntaxDefinitions];
-	}
-    return sharedInstance;
+    self = [super init];
+    if (!self) return NULL;
+    
+    [self insertSyntaxDefinitions];
+    
+    if (!sharedInstance)
+    {
+        sharedInstance = self;
+    }
+    return self;
 }
 
 /*

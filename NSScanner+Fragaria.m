@@ -25,7 +25,7 @@
      */
     NSUInteger maxIndex = [[self string] length];
 	if (idx > maxIndex) {
-        NSLog(@"Invalid scan location %u > max of %u", idx, maxIndex);
+        NSLog(@"Invalid scan location %lu > max of %lu", (unsigned long)idx, (unsigned long)maxIndex);
 		idx = maxIndex;
 	}
 	

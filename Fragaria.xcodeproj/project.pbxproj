@@ -58,6 +58,11 @@
 		ABD0FDB01193281600E6AFE6 /* MGSFragaria.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB69B62B118B745700903D1D /* MGSFragaria.framework */; };
 		ABF28AF014C075D400ECAD48 /* NSScanner+Fragaria.m in Sources */ = {isa = PBXBuildFile; fileRef = ABF28AEE14C075D400ECAD48 /* NSScanner+Fragaria.m */; };
 		ABF28AF114C075D400ECAD48 /* NSScanner+Fragaria.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF28AEF14C075D400ECAD48 /* NSScanner+Fragaria.h */; };
+		E3AA871B16E1817800585940 /* editor-breakpoint.png in Resources */ = {isa = PBXBuildFile; fileRef = E3AA871A16E1817800585940 /* editor-breakpoint.png */; };
+		E3BBA50B16E52FE600D89923 /* editor-breakpoint-0.png in Resources */ = {isa = PBXBuildFile; fileRef = E3BBA50816E52FE600D89923 /* editor-breakpoint-0.png */; };
+		E3BBA50C16E52FE600D89923 /* editor-breakpoint-1.png in Resources */ = {isa = PBXBuildFile; fileRef = E3BBA50916E52FE600D89923 /* editor-breakpoint-1.png */; };
+		E3BBA50D16E52FE600D89923 /* editor-breakpoint-2.png in Resources */ = {isa = PBXBuildFile; fileRef = E3BBA50A16E52FE600D89923 /* editor-breakpoint-2.png */; };
+		E3CF4B7916E6927300C27B5C /* MGSBreakpointDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E3CF4B7816E6927300C27B5C /* MGSBreakpointDelegate.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -186,6 +191,11 @@
 		ABD0FE581193543600E6AFE6 /* MGSFragariaPreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSFragariaPreferences.h; sourceTree = "<group>"; };
 		ABF28AEE14C075D400ECAD48 /* NSScanner+Fragaria.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = "NSScanner+Fragaria.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		ABF28AEF14C075D400ECAD48 /* NSScanner+Fragaria.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSScanner+Fragaria.h"; sourceTree = "<group>"; };
+		E3AA871A16E1817800585940 /* editor-breakpoint.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "editor-breakpoint.png"; sourceTree = "<group>"; };
+		E3BBA50816E52FE600D89923 /* editor-breakpoint-0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "editor-breakpoint-0.png"; sourceTree = "<group>"; };
+		E3BBA50916E52FE600D89923 /* editor-breakpoint-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "editor-breakpoint-1.png"; sourceTree = "<group>"; };
+		E3BBA50A16E52FE600D89923 /* editor-breakpoint-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "editor-breakpoint-2.png"; sourceTree = "<group>"; };
+		E3CF4B7816E6927300C27B5C /* MGSBreakpointDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSBreakpointDelegate.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -310,6 +320,10 @@
 		AB3972FC118C2A5D00AEF388 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				E3BBA50816E52FE600D89923 /* editor-breakpoint-0.png */,
+				E3BBA50916E52FE600D89923 /* editor-breakpoint-1.png */,
+				E3BBA50A16E52FE600D89923 /* editor-breakpoint-2.png */,
+				E3AA871A16E1817800585940 /* editor-breakpoint.png */,
 				ABA812DB11B6855200A29990 /* LICENSE-2.0.txt */,
 				AB69B62C118B745700903D1D /* MGSFragaria-Info.plist */,
 				AB648E2C11FB385700AEF7BD /* Fragaria Document Based App-Info.plist */,
@@ -474,6 +488,7 @@
 				ABD0FE581193543600E6AFE6 /* MGSFragariaPreferences.h */,
 				AB472B7B1299732F00202CB5 /* MGSTextMenuController.h */,
 				AB472BF51299BBBA00202CB5 /* MGSExtraInterfaceController.h */,
+				E3CF4B7816E6927300C27B5C /* MGSBreakpointDelegate.h */,
 			);
 			name = Headers;
 			sourceTree = "<group>";
@@ -493,6 +508,7 @@
 				AB69B754118B830700903D1D /* MGSFragaria.h in Headers */,
 				AB257FCE129B1BF500A3FF76 /* SMLTextView.h in Headers */,
 				ABF28AF114C075D400ECAD48 /* NSScanner+Fragaria.h in Headers */,
+				E3CF4B7916E6927300C27B5C /* MGSBreakpointDelegate.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -619,6 +635,10 @@
 				AB472C851299C33100202CB5 /* SMLGoToLine.xib in Resources */,
 				AB472C881299C34500202CB5 /* SMLDetab.xib in Resources */,
 				AB472C891299C34500202CB5 /* SMLEntab.xib in Resources */,
+				E3AA871B16E1817800585940 /* editor-breakpoint.png in Resources */,
+				E3BBA50B16E52FE600D89923 /* editor-breakpoint-0.png in Resources */,
+				E3BBA50C16E52FE600D89923 /* editor-breakpoint-1.png in Resources */,
+				E3BBA50D16E52FE600D89923 /* editor-breakpoint-2.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

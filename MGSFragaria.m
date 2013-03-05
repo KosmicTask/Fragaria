@@ -31,6 +31,7 @@ NSString * const ro_MGSFOGutterScrollView = @"firstGutterScrollView"; // readonl
 
 // NSObject
 NSString * const MGSFODelegate = @"delegate";
+NSString * const MGSFOBreakpointDelegate = @"breakpointDelegate";
 NSString * const ro_MGSFOLineNumbers = @"lineNumbers"; // readonly
 NSString * const ro_MGSFOSyntaxColouring = @"syntaxColouring"; // readonly
 
@@ -205,7 +206,7 @@ static MGSFragaria *_currentInstance;
         // Create the Sets containing the valid setter/getter combinations for the Docspec
         
         self.objectSetterKeys = [NSSet setWithObjects:MGSFOIsSyntaxColoured, MGSFOShowLineNumberGutter, MGSFOIsEdited,
-                            MGSFOSyntaxDefinitionName, MGSFODelegate,
+                            MGSFOSyntaxDefinitionName, MGSFODelegate, MGSFOBreakpointDelegate,
                             nil];
         
         self.objectGetterKeys = [NSMutableSet setWithObjects:ro_MGSFOTextView, ro_MGSFOScrollView, ro_MGSFOGutterScrollView,
@@ -432,4 +433,17 @@ static MGSFragaria *_currentInstance;
 	
 	return extraInterfaceController;
 }
+
+#pragma mark -
+#pragma mark Resource loading
+
++ (NSImage *) imageNamed:(NSString *)name
+{
+    NSBundle* bundle = [NSBundle bundleForClass:[self class]];
+    
+    NSString *path = [bundle pathForImageResource:name];
+    return path != nil ? [[[NSImage alloc]
+                           initWithContentsOfFile:path] autorelease] : nil;
+}
+
 @end

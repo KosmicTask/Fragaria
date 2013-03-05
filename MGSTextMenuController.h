@@ -48,6 +48,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (IBAction)goToLineAction:(id)sender;
 - (void)performGoToLine:(NSInteger)lineToGoTo;
 - (IBAction)closeTagAction:(id)sender;
+- (IBAction)toggleBreakpointAction:(id)sender;
 - (IBAction)commentOrUncommentAction:(id)sender;
 - (IBAction)emptyDummyAction:(id)sender;
 - (IBAction)removeLineEndingsAction:(id)sender;

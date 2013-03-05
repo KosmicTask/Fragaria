@@ -21,7 +21,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 
 @interface SMLGutterTextView : NSTextView {
-	
+	NSImage* imgBreakpoint0;
+	NSImage* imgBreakpoint1;
+	NSImage* imgBreakpoint2;
 }
+
+@property (nonatomic,copy) NSString* fileName;
+@property (nonatomic,retain) NSArray* breakpointLines;
 
 @end

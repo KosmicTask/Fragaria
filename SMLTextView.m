@@ -45,6 +45,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		
 		[self setDefaults];	
 	}
+    
 	return self;
 }
 

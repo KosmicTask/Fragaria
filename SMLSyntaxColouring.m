@@ -787,6 +787,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		//
 		// Keywords
         //
+#warning TODO: Color keywords differently
 		if ([keywords count] != 0 && [[SMLDefaults valueForKey:@"ColourKeywords"] boolValue] == YES) {
 			[scanner mgs_setScanLocation:0];
 			while (![scanner isAtEnd]) {

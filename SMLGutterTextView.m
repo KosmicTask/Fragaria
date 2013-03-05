@@ -23,6 +23,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 #import "SMLStandardHeader.h"
 
 #import "SMLGutterTextView.h"
+#import "MGSFragaria.h"
+#import "MGSBreakpointDelegate.h"
+#import "SMLLineNumbers.h"
 
 @implementation SMLGutterTextView
 
@@ -36,6 +39,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (id)initWithFrame:(NSRect)frame
 {
 	if ((self = [super initWithFrame:frame])) {
+        
+        imgBreakpoint0 = [MGSFragaria imageNamed:@"editor-breakpoint-0.png"];
+        [imgBreakpoint0 retain];
+        imgBreakpoint1 = [MGSFragaria imageNamed:@"editor-breakpoint-1.png"];
+        [imgBreakpoint1 retain];
+        imgBreakpoint2 = [MGSFragaria imageNamed:@"editor-breakpoint-2.png"];
+        [imgBreakpoint2 retain];
 
 		[self setContinuousSpellCheckingEnabled:NO];
 		[self setAllowsUndo:NO];
@@ -102,8 +112,71 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[dottedLine setLineDash:dash count:2 phase:1.0f];
 		[dottedLine stroke];
 	}
-	
+    
+    if (self.breakpointLines)
+    {
+        for (NSNumber* lineNumber in self.breakpointLines)
+        {
+            int line = [lineNumber intValue];
+            NSDrawThreePartImage(NSMakeRect(2, line * 13 - 12, bounds.size.width-4, 12), imgBreakpoint0, imgBreakpoint1, imgBreakpoint2, NO, NSCompositeSourceOver, 1, NO);
+        }
+    }
 }
+
+- (void)mouseDown:(NSEvent *)theEvent
+{
+    NSPoint curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    
+    NSLayoutManager* lm = [self layoutManager];
+    NSUInteger glyphIdx = [lm glyphIndexForPoint:curPoint inTextContainer:self.textContainer];
+    
+    NSUInteger charIdx = [lm characterIndexForGlyphAtIndex:glyphIdx];
+    
+    NSString* text = [self string];
+    NSRange lineRange = [text lineRangeForRange:NSMakeRange(charIdx, 1)];
+    NSString* substring = [text substringWithRange:lineRange];
+    
+    int lineNum = [substring intValue];
+    
+    id delegate = [[MGSFragaria currentInstance] objectForKey:MGSFOBreakpointDelegate];
+    if (delegate && [delegate respondsToSelector:@selector(toggleBreakpointForFile:onLine:)])
+    {
+        [delegate toggleBreakpointForFile:self.fileName onLine:lineNum];
+    }
+    
+    SMLLineNumbers* lineNumbers = [[MGSFragaria currentInstance] objectForKey:ro_MGSFOLineNumbers];
+    
+    [lineNumbers updateLineNumbersCheckWidth:NO recolour:NO];
+    [self setNeedsDisplay:YES];
+}
+
+/*
+- (void)drawViewBackgroundInRect:(NSRect)rect
+{
+    [super drawViewBackgroundInRect:rect];
+    
+    //NSPoint containerOrigin = [self textContainerOrigin];
+    NSLayoutManager* layoutManager = [self layoutManager];
+    
+    NSUInteger glyphIndex = [layoutManager glyphIndexForCharacterAtIndex:8];
+    NSLog(@"glyphIndex: %d", (int)glyphIndex);
+    
+    //[layoutManager ch]
+    
+    NSPoint glyphLocation = [layoutManager locationForGlyphAtIndex:glyphIndex];
+    NSLog(@"glyphLocation: %f,%f", glyphLocation.x, glyphLocation.y);
+    
+    NSRect bounds = [self bounds];
+    
+    NSLog(@"bounds: %f,%f,%f,%f", bounds.origin.x, bounds.origin.y, bounds.size.width, bounds.size.height);
+    
+    NSLog(@"img0: %@ img1: %@ img2: %@", imgBreakpoint0, imgBreakpoint1, imgBreakpoint2);
+    
+    //NSDrawThreePartImage(NSMakeRect(2, 110, bounds.size.width-4, 12), imgBreakpoint0, imgBreakpoint1, imgBreakpoint2, NO, NSCompositeSourceOver, 1, NO);
+    
+    [imgBreakpoint0 drawInRect:NSMakeRect(2, 110, 4, 12) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1];
+    [imgBreakpoint2 drawInRect:NSMakeRect(bounds.size.width-11, 110, 8, 12) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1];
+}*/
 
 /*
  
@@ -113,6 +186,16 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (BOOL)isOpaque
 {
 	return YES;
+}
+
+- (void) dealloc
+{
+    [imgBreakpoint0 release];
+    [imgBreakpoint1 release];
+    [imgBreakpoint2 release];
+    self.fileName = NULL;
+    self.breakpointLines = NULL;
+    [super dealloc];
 }
 
 @end

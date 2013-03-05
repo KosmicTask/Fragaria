@@ -73,6 +73,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 #pragma mark -
 #pragma mark Drawing
+
+#warning Drawing at specific points (howto)
+
 /*
  
  - drawGlyphsForGlyphRange:atPoint:

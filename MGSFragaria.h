@@ -30,6 +30,7 @@ extern NSString * const ro_MGSFOGutterScrollView; // readonly
 
 // NSObject
 extern NSString * const MGSFODelegate;
+extern NSString * const MGSFOBreakpointDelegate;
 extern NSString * const ro_MGSFOLineNumbers; // readonly
 extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 
@@ -72,6 +73,6 @@ extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 - (NSTextView *)textView;
 - (MGSTextMenuController *)textMenuController;
 
-
++ (NSImage *) imageNamed:(NSString *)name;
 
 @end

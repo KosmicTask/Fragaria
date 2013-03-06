@@ -192,4 +192,14 @@
 	return YES;
 }
 
+/*
+ 
+ reloadString:
+ 
+ */
+- (IBAction)reloadString:(id)sender
+{
+    [fragaria reloadString];
+    
+}
 @end

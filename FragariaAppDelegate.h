@@ -20,6 +20,7 @@
 
 - (IBAction)showPreferencesWindow:(id)sender;
 - (IBAction)copyToPasteBoard:(id)sender;
+- (IBAction)reloadString:(id)sender;
 @property (assign) IBOutlet NSWindow *window;
 
 - (void)setSyntaxDefinition:(NSString *)name;

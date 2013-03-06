@@ -49,7 +49,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSString *firstSingleLineComment, *secondSingleLineComment;
     NSString *beginFirstMultiLineComment, *endFirstMultiLineComment, *beginSecondMultiLineComment, *endSecondMultiLineComment;
     NSString *functionDefinition, *removeFromFunction;
-	NSString *searchString;
 
     NSMutableArray *singleLineComments;
     NSMutableArray *multiLineComments;

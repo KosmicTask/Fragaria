@@ -128,10 +128,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		self.keywordStartCharacterSet = [[temporaryCharacterSet copy] autorelease];
 		
 		// keyword end character set
+        // see http://www.fileformat.info/info/unicode/category/index.htm for categories that make up the sets
 		temporaryCharacterSet = [[[NSCharacterSet whitespaceAndNewlineCharacterSet] mutableCopy] autorelease];
 		[temporaryCharacterSet formUnionWithCharacterSet:[NSCharacterSet symbolCharacterSet]];
 		[temporaryCharacterSet formUnionWithCharacterSet:[NSCharacterSet punctuationCharacterSet]];
-		[temporaryCharacterSet removeCharactersInString:@"_"];
+		[temporaryCharacterSet removeCharactersInString:@"_-"]; // common separators in variable names
 		self.keywordEndCharacterSet = [[temporaryCharacterSet copy] autorelease];
 		
 		// attributes character set

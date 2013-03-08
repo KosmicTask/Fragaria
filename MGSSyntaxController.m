@@ -52,11 +52,12 @@ static id sharedInstance = nil;
  + sharedInstance
  
  */
-+ (MGSSyntaxController *)sharedInstance
-{ 
-	if (sharedInstance == nil) { 
-		sharedInstance = [[self alloc] init];
-	}
++ (instancetype)sharedInstance
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[self alloc] init];
+    });
 	
 	return sharedInstance;
 } 
@@ -79,11 +80,14 @@ static id sharedInstance = nil;
 - (id)init 
 {
     if (sharedInstance == nil) {
-        sharedInstance = [super init];
-		
-		[self insertSyntaxDefinitions];
+        self = [super init];
+        
+        if (self) {
+            [self insertSyntaxDefinitions];
+        }
 	}
-    return sharedInstance;
+    
+    return self;
 }
 
 /*

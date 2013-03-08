@@ -1033,38 +1033,49 @@ Unless required by applicable law or agreed to in writing, software distributed 
         //
         for (NSArray *multiLineComment in self.multiLineComments) {
             
-            // get strings
+            // Get strings
             NSString *beginMultiLineComment = [multiLineComment objectAtIndex:0];
             NSString *endMultiLineComment = [multiLineComment objectAtIndex:1];
             
-            // is action required ?
+            // Is colouring required?
             if (![beginMultiLineComment isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourComments] boolValue] == YES) {
-            
-                beginLocationInMultiLine = [documentString rangeOfString:beginMultiLineComment options:NSBackwardsSearch range:NSMakeRange(0, rangeLocation)].location;
-                endLocationInMultiLine = [documentString rangeOfString:endMultiLineComment options:NSBackwardsSearch range:NSMakeRange(0, rangeLocation)].location;
-                if (beginLocationInMultiLine == NSNotFound || (endLocationInMultiLine != NSNotFound && beginLocationInMultiLine < endLocationInMultiLine)) {
-                    beginLocationInMultiLine = rangeLocation;
-                }			
+                
+                // Default to start of document
+                beginLocationInMultiLine = 0;
+                
+                // If start and end comment markers are the the same we
+                // always start searching at the beginning of the document.
+                // Otherwise we must consider that our start location may be mid way through
+                // a multiline comment.
+                if (![beginMultiLineComment isEqualToString:endMultiLineComment]) {
+                    
+                    // Search backwards from range location looking for comment start
+                    beginLocationInMultiLine = [documentString rangeOfString:beginMultiLineComment options:NSBackwardsSearch range:NSMakeRange(0, rangeLocation)].location;
+                    endLocationInMultiLine = [documentString rangeOfString:endMultiLineComment options:NSBackwardsSearch range:NSMakeRange(0, rangeLocation)].location;
+                    
+                    // If comments not found then begin at range location
+                    if (beginLocationInMultiLine == NSNotFound || (endLocationInMultiLine != NSNotFound && beginLocationInMultiLine < endLocationInMultiLine)) {
+                        beginLocationInMultiLine = rangeLocation;
+                    }
+                }
+                
                 [documentScanner mgs_setScanLocation:beginLocationInMultiLine];
                 searchSyntaxLength = [endMultiLineComment length];
                 
-                // iterate over the document until we exceed our work range
+                // Iterate over the document until we exceed our work range
                 while (![documentScanner isAtEnd]) {
                     
-                    // validate search range
-                    searchRange = NSMakeRange(beginLocationInMultiLine, rangeToRecolour.length);
-                    if (NSMaxRange(searchRange) > documentStringLength) {
-                        searchRange = NSMakeRange(beginLocationInMultiLine, documentStringLength - beginLocationInMultiLine);
-                    }
+                    // Search up to document end
+                    searchRange = NSMakeRange(beginLocationInMultiLine, documentStringLength - beginLocationInMultiLine);
                     
-                    // look for comment start
+                    // Look for comment start in document
                     colourLocation = [documentString rangeOfString:beginMultiLineComment options:NSLiteralSearch range:searchRange].location;
                     if (colourLocation == NSNotFound) {
                         break;
                     }
                     
-                    // increment our location.
-                    // this is necessary to cover situations, such as F-Script, where the start and end comment strings are identical
+                    // Increment our location.
+                    // This is necessary to cover situations, such as F-Script, where the start and end comment strings are identical
                     if (colourLocation + 1 < documentStringLength) {
                         [documentScanner mgs_setScanLocation:colourLocation + 1];
                         
@@ -1077,10 +1088,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
                         [documentScanner mgs_setScanLocation:colourLocation];
                     }
                     
-                    // scan up to comment end
+                    // Scan up to comment end
                     if (![documentScanner scanUpToString:endMultiLineComment intoString:nil] || [documentScanner scanLocation] >= documentStringLength) {
                         
-                        // comment end not found
+                        // Comment end not found
                         if (shouldOnlyColourTillTheEndOfLine) {
                             [documentScanner mgs_setScanLocation:NSMaxRange([documentString lineRangeForRange:NSMakeRange(colourLocation, 0)])];
                         } else {
@@ -1089,10 +1100,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
                         colourLength = [documentScanner scanLocation] - colourLocation;
                     } else {
                         
-                        // comment end found
+                        // Comment end found
                         if ([documentScanner scanLocation] < documentStringLength) {
                             
-                            // safely advance scanner
+                            // Safely advance scanner
                             [documentScanner mgs_setScanLocation:[documentScanner scanLocation] + searchSyntaxLength];
                         }
                         colourLength = [documentScanner scanLocation] - colourLocation;
@@ -1110,15 +1121,15 @@ Unless required by applicable law or agreed to in writing, software distributed 
                         }
                     }
 
-                    // colour the range
+                    // Colour the range
                     [self setColour:commentsColour range:NSMakeRange(colourLocation, colourLength)];
 
-                    // we may be done
+                    // We may be done
                     if ([documentScanner scanLocation] > maxRangeLocation) {
                         break;
                     }
                     
-                    // reset location
+                    // set start location for next search
                     beginLocationInMultiLine = [documentScanner scanLocation];
                 }
             }

@@ -146,7 +146,28 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 }
 
+#pragma mark -
+#pragma mark Copy and paste
 
+/*
+ 
+ - paste
+ 
+ */
+-(void)paste:(id)sender
+{
+    // let super paste
+    [super paste:sender];
+
+    // send paste notification
+    NSNotification *note = [NSNotification notificationWithName:@"MGSTextDidPasteNotification" object:self];
+    [[NSNotificationCenter defaultCenter] postNotification:note];
+    
+    // inform delegate of Fragaria paste
+    if ([self.delegate respondsToSelector:@selector(mgsTextDidPaste:)]) {
+        [(id)self.delegate mgsTextDidPaste:note];
+    }
+}
 #pragma mark -
 #pragma mark KVO
 

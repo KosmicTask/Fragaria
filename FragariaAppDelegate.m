@@ -91,6 +91,17 @@
     [[MGSPreferencesController sharedPrefsWindowController] showWindow:self];
 }
 
+/*
+ 
+ reloadString:
+ 
+ */
+- (IBAction)reloadString:(id)sender
+{
+#pragma unused(sender)
+    [fragaria reloadString];
+}
+
 #pragma mark -
 #pragma mark Pasteboard handling
 /*
@@ -192,14 +203,21 @@
 	return YES;
 }
 
+#pragma mark -
+#pragma mark MGSFragariaTextViewDelegate
+
 /*
  
- reloadString:
+ - mgsTextDidPaste:
  
  */
-- (IBAction)reloadString:(id)sender
+- (void)mgsTextDidPaste:(NSNotification *)aNotification
 {
-    [fragaria reloadString];
-    
+    /*
+     When this notification is received the paste will have been accepted.
+     Use this method to query the pasteboard for additional pasteboard content
+     that may be relevant to the application: eg: a plist that may contain custom data.
+     */
+    NSLog(@"notification : %@", [aNotification name]); 
 }
 @end

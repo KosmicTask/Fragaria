@@ -1515,7 +1515,19 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	return undoManager;
 }
 
+#pragma mark -
+#pragma mark MGSFragariaTextViewDelegate
 
+/*
+ 
+ - mgsTextDidPaste:
+ 
+ */
+- (void)mgsTextDidPaste:(NSNotification *)aNotification
+{
+    // send out document delegate notifications
+	[self performDocumentDelegateSelector:_cmd withObject:aNotification];
+}
 #pragma mark -
 #pragma mark Undo handling
 

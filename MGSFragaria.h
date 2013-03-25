@@ -38,6 +38,11 @@ extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 
 #import "MGSFragariaPreferences.h"
 
+@protocol MGSFragariaTextViewDelegate <NSObject>
+@optional
+- (void)mgsTextDidPaste:(NSNotification *)note;
+@end
+
 @interface MGSFragaria : NSObject
 {
 	@private

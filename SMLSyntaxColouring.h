@@ -18,13 +18,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 #import <Cocoa/Cocoa.h>
-
-@class SMLTextView;
+#import "MGSFragaria.h"
+#import "SMLTextView.h"
+    
 @class SMLLayoutManager;
 @class ICUPattern;
 @class ICUMatcher;
 
-@interface SMLSyntaxColouring : NSObject <NSTextStorageDelegate, NSTextViewDelegate> {
+@interface SMLSyntaxColouring : NSObject <NSTextStorageDelegate, NSTextViewDelegate, MGSFragariaTextViewDelegate> {
 	
 	id document;
 	NSUndoManager *undoManager;

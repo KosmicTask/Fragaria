@@ -83,7 +83,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	[self setMaxSize:NSMakeSize(FLT_MAX, FLT_MAX)];
 	[self setAutoresizingMask:NSViewWidthSizable];
 	[self setAllowsUndo:YES];
-	[self setUsesFindPanel:YES];
+    if ([self respondsToSelector:@selector(setUsesFindBar:)]) {
+        [self setUsesFindBar:YES];
+        [self setIncrementalSearchingEnabled:NO];
+    } else {
+        [self setUsesFindPanel:YES];
+    }
 	[self setAllowsDocumentBackgroundColorChange:NO];
 	[self setRichText:NO];
 	[self setImportsGraphics:NO];

@@ -40,38 +40,50 @@ The best way to learn how to use the framework is to look at the sample apps.
 
 A Fragaria view is embedded in a content view.
 
-	#import "MGSFragaria/MGSFragaria.h"
 
-	// we need a container view to host Fragaria in
-	NSView *containerView = nil; // loaded from nib or otherwise created
+```objective-c
+#import "MGSFragaria/MGSFragaria.h"
 
-	// create our instance
-	MGSFragaria *fragaria = [[MGSFragaria alloc] init];
+// we need a container view to host Fragaria in
+NSView *containerView = nil; // loaded from nib or otherwise created
 
-	// we want to be the delegate
-	[fragaria setObject:self forKey:MGSFODelegate];
+// create our instance
+MGSFragaria *fragaria = [[MGSFragaria alloc] init];
 
-	// Objective-C is the place e to be
-	[self setSyntaxDefinition:@"Objective-C"];
+// we want to be the delegate
+[fragaria setObject:self forKey:MGSFODelegate];
 
-	// embed in our container - exception thrown if containerView is nil
-	[fragaria embedInView:containerView];
+// Objective-C is the place e to be
+[self setSyntaxDefinition:@"Objective-C"];
 
-	// set initial text
-	[fragaria setString:@"// We don't need the future."];
+// embed in our container - exception thrown if containerView is nil
+[fragaria embedInView:containerView];
+
+// set initial text
+[fragaria setString:@"// We don't need the future."];
+```
+
 
 The initial appearance of a Fragaria view is determined by the framework preferences controller. The MGSFragaria framework supplies two preference view controllers whose views can be embedded in your preference panel.
 
-    MGSFragariaTextEditingPrefsViewController * textEditingPrefsViewController = [MGSFragariaPreferences sharedInstance].textEditingPrefsViewController;
 
-    MGSFragariaFontsAndColoursPrefsViewController *fontsAndColoursPrefsViewController = [MGSFragariaPreferences sharedInstance].fontsAndColoursPrefsViewController;
+```objective-c
+MGSFragariaTextEditingPrefsViewController * textEditingPrefsViewController = [MGSFragariaPreferences sharedInstance].textEditingPrefsViewController;
+
+MGSFragariaFontsAndColoursPrefsViewController *fontsAndColoursPrefsViewController = [MGSFragariaPreferences sharedInstance].fontsAndColoursPrefsViewController;
+```
+
 
 ##Setting preferences
 
 Preference strings are defined in MGSFragaria/MGSFragariaPreferences.h. Each preference name is prefixed with Fragaria for easy identification within the application preferences file.
 
-	// default to line wrap off
-	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsLineWrapNewDocuments];
+
+```objective-c
+// default to line wrap off
+[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsLineWrapNewDocuments];
+```
+
 
 All preferences are observed and instances of Fragaria views update immediately to reflect the new preference.
 

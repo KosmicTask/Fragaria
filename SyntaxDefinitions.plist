@@ -156,6 +156,14 @@
 	</dict>
 	<dict>
 		<key>name</key>
+		<string>CoffeeScript</string>
+		<key>file</key>
+		<string>coffeescript</string>
+		<key>extensions</key>
+		<string>coffee</string>
+	</dict>
+	<dict>
+		<key>name</key>
 		<string>ColdFusion</string>
 		<key>file</key>
 		<string>coldfusion</string>

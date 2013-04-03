@@ -53,7 +53,7 @@ MGSFragaria *fragaria = [[MGSFragaria alloc] init];
 // we want to be the delegate
 [fragaria setObject:self forKey:MGSFODelegate];
 
-// Objective-C is the place e to be
+// Objective-C is the place to be
 [self setSyntaxDefinition:@"Objective-C"];
 
 // embed in our container - exception thrown if containerView is nil

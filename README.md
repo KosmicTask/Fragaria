@@ -219,7 +219,7 @@ xml
 To define a new syntax definition:
 
 1. Generate a plist that defines the language syntax. The plist structure is simple and browsing the existing definitions should provide plenty of enlightenment.
-2. Insert a reference to the new plist into `SyntaxDefinitions.plist`
+2. Insert a reference to the new plist into [SyntaxDefinitions.plist](SyntaxDefinitions.plist)
 
 ##Where did it come from?
 Fragaria started out as the vital pulp of Smultron, now called Fraise. If you want to add additional features to Fragaria then looking at the [Fraise](https://github.com/jfmoy/Fraise) and other forked sources is a good place to start. Fraise is a GC only app so you will need to consider memory management issues when importing code into Fragaria.

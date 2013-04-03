@@ -87,6 +87,140 @@ Preference strings are defined in MGSFragaria/MGSFragariaPreferences.h. Each pre
 
 All preferences are observed and instances of Fragaria views update immediately to reflect the new preference.
 
+##Supported languages
+Fragaria supports syntax colouring for a wide range of programming languages and configuration file formats:
+
+###A
+actionscript, 
+actionscript3, 
+active4d, 
+ada, 
+ampl, 
+apache (config), 
+applescript, 
+asm-mips, 
+asm-x86, 
+asp-js, 
+asp-vb, 
+aspdotnet-cs, 
+aspdotnet-vb, 
+awk
+
+###B
+batch (shell)
+
+###C
+C, 
+cobol, 
+coffeescript, 
+coldfusion, 
+cpp, 
+csharp, 
+csound, 
+css
+
+###D
+D, 
+dylan
+
+###E
+eiffel, erl, eztpl
+
+###F
+F-script,
+fortran,
+freefem
+
+###G
+gedcom,
+gnuassembler,
+graphviz
+
+###H
+haskell,
+header,
+html
+
+###I
+idl
+
+###J
+java,
+javafx,
+javascript,
+jsp
+
+###L
+latex,
+lilypond,
+lisp,
+logtalk,
+lsl,
+lua
+
+###M
+matlab,
+mel,
+metapost,
+metaslang,
+mysql,
+nemerle,
+
+###N
+nrnhoc
+
+
+###O
+objectivec,
+objectivecaml,
+ox
+
+###P
+pascal,
+pdf,
+perl,
+php,
+plist,
+postscript,
+prolog,
+python
+
+###R
+r,
+rhtml,
+ruby
+
+###S
+scala,
+sgml,
+shell,
+sml,
+sql,
+stata,
+supercollider
+
+###T
+tcltk,
+torquescript
+
+###U
+udo
+
+###V
+vb,
+verilog,
+vhdl
+
+###X
+xml
+
+##Defining a new language syntax
+
+To define a new syntax definition:
+
+1. Generate a plist that defines the language syntax. The plist structure is simple and browsing the existing definitions should provide plenty of enlightenment.
+2. Insert a reference to the new plist into `SyntaxDefinitions.plist`
+
 ##Where did it come from?
 Fragaria started out as the vital pulp of Smultron, now called Fraise. If you want to add additional features to Fragaria then looking at the [Fraise](https://github.com/jfmoy/Fraise) and other forked sources is a good place to start. Fraise is a GC only app so you will need to consider memory management issues when importing code into Fragaria.
 

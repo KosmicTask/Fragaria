@@ -218,7 +218,7 @@ xml
 
 To define a new syntax definition:
 
-1. Generate a plist that defines the language syntax. The plist structure is simple and browsing the existing definitions should provide plenty of enlightenment.
+1. Generate a plist that defines the language syntax. The plist structure is simple and browsing the [existing definitions](Syntax%20Definitions) should provide plenty of enlightenment.
 2. Insert a reference to the new plist into [SyntaxDefinitions.plist](SyntaxDefinitions.plist)
 
 ##Where did it come from?

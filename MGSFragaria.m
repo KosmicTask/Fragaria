@@ -284,6 +284,7 @@ static MGSFragaria *_currentInstance;
 	[gutterScrollView setHasHorizontalScroller:NO];
 	[gutterScrollView setAutoresizingMask:NSViewHeightSizable];
 	[[gutterScrollView contentView] setAutoresizesSubviews:YES];
+    [gutterScrollView setVerticalScrollElasticity:NSScrollElasticityNone];
 	
 	// create gutter textview
 	SMLGutterTextView *gutterTextView = [[[SMLGutterTextView alloc] initWithFrame:NSMakeRect(0, 0, gutterWidth, contentSize.height - 50)] autorelease];

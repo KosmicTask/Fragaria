@@ -41,10 +41,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	if ((self = [super initWithFrame:frame])) {
         
         imgBreakpoint0 = [MGSFragaria imageNamed:@"editor-breakpoint-0.png"];
+        [imgBreakpoint0 setFlipped:YES];
         [imgBreakpoint0 retain];
         imgBreakpoint1 = [MGSFragaria imageNamed:@"editor-breakpoint-1.png"];
+        [imgBreakpoint1 setFlipped:YES];
         [imgBreakpoint1 retain];
         imgBreakpoint2 = [MGSFragaria imageNamed:@"editor-breakpoint-2.png"];
+        [imgBreakpoint2 setFlipped:YES];
         [imgBreakpoint2 retain];
 
 		[self setContinuousSpellCheckingEnabled:NO];
@@ -60,11 +63,29 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[self setVerticallyResizable:YES];
 		[self setHorizontallyResizable:YES];
 		[self setAutoresizingMask:NSViewHeightSizable];
-		
-		[self setFont:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextFont"]]];
+        
+        NSMutableParagraphStyle * style = [[[NSMutableParagraphStyle alloc] init] autorelease];
+        [style setAlignment:NSRightTextAlignment];
+        [style setLineSpacing:1.0];
+        [style setMinimumLineHeight:12.0];
+        [style setMaximumLineHeight:12.0];
+        [self setDefaultParagraphStyle:style];
+        
+        [self  setTypingAttributes: [NSDictionary dictionaryWithObjectsAndKeys:
+                                     [self defaultParagraphStyle],
+                                     NSParagraphStyleAttributeName,
+                                     [NSNumber numberWithFloat:-3],
+                                     NSBaselineOffsetAttributeName,
+                                     nil]];
+        
+        
+        NSFont* font = [NSFont fontWithName:@"Menlo-Regular" size:9];
+		[self setFont:font];
+        
 		[self setTextColor:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"GutterTextColourWell"]]];
 		[self setInsertionPointColor:[NSColor textColor]];
-		//[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:@"TextColourWell"]]];
+
+        
 		[self setBackgroundColor:[NSColor colorWithCalibratedWhite:0.94f alpha:1.0f]];
 
 		NSUserDefaultsController *defaultsController = [NSUserDefaultsController sharedUserDefaultsController];
@@ -88,7 +109,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 	}
 }
-
 
 #pragma mark -
 #pragma mark Drawing
@@ -118,7 +138,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
         for (NSNumber* lineNumber in self.breakpointLines)
         {
             int line = [lineNumber intValue];
-            NSDrawThreePartImage(NSMakeRect(2, line * 13 - 12, bounds.size.width-4, 12), imgBreakpoint0, imgBreakpoint1, imgBreakpoint2, NO, NSCompositeSourceOver, 1, NO);
+            NSDrawThreePartImage(NSMakeRect(2, line * 13 - 12, bounds.size.width -4, 12), imgBreakpoint0, imgBreakpoint1, imgBreakpoint2, NO, NSCompositeSourceOver, 1, NO);
         }
     }
 }

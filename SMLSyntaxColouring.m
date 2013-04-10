@@ -1230,19 +1230,34 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 {
     //NSArray* errors = []
     
+    SMLTextView* textView = [document valueForKey:@"firstTextView"];
+    
     NSString* text = [self completeString];
     
     // Clear all highlights
     [firstLayoutManager removeTemporaryAttribute:NSBackgroundColorAttributeName forCharacterRange:NSMakeRange(0, text.length)];
     
+    // Clear all buttons
+    NSMutableArray* buttons = [NSMutableArray array];
+    for (NSView* subview in [textView subviews])
+    {
+        if ([subview isKindOfClass:[NSButton class]])
+        {
+            [buttons addObject:subview];
+        }
+    }
+    for (NSButton* button in buttons)
+    {
+        [button removeFromSuperview];
+    }
+    
     if (!syntaxErrors) return;
     
+    // Highlight all errors and add buttons
     NSMutableSet* highlightedRows = [NSMutableSet set];
     
     for (SMLSyntaxError* err in syntaxErrors)
     {
-        NSLog(@"line: %d char: %d code: %@ descr: %@", err.line, err.character, err.code, err.description);
-        
         // Highlight an erronous line
         NSInteger location = [self characterIndexFromLine:err.line character:err.character inString:text];
         
@@ -1254,13 +1269,97 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
         // Highlight row if it is not already highlighted
         if (![highlightedRows containsObject:[NSNumber numberWithInt:err.line]])
         {
+            // Remember that we are highlighting this row
+            [highlightedRows addObject:[NSNumber numberWithInt:err.line]];
+            
+            // Add highlight for background
             [firstLayoutManager addTemporaryAttribute:NSBackgroundColorAttributeName value:[NSColor colorWithCalibratedRed:1 green:1 blue:0.7 alpha:1] forCharacterRange:lineRange];
             
             [firstLayoutManager addTemporaryAttribute:NSToolTipAttributeName value:err.description forCharacterRange:lineRange];
             
-            [highlightedRows addObject:[NSNumber numberWithInt:err.line]];
+            NSInteger glyphIndex = [firstLayoutManager glyphIndexForCharacterAtIndex:lineRange.location];
+            
+            NSRect linePos = [firstLayoutManager boundingRectForGlyphRange:NSMakeRange(glyphIndex, 1) inTextContainer:[textView textContainer]];
+            
+            // Add button
+            float scrollOffset = textView.superview.bounds.origin.x - 40; // Not sure where the 40 comes from...
+            
+            NSButton* warningButton = [[[NSButton alloc] initWithFrame:NSMakeRect(textView.superview.frame.size.width - 32 + scrollOffset, linePos.origin.y-2, 16, 16)] autorelease];
+            
+            [warningButton setButtonType:NSMomentaryChangeButton];
+            [warningButton setBezelStyle:NSRegularSquareBezelStyle];
+            [warningButton setBordered:NO];
+            [warningButton setImagePosition:NSImageOnly];
+            [warningButton setImage:[NSImage imageNamed:@"editor-warning.png"]];
+            [warningButton setTag:err.line];
+            [warningButton setTarget:self];
+            [warningButton setAction:@selector(pressedWarningBtn:)];
+            
+            [textView addSubview:warningButton];
         }
     }
+}
+
+- (CGFloat) widthOfString:(NSString *)string withFont:(NSFont *)font {
+    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
+    return [[[[NSAttributedString alloc] initWithString:string attributes:attributes] autorelease] size].width;
+}
+
+- (void) pressedWarningBtn:(id) sender
+{
+    int line = (int)[sender tag];
+    
+    // Fetch errors to display
+    NSMutableArray* errorsOnLine = [NSMutableArray array];
+    for (SMLSyntaxError* err in syntaxErrors)
+    {
+        if (err.line == line)
+        {
+            [errorsOnLine addObject:err];
+        }
+    }
+    
+    if (errorsOnLine.count == 0) return;
+    
+    // Create a inspector value and view
+    NSViewController* vc = [[[NSViewController alloc] initWithNibName:@"SequencerPopoverView" bundle:[NSBundle mainBundle]] autorelease];
+    
+    // Add labels for each error
+    int errNo = 0;
+    int maxWidth = 0;
+    
+    for (SMLSyntaxError* err in errorsOnLine)
+    {
+        NSTextField *textField;
+        
+        NSFont* font = [NSFont systemFontOfSize:10];
+        
+        int width = [self widthOfString:err.description withFont:font];
+        if (width > maxWidth) maxWidth = width;
+        
+        textField = [[[NSTextField alloc] initWithFrame:NSMakeRect(0, 16 * errNo, 1024, 16)] autorelease];
+        [textField setStringValue:err.description];
+        [textField setBezeled:NO];
+        [textField setDrawsBackground:NO];
+        [textField setEditable:NO];
+        [textField setSelectable:NO];
+        [textField setFont:font];
+        
+        [vc.view addSubview:textField];
+        
+        errNo++;
+    }
+    
+    [vc.view setFrameSize:NSMakeSize(maxWidth, errNo * 16)];
+    
+    // Open the popover
+    NSPopover* popover = [[[NSPopover alloc] init] autorelease];
+    popover.behavior = NSPopoverBehaviorTransient;
+    popover.contentSize = vc.view.bounds.size;
+    popover.contentViewController = vc;
+    popover.animates = YES;
+    
+    [popover showRelativeToRect:[sender bounds] ofView:sender preferredEdge:NSMinYEdge];
 }
 
 #pragma mark -

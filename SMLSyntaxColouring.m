@@ -20,6 +20,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 #import "MGSFragaria.h"
 #import "MGSFragariaFramework.h"
+#import "SMLSyntaxError.h"
 
 // class extension
 @interface SMLSyntaxColouring()
@@ -71,6 +72,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 @synthesize keywordsAndAutocompleteWords;
 @synthesize keywords;
 @synthesize autocompleteWords;
+@synthesize syntaxErrors;
 
 #pragma mark -
 #pragma mark Instance methods
@@ -1106,6 +1108,10 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 			}
 		}
 
+        //
+        // Errors
+        //
+        [self highlightErrors];
 	}
 	@catch (NSException *exception) {
 		NSLog(@"Syntax colouring exception: %@", exception);
@@ -1194,6 +1200,55 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 	}
 	
 	lastLineHighlightRange = lineRange;
+}
+
+- (NSInteger) characterIndexFromLine:(int)line character:(int)character inString:(NSString*) str
+{
+    NSScanner* scanner = [NSScanner scannerWithString:str];
+    [scanner setCharactersToBeSkipped:[NSCharacterSet characterSetWithCharactersInString:@""]];
+    
+    int currentLine = 1;
+    while (![scanner isAtEnd])
+    {
+        if (currentLine == line)
+        {
+            // Found the right line
+            return [scanner scanLocation] + character-1;
+        }
+        
+        // Scan to a new line
+        [scanner scanUpToString:@"\n" intoString:NULL];
+        
+        scanner.scanLocation += 1;
+        currentLine++;
+    }
+    
+    return -1;
+}
+
+- (void) highlightErrors
+{
+    //NSArray* errors = []
+    
+    NSString* text = [self completeString];
+    
+    // Clear all highlights
+    [firstLayoutManager removeTemporaryAttribute:NSBackgroundColorAttributeName forCharacterRange:NSMakeRange(0, text.length)];
+    
+    if (!syntaxErrors) return;
+    
+    for (SMLSyntaxError* err in syntaxErrors)
+    {
+        // Highlight an erronous line
+        NSInteger location = [self characterIndexFromLine:err.line character:err.character inString:text];
+        
+        // Skip lines we cannot identify in the text
+        if (location == -1) continue;
+        
+        NSRange lineRange = [text lineRangeForRange:NSMakeRange(location, 0)];
+        
+        [firstLayoutManager addTemporaryAttributes:lineHighlightColour forCharacterRange:lineRange];
+    }
 }
 
 #pragma mark -

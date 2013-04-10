@@ -93,6 +93,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 @property (retain) NSArray* keywordsAndAutocompleteWords;
 @property (retain) NSSet *keywords;
 @property (retain) NSSet *autocompleteWords;
+@property (retain) NSArray* syntaxErrors;
+
 - (id)initWithDocument:(id)document;
 - (void)pageRecolourTextView:(SMLTextView *)textView;
 - (void)pageRecolour;

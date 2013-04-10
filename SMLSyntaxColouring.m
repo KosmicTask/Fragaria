@@ -1237,8 +1237,12 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
     
     if (!syntaxErrors) return;
     
+    NSMutableSet* highlightedRows = [NSMutableSet set];
+    
     for (SMLSyntaxError* err in syntaxErrors)
     {
+        NSLog(@"line: %d char: %d code: %@ descr: %@", err.line, err.character, err.code, err.description);
+        
         // Highlight an erronous line
         NSInteger location = [self characterIndexFromLine:err.line character:err.character inString:text];
         
@@ -1247,7 +1251,15 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
         
         NSRange lineRange = [text lineRangeForRange:NSMakeRange(location, 0)];
         
-        [firstLayoutManager addTemporaryAttributes:lineHighlightColour forCharacterRange:lineRange];
+        // Highlight row if it is not already highlighted
+        if (![highlightedRows containsObject:[NSNumber numberWithInt:err.line]])
+        {
+            [firstLayoutManager addTemporaryAttribute:NSBackgroundColorAttributeName value:[NSColor colorWithCalibratedRed:1 green:1 blue:0.7 alpha:1] forCharacterRange:lineRange];
+            
+            [firstLayoutManager addTemporaryAttribute:NSToolTipAttributeName value:err.description forCharacterRange:lineRange];
+            
+            [highlightedRows addObject:[NSNumber numberWithInt:err.line]];
+        }
     }
 }
 

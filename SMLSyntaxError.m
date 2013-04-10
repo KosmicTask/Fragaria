@@ -13,6 +13,7 @@
 - (void) dealloc
 {
     self.description = NULL;
+    self.code = NULL;
     [super dealloc];
 }
 

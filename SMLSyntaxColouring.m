@@ -21,6 +21,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 #import "MGSFragaria.h"
 #import "MGSFragariaFramework.h"
 #import "SMLSyntaxError.h"
+#import "SMLErrorPopOver.h"
 
 // class extension
 @interface SMLSyntaxColouring()
@@ -1290,7 +1291,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
             [warningButton setBezelStyle:NSRegularSquareBezelStyle];
             [warningButton setBordered:NO];
             [warningButton setImagePosition:NSImageOnly];
-            [warningButton setImage:[NSImage imageNamed:@"editor-warning.png"]];
+            [warningButton setImage:[MGSFragaria imageNamed:@"editor-warning.png"]];
             [warningButton setTag:err.line];
             [warningButton setTarget:self];
             [warningButton setAction:@selector(pressedWarningBtn:)];
@@ -1315,12 +1316,15 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
     {
         if (err.line == line)
         {
-            [errorsOnLine addObject:err];
+            [errorsOnLine addObject:err.description];
         }
     }
     
     if (errorsOnLine.count == 0) return;
     
+    [SMLErrorPopOver showErrorDescriptions:errorsOnLine relativeToView:sender];
+    
+    /*
     // Create a inspector value and view
     NSViewController* vc = [[[NSViewController alloc] initWithNibName:@"SequencerPopoverView" bundle:[NSBundle mainBundle]] autorelease];
     
@@ -1360,6 +1364,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
     popover.animates = YES;
     
     [popover showRelativeToRect:[sender bounds] ofView:sender preferredEdge:NSMinYEdge];
+     */
 }
 
 #pragma mark -

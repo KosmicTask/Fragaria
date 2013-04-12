@@ -58,6 +58,7 @@
 		ABD0FDB01193281600E6AFE6 /* MGSFragaria.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB69B62B118B745700903D1D /* MGSFragaria.framework */; };
 		ABF28AF014C075D400ECAD48 /* NSScanner+Fragaria.m in Sources */ = {isa = PBXBuildFile; fileRef = ABF28AEE14C075D400ECAD48 /* NSScanner+Fragaria.m */; };
 		ABF28AF114C075D400ECAD48 /* NSScanner+Fragaria.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF28AEF14C075D400ECAD48 /* NSScanner+Fragaria.h */; };
+		E373BF131718A64700D71602 /* SMLAutoCompleteDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E373BF121718A64700D71602 /* SMLAutoCompleteDelegate.h */; };
 		E38654AD1717652000A345B9 /* ErrorPopoverView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E38654AC1717652000A345B9 /* ErrorPopoverView.xib */; };
 		E3AA871B16E1817800585940 /* editor-breakpoint.png in Resources */ = {isa = PBXBuildFile; fileRef = E3AA871A16E1817800585940 /* editor-breakpoint.png */; };
 		E3BBA50B16E52FE600D89923 /* editor-breakpoint-0.png in Resources */ = {isa = PBXBuildFile; fileRef = E3BBA50816E52FE600D89923 /* editor-breakpoint-0.png */; };
@@ -197,6 +198,7 @@
 		ABD0FE581193543600E6AFE6 /* MGSFragariaPreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSFragariaPreferences.h; sourceTree = "<group>"; };
 		ABF28AEE14C075D400ECAD48 /* NSScanner+Fragaria.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = "NSScanner+Fragaria.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		ABF28AEF14C075D400ECAD48 /* NSScanner+Fragaria.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSScanner+Fragaria.h"; sourceTree = "<group>"; };
+		E373BF121718A64700D71602 /* SMLAutoCompleteDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLAutoCompleteDelegate.h; sourceTree = "<group>"; };
 		E38654AC1717652000A345B9 /* ErrorPopoverView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ErrorPopoverView.xib; sourceTree = "<group>"; };
 		E3AA871A16E1817800585940 /* editor-breakpoint.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "editor-breakpoint.png"; sourceTree = "<group>"; };
 		E3BBA50816E52FE600D89923 /* editor-breakpoint-0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "editor-breakpoint-0.png"; sourceTree = "<group>"; };
@@ -396,6 +398,7 @@
 				E3D4B2761714D89700BB2CC6 /* SMLSyntaxError.m */,
 				E3C1850117175ED900801FE5 /* SMLErrorPopOver.h */,
 				E3C1850217175ED900801FE5 /* SMLErrorPopOver.m */,
+				E373BF121718A64700D71602 /* SMLAutoCompleteDelegate.h */,
 			);
 			name = Smultron;
 			sourceTree = "<group>";
@@ -529,6 +532,7 @@
 				E3CF4B7916E6927300C27B5C /* MGSBreakpointDelegate.h in Headers */,
 				E3D4B2771714D89700BB2CC6 /* SMLSyntaxError.h in Headers */,
 				E3C1850317175ED900801FE5 /* SMLErrorPopOver.h in Headers */,
+				E373BF131718A64700D71602 /* SMLAutoCompleteDelegate.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

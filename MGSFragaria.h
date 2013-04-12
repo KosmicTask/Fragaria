@@ -31,7 +31,7 @@ extern NSString * const ro_MGSFOGutterScrollView; // readonly
 // NSObject
 extern NSString * const MGSFODelegate;
 extern NSString * const MGSFOBreakpointDelegate;
-extern NSString * const MGSFOSyntaxErrors;
+extern NSString * const MGSFOAutoCompleteDelegate;
 extern NSString * const ro_MGSFOLineNumbers; // readonly
 extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 

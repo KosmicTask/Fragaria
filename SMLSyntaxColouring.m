@@ -22,6 +22,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 #import "MGSFragariaFramework.h"
 #import "SMLSyntaxError.h"
 #import "SMLErrorPopOver.h"
+#import "SMLAutoCompleteDelegate.h"
 
 // class extension
 @interface SMLSyntaxColouring()
@@ -29,7 +30,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)applySyntaxDefinition;
 - (NSString *)assignSyntaxDefinition;
 - (void)performDocumentDelegateSelector:(SEL)selector withObject:(id)object;
-- (void)autocompleteWordsTimerSelector:(NSTimer *)theTimer;
+//- (void)autocompleteWordsTimerSelector:(NSTimer *)theTimer;
 - (void)liveUpdatePreviewTimerSelector:(NSTimer *)theTimer;
 - (NSString *)completeString;
 - (void)prepareRegularExpressions;
@@ -1378,11 +1379,13 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		[self pageRecolourTextView:textView];
 	}
 	
+    /*
 	if (autocompleteWordsTimer != nil) {
 		[autocompleteWordsTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:[[SMLDefaults valueForKey:@"AutocompleteAfterDelay"] floatValue]]];
 	} else if ([[SMLDefaults valueForKey:@"AutocompleteSuggestAutomatically"] boolValue] == YES) {
 		autocompleteWordsTimer = [NSTimer scheduledTimerWithTimeInterval:[[SMLDefaults valueForKey:@"AutocompleteAfterDelay"] floatValue] target:self selector:@selector(autocompleteWordsTimerSelector:) userInfo:textView repeats:NO];
 	}
+     */
 	
 	if (liveUpdatePreviewTimer != nil) {
 		[liveUpdatePreviewTimer setFireDate:[NSDate dateWithTimeIntervalSinceNow:[[SMLDefaults valueForKey:@"LiveUpdatePreviewDelay"] floatValue]]];
@@ -1587,37 +1590,29 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
  - textView:completions:forPartialWordRange:indexOfSelectedItem
  
  */
+
+/*
 - (NSArray *)textView:theTextView completions:(NSArray *)words forPartialWordRange:(NSRange)charRange indexOfSelectedItem:(NSInteger *)idx
 {
-#pragma unused(idx)
-	if ([self.keywordsAndAutocompleteWords count] == 0) {
-		if ([[SMLDefaults valueForKey:@"AutocompleteIncludeStandardWords"] boolValue] == NO) {
-			return [NSArray array];
-		} else {
-			return words;
-		}
-	}
-	
-	NSString *matchString = [[theTextView string] substringWithRange:charRange];
-	NSMutableArray *finalWordsArray = [NSMutableArray arrayWithArray:self.keywordsAndAutocompleteWords];
-	if ([[SMLDefaults valueForKey:@"AutocompleteIncludeStandardWords"] boolValue]) {
-		[finalWordsArray addObjectsFromArray:words];
-	}
-	
-	NSMutableArray *matchArray = [NSMutableArray array];
-	NSString *item;
-	for (item in finalWordsArray) {
-		if ([item rangeOfString:matchString options:NSCaseInsensitiveSearch range:NSMakeRange(0, [item length])].location == 0) {
-			[matchArray addObject:item];
-		}
-	}
-	
-	if ([[SMLDefaults valueForKey:@"AutocompleteIncludeStandardWords"] boolValue]) { // If no standard words are added there's no need to sort it again as it has already been sorted
-		return [matchArray sortedArrayUsingSelector:@selector(compare:)];
-	} else {
-		return matchArray;
-	}
-}
+#pragma unused(idx, theTextView, words, charRange)
+    
+    id<SMLAutoCompleteDelegate> completeHandler = [document valueForKey:MGSFOAutoCompleteDelegate];
+    
+    NSArray* allCompletions = [completeHandler completions];
+    
+    NSString *matchString = [[theTextView string] substringWithRange:charRange];
+    NSMutableArray* matchArray = [NSMutableArray array];
+    
+    for (NSString* completeWord in allCompletions)
+    {
+        if ([completeWord rangeOfString:matchString options:NSCaseInsensitiveSearch range:NSMakeRange(0, [completeWord length])].location == 0)
+        {
+            [matchArray addObject:completeWord];
+        }
+    }
+    
+    return matchArray;
+}*/
 
 /*
  
@@ -1662,6 +1657,8 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
  - autocompleteWordsTimerSelector:
  
  */
+
+/*
 - (void)autocompleteWordsTimerSelector:(NSTimer *)theTimer
 {
 	SMLTextView *textView = [theTimer userInfo];
@@ -1683,7 +1680,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 		[autocompleteWordsTimer invalidate];
 		autocompleteWordsTimer = nil;
 	}
-}
+}*/
 
 /*
  

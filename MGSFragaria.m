@@ -32,7 +32,7 @@ NSString * const ro_MGSFOGutterScrollView = @"firstGutterScrollView"; // readonl
 // NSObject
 NSString * const MGSFODelegate = @"delegate";
 NSString * const MGSFOBreakpointDelegate = @"breakpointDelegate";
-NSString * const MGSFOSyntaxErrors = @"syntaxErrors";
+NSString * const MGSFOAutoCompleteDelegate = @"autoCompleteDelegate";
 NSString * const ro_MGSFOLineNumbers = @"lineNumbers"; // readonly
 NSString * const ro_MGSFOSyntaxColouring = @"syntaxColouring"; // readonly
 
@@ -207,11 +207,11 @@ static MGSFragaria *_currentInstance;
         // Create the Sets containing the valid setter/getter combinations for the Docspec
         
         self.objectSetterKeys = [NSSet setWithObjects:MGSFOIsSyntaxColoured, MGSFOShowLineNumberGutter, MGSFOIsEdited,
-                            MGSFOSyntaxDefinitionName, MGSFODelegate, MGSFOBreakpointDelegate, MGSFOSyntaxErrors,
+                            MGSFOSyntaxDefinitionName, MGSFODelegate, MGSFOBreakpointDelegate, MGSFOAutoCompleteDelegate,
                             nil];
         
         self.objectGetterKeys = [NSMutableSet setWithObjects:ro_MGSFOTextView, ro_MGSFOScrollView, ro_MGSFOGutterScrollView,
-                            ro_MGSFOLineNumbers, ro_MGSFOLineNumbers, MGSFOSyntaxErrors,
+                            ro_MGSFOLineNumbers, ro_MGSFOLineNumbers, MGSFOAutoCompleteDelegate,
                             nil];
         [(NSMutableSet *)self.objectGetterKeys unionSet:self.objectSetterKeys];
 	}

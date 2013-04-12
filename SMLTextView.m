@@ -20,6 +20,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 #import "MGSFragaria.h"
 #import "MGSFragariaFramework.h"
+#import "SMLAutoCompleteDelegate.h"
 
 // class extension
 @interface SMLTextView()
@@ -859,6 +860,80 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)performFindPanelAction:(id)sender
 {
 	[super performFindPanelAction:sender];
+}
+
+#pragma mark -
+#pragma mark Auto Completion
+
+- (NSRange) rangeForUserCompletion
+{
+    NSRange cursor = [self selectedRange];
+    NSUInteger loc = cursor.location;
+    
+    // Check for selections (can only autocomplete when nothing is selected)
+    if (cursor.length > 0)
+    {
+        return NSMakeRange(NSNotFound, 0);
+    }
+    
+    // Cannot autocomplete on first character
+    if (loc == 0)
+    {
+        return NSMakeRange(NSNotFound, 0);
+    }
+    
+    // Create char set with characters valid for variables
+    NSCharacterSet* variableChars = [NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXYZ0123456789_"];
+    
+    NSString* text = [self string];
+    
+    // Can only autocomplete on variable names
+    if (![variableChars characterIsMember:[text characterAtIndex:loc-1]])
+    {
+        return NSMakeRange(NSNotFound, 0);
+    }
+    
+    // TODO: Check if we are in a string
+    
+    // Search backwards in string until we hit a non-variable char
+    NSUInteger numChars = 1;
+    NSUInteger searchLoc = loc - 1;
+    while (searchLoc > 0)
+    {
+        if ([variableChars characterIsMember:[text characterAtIndex:searchLoc-1]])
+        {
+            numChars += 1;
+            searchLoc -= 1;
+        }
+        else
+        {
+            break;
+        }
+    }
+    
+    return NSMakeRange(loc-numChars, numChars);
+}
+
+- (NSArray*) completionsForPartialWordRange:(NSRange)charRange indexOfSelectedItem:(NSInteger *)index
+{
+#pragma unused(index, charRange)
+    
+    id<SMLAutoCompleteDelegate> completeHandler = [fragaria.docSpec valueForKey:MGSFOAutoCompleteDelegate];
+    
+    NSArray* allCompletions = [completeHandler completions];
+    
+    NSString *matchString = [[self string] substringWithRange:charRange];
+    NSMutableArray* matchArray = [NSMutableArray array];
+    
+    for (NSString* completeWord in allCompletions)
+    {
+        if ([completeWord rangeOfString:matchString options:NSCaseInsensitiveSearch range:NSMakeRange(0, [completeWord length])].location == 0)
+        {
+            [matchArray addObject:completeWord];
+        }
+    }
+    
+    return matchArray;
 }
 
 

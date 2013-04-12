@@ -42,8 +42,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	BOOL reactToChanges;
 	BOOL keywordsCaseSensitive;
 	BOOL recolourKeywordIfAlreadyColoured;
-	
-
+	BOOL syntaxErrorsAreDirty;
 	
 	ICUPattern *firstStringPattern;
 	ICUPattern *secondStringPattern;	

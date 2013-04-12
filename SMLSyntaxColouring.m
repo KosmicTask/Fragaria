@@ -1214,13 +1214,18 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
         if (currentLine == line)
         {
             // Found the right line
-            return [scanner scanLocation] + character-1;
+            NSInteger location = [scanner scanLocation] + character-1;
+            if (location >= (NSInteger)str.length) location = str.length - 1;
+            return location;
         }
         
         // Scan to a new line
         [scanner scanUpToString:@"\n" intoString:NULL];
         
-        scanner.scanLocation += 1;
+        if (![scanner isAtEnd])
+        {
+            scanner.scanLocation += 1;
+        }
         currentLine++;
     }
     
@@ -1229,10 +1234,7 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
 
 - (void) highlightErrors
 {
-    //NSArray* errors = []
-    
     SMLTextView* textView = [document valueForKey:@"firstTextView"];
-    
     NSString* text = [self completeString];
     
     // Clear all highlights
@@ -1323,48 +1325,6 @@ thirdLayoutManager, fourthLayoutManager, undoManager;
     if (errorsOnLine.count == 0) return;
     
     [SMLErrorPopOver showErrorDescriptions:errorsOnLine relativeToView:sender];
-    
-    /*
-    // Create a inspector value and view
-    NSViewController* vc = [[[NSViewController alloc] initWithNibName:@"SequencerPopoverView" bundle:[NSBundle mainBundle]] autorelease];
-    
-    // Add labels for each error
-    int errNo = 0;
-    int maxWidth = 0;
-    
-    for (SMLSyntaxError* err in errorsOnLine)
-    {
-        NSTextField *textField;
-        
-        NSFont* font = [NSFont systemFontOfSize:10];
-        
-        int width = [self widthOfString:err.description withFont:font];
-        if (width > maxWidth) maxWidth = width;
-        
-        textField = [[[NSTextField alloc] initWithFrame:NSMakeRect(0, 16 * errNo, 1024, 16)] autorelease];
-        [textField setStringValue:err.description];
-        [textField setBezeled:NO];
-        [textField setDrawsBackground:NO];
-        [textField setEditable:NO];
-        [textField setSelectable:NO];
-        [textField setFont:font];
-        
-        [vc.view addSubview:textField];
-        
-        errNo++;
-    }
-    
-    [vc.view setFrameSize:NSMakeSize(maxWidth, errNo * 16)];
-    
-    // Open the popover
-    NSPopover* popover = [[[NSPopover alloc] init] autorelease];
-    popover.behavior = NSPopoverBehaviorTransient;
-    popover.contentSize = vc.view.bounds.size;
-    popover.contentViewController = vc;
-    popover.animates = YES;
-    
-    [popover showRelativeToRect:[sender bounds] ofView:sender preferredEdge:NSMinYEdge];
-     */
 }
 
 #pragma mark -

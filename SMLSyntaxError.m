@@ -10,6 +10,8 @@
 
 @implementation SMLSyntaxError
 
+@synthesize line, character, code, length, description;
+
 - (void) dealloc
 {
     self.description = NULL;

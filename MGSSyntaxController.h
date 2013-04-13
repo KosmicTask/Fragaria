@@ -12,6 +12,7 @@
 @interface MGSSyntaxController : NSObject {
 
 	NSArray *syntaxDefinitionNames;
+    NSMutableDictionary *syntaxDefinitions;
 }
 
 + (instancetype)sharedInstance;

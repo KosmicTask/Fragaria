@@ -24,6 +24,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSImage* imgBreakpoint0;
 	NSImage* imgBreakpoint1;
 	NSImage* imgBreakpoint2;
+    NSString* fileName;
+    NSArray* breakpointLines;
 }
 
 @property (nonatomic,copy) NSString* fileName;

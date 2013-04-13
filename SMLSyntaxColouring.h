@@ -74,10 +74,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	ICUPattern *secondStringPattern;	
 	ICUMatcher *firstStringMatcher;
 	ICUMatcher *secondStringMatcher;
-	
+	NSUndoManager *undoManager;
+    
 	NSTimer *autocompleteWordsTimer;
 
 	NSRange lastLineHighlightRange;
+    id docSpec;
+    
 }
 
 @property BOOL reactToChanges;

@@ -25,6 +25,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 @implementation SMLGutterTextView
 
+@synthesize fileName, breakpointLines;
+
 #pragma mark -
 #pragma mark Instance methods
 /*

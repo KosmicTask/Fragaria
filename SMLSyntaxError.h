@@ -10,6 +10,11 @@
 
 @interface SMLSyntaxError : NSObject
 {
+    NSString* description;
+    int line;
+    int character;
+    NSString* code;
+    int length;
 }
 
 @property (nonatomic,copy) NSString* description;

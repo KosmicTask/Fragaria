@@ -42,7 +42,6 @@
 	<array>
 		<string>break</string>
 		<string>case</string>
-		<string>comment</string>
 		<string>continue</string>
 		<string>default</string>
 		<string>delete</string>
@@ -57,13 +56,17 @@
 		<string>label</string>
 		<string>new</string>
 		<string>return</string>
+		<string>with</string>
 		<string>switch</string>
 		<string>this</string>
 		<string>typeof</string>
 		<string>var</string>
 		<string>void</string>
 		<string>while</string>
-		<string>with</string>
+		<string>null</string>
+		<string>undefined</string>
+		<string>true</string>
+		<string>false</string>
 	</array>
 	<key>autocompleteWords</key>
 	<array/>

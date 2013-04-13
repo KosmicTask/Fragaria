@@ -33,7 +33,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSInteger lastCursorLocation;
 	
 	NSDictionary *commandsColour, *commentsColour, *instructionsColour, *keywordsColour, *autocompleteWordsColour, 
-					*stringsColour, *variablesColour, *attributesColour, *lineHighlightColour;
+					*stringsColour, *variablesColour, *attributesColour, *lineHighlightColour, *numbersColour, * constantsColour, *classColour;
 	
     
 	unichar firstStringUnichar;
@@ -69,6 +69,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 @property (retain) 	NSCharacterSet *letterCharacterSet;
 @property (retain) 	NSCharacterSet *keywordStartCharacterSet;
 @property (retain) 	NSCharacterSet *keywordEndCharacterSet;
+@property (retain) 	NSCharacterSet *numberCharacterStartSet;
+@property (retain) 	NSCharacterSet *numberCharacterEndSet;
 
 @property (copy) NSString *beginCommand;
 @property (copy) NSString *endCommand;

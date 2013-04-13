@@ -96,13 +96,27 @@ static BOOL MGS_preferencesInitialized = NO;
 	NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
 	
 	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.031f green:0.0f blue:0.855f alpha:1.0f]] forKey:@"CommandsColourWell"];
+    
 	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.0f green:0.45f blue:0.0f alpha:1.0f]] forKey:@"CommentsColourWell"];
+    
 	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.45f green:0.45f blue:0.45f alpha:1.0f]] forKey:@"InstructionsColourWell"];
-	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.737f green:0.0f blue:0.647f alpha:1.0f]] forKey:@"KeywordsColourWell"];
-	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.84f green:0.41f blue:0.006f alpha:1.0f]] forKey:@"AutocompleteColourWell"];
+    
+	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.67f green:0.05f blue:0.57f alpha:1.0f]] forKey:@"KeywordsColourWell"];
+    
+    [dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.0 green:0.0 blue:0.737f alpha:1.0f]] forKey:@"NumbersColourWell"];
+    
+    [dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.39 green:0.22 blue:0.13f alpha:1.0f]] forKey:@"ConstantsColourWell"];
+    
+    [dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.15f green:0.28f blue:0.29f alpha:1.0f]] forKey:@"ClassColourWell"];
+    
+	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.15f green:0.28f blue:0.29f alpha:1.0f]] forKey:@"AutocompleteColourWell"];
+    
 	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.73f green:0.0f blue:0.74f alpha:1.0f]] forKey:@"VariablesColourWell"];
+    
 	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.804f green:0.071f blue:0.153f alpha:1.0f]] forKey:@"StringsColourWell"];
+    
 	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.50f green:0.5f blue:0.2f alpha:1.0f]] forKey:@"AttributesColourWell"];
+    
 	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:@"ColourCommands"];
 	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:@"ColourComments"];
 	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:@"ColourInstructions"];

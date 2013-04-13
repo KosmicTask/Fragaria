@@ -193,7 +193,15 @@ static id sharedInstance = nil;
 		if ([SMLCurrentTextView selectedRange].length < 1) {
 			enableMenuItem = NO;
 		}
-	} else if (action == @selector(commentOrUncommentAction:) ) { // Comment Or Uncomment
+	}
+    // Items which should be active if nothing is selected
+    else if (action == @selector(toggleBreakpointAction:)) {
+        if ([SMLCurrentTextView selectedRange].length > 0) {
+            enableMenuItem = NO;
+        }
+    }
+    // Comment Or Uncomment
+    else if (action == @selector(commentOrUncommentAction:) ) {
 		if ([[[SMLCurrentDocument valueForKey:@"syntaxColouring"] valueForKey:@"firstSingleLineComment"] isEqualToString:@""]) {
 			enableMenuItem = NO;
 		}
@@ -982,6 +990,15 @@ static id sharedInstance = nil;
 		[textView replaceCharactersInRange:selectedRange withString:stringToConvert];
 		[textView didChangeText];
 	}	
+}
+
+#pragma mark -
+#pragma mark Breakpoints
+
+- (IBAction)toggleBreakpointAction:(id)sender
+{
+    #pragma unused(sender)
+    NSLog(@"toggleBreakpointAction");
 }
 
 #pragma mark -

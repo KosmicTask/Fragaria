@@ -28,7 +28,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 @interface SMLSyntaxColouring : NSObject <NSTextStorageDelegate, NSTextViewDelegate, MGSFragariaTextViewDelegate> {
 	
 	id document;
-	NSUndoManager *undoManager;
 	
 	SMLLayoutManager *firstLayoutManager;
 	
@@ -60,6 +59,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	BOOL reactToChanges;
 	BOOL keywordsCaseSensitive;
 	BOOL recolourKeywordIfAlreadyColoured;
+	BOOL syntaxErrorsAreDirty;
 	
 	NSCharacterSet *attributesCharacterSet;
 	NSCharacterSet *beginVariable;
@@ -79,7 +79,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 }
 
 @property BOOL reactToChanges;
-@property (readonly) NSUndoManager *undoManager;
+@property (retain) NSUndoManager *undoManager;
 
 
 

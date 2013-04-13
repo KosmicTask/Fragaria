@@ -231,7 +231,7 @@ unsigned const ICUUnicodeWordBoundaries = UREGEX_UWORD;
 
 	if(U_FAILURE(status))
 		[NSException raise:@"Split Exception"
-					format:@"Unable to split string: %s", u_errorName(status)];
+					format:@"Unable to split string: %@", [NSString stringWithUTF8String:u_errorName(status)]];
 
 	return [NSArray arrayWithArray:results];	
 }

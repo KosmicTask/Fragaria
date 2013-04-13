@@ -30,6 +30,8 @@ extern NSString * const ro_MGSFOGutterScrollView; // readonly
 
 // NSObject
 extern NSString * const MGSFODelegate;
+extern NSString * const MGSFOBreakpointDelegate;
+extern NSString * const MGSFOAutoCompleteDelegate;
 extern NSString * const ro_MGSFOLineNumbers; // readonly
 extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 
@@ -46,11 +48,11 @@ extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 @interface MGSFragaria : NSObject
 {
 	@private
-	id _docSpec;
 	MGSExtraInterfaceController *extraInterfaceController;
 }
 
 @property (nonatomic, readonly, assign) MGSExtraInterfaceController *extraInterfaceController;
+@property (nonatomic,retain) id docSpec;
 
 + (id)currentInstance;
 + (void)setCurrentInstance:(MGSFragaria *)anInstance;
@@ -77,7 +79,7 @@ extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 - (NSAttributedString *)attributedString;
 - (NSAttributedString *)attributedStringWithTemporaryAttributesApplied;
 - (NSString *)string;
-- (id)docSpec;
+
 - (NSTextView *)textView;
 - (MGSTextMenuController *)textMenuController;
 - (void)setSyntaxColoured:(BOOL)value;
@@ -85,4 +87,7 @@ extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 - (void)setShowsLineNumbers:(BOOL)value;
 - (BOOL)showsLineNumbers;
 - (void)reloadString;
+
++ (NSImage *) imageNamed:(NSString *)name;
+
 @end

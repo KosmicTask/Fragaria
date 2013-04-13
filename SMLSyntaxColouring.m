@@ -20,6 +20,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 #import "MGSFragaria.h"
 #import "MGSFragariaFramework.h"
+#import "SMLSyntaxError.h"
+#import "SMLErrorPopOver.h"
+#import "SMLAutoCompleteDelegate.h"
 
 // class extension
 @interface SMLSyntaxColouring()
@@ -102,7 +105,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		// retain the document
 		document = theDocument;
 		
-		undoManager = [[NSUndoManager alloc] init];
+		self.undoManager = [[[NSUndoManager alloc] init] autorelease];
 
 		// configure the document text view
 		NSTextView *textView = [document valueForKey:@"firstTextView"];
@@ -1211,6 +1214,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 			}
 		}
 
+        //
+        // Errors
+        //
+        [self highlightErrors];
 	}
 	@catch (NSException *exception) {
 		NSLog(@"Syntax colouring exception: %@", exception);
@@ -1275,6 +1282,130 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	[firstLayoutManager addTemporaryAttributes:lineHighlightColour forCharacterRange:lineRange];
 	
 	lastLineHighlightRange = lineRange;
+}
+
+- (NSInteger) characterIndexFromLine:(int)line character:(int)character inString:(NSString*) str
+{
+    NSScanner* scanner = [NSScanner scannerWithString:str];
+    [scanner setCharactersToBeSkipped:[NSCharacterSet characterSetWithCharactersInString:@""]];
+    
+    int currentLine = 1;
+    while (![scanner isAtEnd])
+    {
+        if (currentLine == line)
+        {
+            // Found the right line
+            NSInteger location = [scanner scanLocation] + character-1;
+            if (location >= (NSInteger)str.length) location = str.length - 1;
+            return location;
+        }
+        
+        // Scan to a new line
+        [scanner scanUpToString:@"\n" intoString:NULL];
+        
+        if (![scanner isAtEnd])
+        {
+            scanner.scanLocation += 1;
+        }
+        currentLine++;
+    }
+    
+    return -1;
+}
+
+- (void) highlightErrors
+{
+    SMLTextView* textView = [document valueForKey:@"firstTextView"];
+    NSString* text = [self completeString];
+    
+    // Clear all highlights
+    [firstLayoutManager removeTemporaryAttribute:NSBackgroundColorAttributeName forCharacterRange:NSMakeRange(0, text.length)];
+    
+    // Clear all buttons
+    NSMutableArray* buttons = [NSMutableArray array];
+    for (NSView* subview in [textView subviews])
+    {
+        if ([subview isKindOfClass:[NSButton class]])
+        {
+            [buttons addObject:subview];
+        }
+    }
+    for (NSButton* button in buttons)
+    {
+        [button removeFromSuperview];
+    }
+    
+    if (!syntaxErrors) return;
+    
+    // Highlight all errors and add buttons
+    NSMutableSet* highlightedRows = [NSMutableSet set];
+    
+    for (SMLSyntaxError* err in syntaxErrors)
+    {
+        // Highlight an erronous line
+        NSInteger location = [self characterIndexFromLine:err.line character:err.character inString:text];
+        
+        // Skip lines we cannot identify in the text
+        if (location == -1) continue;
+        
+        NSRange lineRange = [text lineRangeForRange:NSMakeRange(location, 0)];
+        
+        // Highlight row if it is not already highlighted
+        if (![highlightedRows containsObject:[NSNumber numberWithInt:err.line]])
+        {
+            // Remember that we are highlighting this row
+            [highlightedRows addObject:[NSNumber numberWithInt:err.line]];
+            
+            // Add highlight for background
+            [firstLayoutManager addTemporaryAttribute:NSBackgroundColorAttributeName value:[NSColor colorWithCalibratedRed:1 green:1 blue:0.7 alpha:1] forCharacterRange:lineRange];
+            
+            [firstLayoutManager addTemporaryAttribute:NSToolTipAttributeName value:err.description forCharacterRange:lineRange];
+            
+            NSInteger glyphIndex = [firstLayoutManager glyphIndexForCharacterAtIndex:lineRange.location];
+            
+            NSRect linePos = [firstLayoutManager boundingRectForGlyphRange:NSMakeRange(glyphIndex, 1) inTextContainer:[textView textContainer]];
+            
+            // Add button
+            float scrollOffset = textView.superview.bounds.origin.x - 40; // Not sure where the 40 comes from...
+            
+            NSButton* warningButton = [[[NSButton alloc] initWithFrame:NSMakeRect(textView.superview.frame.size.width - 32 + scrollOffset, linePos.origin.y-2, 16, 16)] autorelease];
+            
+            [warningButton setButtonType:NSMomentaryChangeButton];
+            [warningButton setBezelStyle:NSRegularSquareBezelStyle];
+            [warningButton setBordered:NO];
+            [warningButton setImagePosition:NSImageOnly];
+            [warningButton setImage:[MGSFragaria imageNamed:@"editor-warning.png"]];
+            [warningButton setTag:err.line];
+            [warningButton setTarget:self];
+            [warningButton setAction:@selector(pressedWarningBtn:)];
+            
+            [textView addSubview:warningButton];
+        }
+    }
+}
+
+- (CGFloat) widthOfString:(NSString *)string withFont:(NSFont *)font {
+    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
+    return [[[[NSAttributedString alloc] initWithString:string attributes:attributes] autorelease] size].width;
+}
+
+- (void) pressedWarningBtn:(id) sender
+{
+    int line = (int)[sender tag];
+    
+    // Fetch errors to display
+    NSMutableArray* errorsOnLine = [NSMutableArray array];
+    for (SMLSyntaxError* err in syntaxErrors)
+    {
+        if (err.line == line)
+        {
+            [errorsOnLine addObject:err.description];
+        }
+    }
+    
+    if (errorsOnLine.count == 0) return;
+    
+    [SMLErrorPopOver showErrorDescriptions:errorsOnLine relativeToView:sender];
 }
 
 #pragma mark -
@@ -1531,37 +1662,29 @@ Unless required by applicable law or agreed to in writing, software distributed 
  - textView:completions:forPartialWordRange:indexOfSelectedItem
  
  */
+
+/*
 - (NSArray *)textView:theTextView completions:(NSArray *)words forPartialWordRange:(NSRange)charRange indexOfSelectedItem:(NSInteger *)idx
 {
-#pragma unused(idx)
-	if ([self.keywordsAndAutocompleteWords count] == 0) {
-		if ([[SMLDefaults valueForKey:MGSFragariaPrefsAutocompleteIncludeStandardWords] boolValue] == NO) {
-			return [NSArray array];
-		} else {
-			return words;
-		}
-	}
-	
-	NSString *matchString = [[theTextView string] substringWithRange:charRange];
-	NSMutableArray *finalWordsArray = [NSMutableArray arrayWithArray:self.keywordsAndAutocompleteWords];
-	if ([[SMLDefaults valueForKey:MGSFragariaPrefsAutocompleteIncludeStandardWords] boolValue]) {
-		[finalWordsArray addObjectsFromArray:words];
-	}
-	
-	NSMutableArray *matchArray = [NSMutableArray array];
-	NSString *item;
-	for (item in finalWordsArray) {
-		if ([item rangeOfString:matchString options:NSCaseInsensitiveSearch range:NSMakeRange(0, [item length])].location == 0) {
-			[matchArray addObject:item];
-		}
-	}
-	
-	if ([[SMLDefaults valueForKey:MGSFragariaPrefsAutocompleteIncludeStandardWords] boolValue]) { // If no standard words are added there's no need to sort it again as it has already been sorted
-		return [matchArray sortedArrayUsingSelector:@selector(compare:)];
-	} else {
-		return matchArray;
-	}
-}
+#pragma unused(idx, theTextView, words, charRange)
+    
+    id<SMLAutoCompleteDelegate> completeHandler = [document valueForKey:MGSFOAutoCompleteDelegate];
+    
+    NSArray* allCompletions = [completeHandler completions];
+    
+    NSString *matchString = [[theTextView string] substringWithRange:charRange];
+    NSMutableArray* matchArray = [NSMutableArray array];
+    
+    for (NSString* completeWord in allCompletions)
+    {
+        if ([completeWord rangeOfString:matchString options:NSCaseInsensitiveSearch range:NSMakeRange(0, [completeWord length])].location == 0)
+        {
+            [matchArray addObject:completeWord];
+        }
+    }
+    
+    return matchArray;
+}*/
 
 /*
  
@@ -1618,6 +1741,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
  - autocompleteWordsTimerSelector:
  
  */
+
+/*
 - (void)autocompleteWordsTimerSelector:(NSTimer *)theTimer
 {
 	SMLTextView *textView = [theTimer userInfo];
@@ -1639,7 +1764,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[autocompleteWordsTimer invalidate];
 		autocompleteWordsTimer = nil;
 	}
-}
+}*/
 
 
 @end

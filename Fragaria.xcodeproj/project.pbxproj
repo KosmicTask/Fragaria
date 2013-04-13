@@ -89,6 +89,18 @@
 		ABE25D0B1635CA7C00F23718 /* MGSFragariaPrefsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE25D091635CA7C00F23718 /* MGSFragariaPrefsViewController.m */; };
 		ABF28AF014C075D400ECAD48 /* NSScanner+Fragaria.m in Sources */ = {isa = PBXBuildFile; fileRef = ABF28AEE14C075D400ECAD48 /* NSScanner+Fragaria.m */; };
 		ABF28AF114C075D400ECAD48 /* NSScanner+Fragaria.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF28AEF14C075D400ECAD48 /* NSScanner+Fragaria.h */; };
+		E373BF131718A64700D71602 /* SMLAutoCompleteDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E373BF121718A64700D71602 /* SMLAutoCompleteDelegate.h */; };
+		E38654AD1717652000A345B9 /* ErrorPopoverView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E38654AC1717652000A345B9 /* ErrorPopoverView.xib */; };
+		E3AA871B16E1817800585940 /* editor-breakpoint.png in Resources */ = {isa = PBXBuildFile; fileRef = E3AA871A16E1817800585940 /* editor-breakpoint.png */; };
+		E3BBA50B16E52FE600D89923 /* editor-breakpoint-0.png in Resources */ = {isa = PBXBuildFile; fileRef = E3BBA50816E52FE600D89923 /* editor-breakpoint-0.png */; };
+		E3BBA50C16E52FE600D89923 /* editor-breakpoint-1.png in Resources */ = {isa = PBXBuildFile; fileRef = E3BBA50916E52FE600D89923 /* editor-breakpoint-1.png */; };
+		E3BBA50D16E52FE600D89923 /* editor-breakpoint-2.png in Resources */ = {isa = PBXBuildFile; fileRef = E3BBA50A16E52FE600D89923 /* editor-breakpoint-2.png */; };
+		E3C185001717597200801FE5 /* editor-warning.png in Resources */ = {isa = PBXBuildFile; fileRef = E3C184FF1717597200801FE5 /* editor-warning.png */; };
+		E3C1850317175ED900801FE5 /* SMLErrorPopOver.h in Headers */ = {isa = PBXBuildFile; fileRef = E3C1850117175ED900801FE5 /* SMLErrorPopOver.h */; };
+		E3C1850417175ED900801FE5 /* SMLErrorPopOver.m in Sources */ = {isa = PBXBuildFile; fileRef = E3C1850217175ED900801FE5 /* SMLErrorPopOver.m */; };
+		E3CF4B7916E6927300C27B5C /* MGSBreakpointDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E3CF4B7816E6927300C27B5C /* MGSBreakpointDelegate.h */; };
+		E3D4B2771714D89700BB2CC6 /* SMLSyntaxError.h in Headers */ = {isa = PBXBuildFile; fileRef = E3D4B2751714D89700BB2CC6 /* SMLSyntaxError.h */; };
+		E3D4B2781714D89700BB2CC6 /* SMLSyntaxError.m in Sources */ = {isa = PBXBuildFile; fileRef = E3D4B2761714D89700BB2CC6 /* SMLSyntaxError.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -262,6 +274,18 @@
 		ABE25D091635CA7C00F23718 /* MGSFragariaPrefsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MGSFragariaPrefsViewController.m; sourceTree = "<group>"; };
 		ABF28AEE14C075D400ECAD48 /* NSScanner+Fragaria.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = "NSScanner+Fragaria.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		ABF28AEF14C075D400ECAD48 /* NSScanner+Fragaria.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSScanner+Fragaria.h"; sourceTree = "<group>"; };
+		E373BF121718A64700D71602 /* SMLAutoCompleteDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLAutoCompleteDelegate.h; sourceTree = "<group>"; };
+		E38654AC1717652000A345B9 /* ErrorPopoverView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ErrorPopoverView.xib; sourceTree = "<group>"; };
+		E3AA871A16E1817800585940 /* editor-breakpoint.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "editor-breakpoint.png"; sourceTree = "<group>"; };
+		E3BBA50816E52FE600D89923 /* editor-breakpoint-0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "editor-breakpoint-0.png"; sourceTree = "<group>"; };
+		E3BBA50916E52FE600D89923 /* editor-breakpoint-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "editor-breakpoint-1.png"; sourceTree = "<group>"; };
+		E3BBA50A16E52FE600D89923 /* editor-breakpoint-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "editor-breakpoint-2.png"; sourceTree = "<group>"; };
+		E3C184FF1717597200801FE5 /* editor-warning.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "editor-warning.png"; sourceTree = "<group>"; };
+		E3C1850117175ED900801FE5 /* SMLErrorPopOver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLErrorPopOver.h; sourceTree = "<group>"; };
+		E3C1850217175ED900801FE5 /* SMLErrorPopOver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLErrorPopOver.m; sourceTree = "<group>"; };
+		E3CF4B7816E6927300C27B5C /* MGSBreakpointDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSBreakpointDelegate.h; sourceTree = "<group>"; };
+		E3D4B2751714D89700BB2CC6 /* SMLSyntaxError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLSyntaxError.h; sourceTree = "<group>"; };
+		E3D4B2761714D89700BB2CC6 /* SMLSyntaxError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLSyntaxError.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -395,9 +419,12 @@
 		AB3972FC118C2A5D00AEF388 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				AB6C87621610EAC800488AF2 /* General.png */,
-				ABC578DE1603C3010040B3FB /* MGSPreferencesFontsAndColours.xib */,
-				ABC578DF1603C3010040B3FB /* MGSPreferencesTextEditing.xib */,
+				E38654AC1717652000A345B9 /* ErrorPopoverView.xib */,
+				E3C184FF1717597200801FE5 /* editor-warning.png */,
+				E3BBA50816E52FE600D89923 /* editor-breakpoint-0.png */,
+				E3BBA50916E52FE600D89923 /* editor-breakpoint-1.png */,
+				E3BBA50A16E52FE600D89923 /* editor-breakpoint-2.png */,
+				E3AA871A16E1817800585940 /* editor-breakpoint.png */,
 				ABA812DB11B6855200A29990 /* LICENSE-2.0.txt */,
 				AB69B62C118B745700903D1D /* MGSFragaria-Info.plist */,
 				AB648E2C11FB385700AEF7BD /* Fragaria Document Based App-Info.plist */,
@@ -451,6 +478,11 @@
 				AB472B9D12997B1F00202CB5 /* SMLBasicPerformer.m */,
 				AB69B65A118B75FB00903D1D /* SMLSyntaxColouring.m */,
 				AB472BE81299AF3800202CB5 /* SMLTextPerformer.m */,
+				E3D4B2751714D89700BB2CC6 /* SMLSyntaxError.h */,
+				E3D4B2761714D89700BB2CC6 /* SMLSyntaxError.m */,
+				E3C1850117175ED900801FE5 /* SMLErrorPopOver.h */,
+				E3C1850217175ED900801FE5 /* SMLErrorPopOver.m */,
+				E373BF121718A64700D71602 /* SMLAutoCompleteDelegate.h */,
 			);
 			name = Smultron;
 			sourceTree = "<group>";
@@ -575,6 +607,7 @@
 				ABD0FE581193543600E6AFE6 /* MGSFragariaPreferences.h */,
 				AB472B7B1299732F00202CB5 /* MGSTextMenuController.h */,
 				AB472BF51299BBBA00202CB5 /* MGSExtraInterfaceController.h */,
+				E3CF4B7816E6927300C27B5C /* MGSBreakpointDelegate.h */,
 			);
 			name = Headers;
 			sourceTree = "<group>";
@@ -596,9 +629,10 @@
 				ABC578E91603D6000040B3FB /* MGSFragariaFontsAndColoursPrefsViewController.h in Headers */,
 				ABC578ED1603D7ED0040B3FB /* MGSFragariaTextEditingPrefsViewController.h in Headers */,
 				ABF28AF114C075D400ECAD48 /* NSScanner+Fragaria.h in Headers */,
-				ABC5799716047B4E0040B3FB /* FRAFontTransformer.h in Headers */,
-				ABC1D5D6160B0801008769EB /* DBPrefsWindowController.h in Headers */,
-				AB6C86C3160FA2B500488AF2 /* MGSGlyphGenerator.h in Headers */,
+				E3CF4B7916E6927300C27B5C /* MGSBreakpointDelegate.h in Headers */,
+				E3D4B2771714D89700BB2CC6 /* SMLSyntaxError.h in Headers */,
+				E3C1850317175ED900801FE5 /* SMLErrorPopOver.h in Headers */,
+				E373BF131718A64700D71602 /* SMLAutoCompleteDelegate.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -751,8 +785,12 @@
 				ABA1C12316144EFD00C8723F /* README.md in Resources */,
 				AB472C881299C34500202CB5 /* SMLDetab.xib in Resources */,
 				AB472C891299C34500202CB5 /* SMLEntab.xib in Resources */,
-				ABC578E31603C3020040B3FB /* MGSPreferencesFontsAndColours.xib in Resources */,
-				ABC578E41603C3020040B3FB /* MGSPreferencesTextEditing.xib in Resources */,
+				E3AA871B16E1817800585940 /* editor-breakpoint.png in Resources */,
+				E3BBA50B16E52FE600D89923 /* editor-breakpoint-0.png in Resources */,
+				E3BBA50C16E52FE600D89923 /* editor-breakpoint-1.png in Resources */,
+				E3BBA50D16E52FE600D89923 /* editor-breakpoint-2.png in Resources */,
+				E3C185001717597200801FE5 /* editor-warning.png in Resources */,
+				E38654AD1717652000A345B9 /* ErrorPopoverView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -817,6 +855,8 @@
 				ABC5799816047B4E0040B3FB /* FRAFontTransformer.m in Sources */,
 				AB6C86C4160FA2B500488AF2 /* MGSGlyphGenerator.m in Sources */,
 				ABE25D0B1635CA7C00F23718 /* MGSFragariaPrefsViewController.m in Sources */,
+				E3D4B2781714D89700BB2CC6 /* SMLSyntaxError.m in Sources */,
+				E3C1850417175ED900801FE5 /* SMLErrorPopOver.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1053,9 +1093,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_OBJC_GC = supported;
+				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -1093,9 +1133,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_OBJC_GC = supported;
+				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;

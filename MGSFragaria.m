@@ -32,11 +32,11 @@ NSString * const ro_MGSFOGutterScrollView = @"firstGutterScrollView"; // readonl
 
 // NSObject
 NSString * const MGSFODelegate = @"delegate";
+NSString * const MGSFOBreakpointDelegate = @"breakpointDelegate";
+NSString * const MGSFOAutoCompleteDelegate = @"autoCompleteDelegate";
 NSString * const ro_MGSFOLineNumbers = @"lineNumbers"; // readonly
 NSString * const ro_MGSFOSyntaxColouring = @"syntaxColouring"; // readonly
 
-static NSSet *objectGetterKeys;
-static NSSet *objectSetterKeys;
 static MGSFragaria *_currentInstance;
 
 // KVO context constants
@@ -52,11 +52,17 @@ char kcLineWrapPrefChanged;
 
 - (void)updateGutterView;
 
+@property (nonatomic,retain) NSSet* objectGetterKeys;
+@property (nonatomic,retain) NSSet* objectSetterKeys;
+
 @end
 
 @implementation MGSFragaria
 
 @synthesize extraInterfaceController;
+@synthesize docSpec;
+@synthesize objectSetterKeys;
+@synthesize objectGetterKeys;
 
 #pragma mark -
 #pragma mark Class methods
@@ -98,16 +104,7 @@ char kcLineWrapPrefChanged;
  */
 + (void)initialize
 {
-	[MGSFragariaPreferences initializeValues];
-	
-	objectSetterKeys = [[NSSet setWithObjects:MGSFOIsSyntaxColoured, MGSFOShowLineNumberGutter, MGSFOIsEdited,
-						MGSFOSyntaxDefinitionName, MGSFODelegate,
-						nil] retain];
-	
-	objectGetterKeys = [[NSMutableSet setWithObjects:ro_MGSFOTextView, ro_MGSFOScrollView, ro_MGSFOGutterScrollView,
-						ro_MGSFOLineNumbers, ro_MGSFOLineNumbers, 
-						nil] retain];
-	[(NSMutableSet *)objectGetterKeys unionSet:objectSetterKeys];
+	[MGSPreferencesController initializeValues];
 }
 
 /*
@@ -239,9 +236,9 @@ char kcLineWrapPrefChanged;
 		_currentInstance = self;
 		
 		if (object) {
-			_docSpec = [object retain];
+			self.docSpec = object;
 		} else {
-			_docSpec = [[[self class] createDocSpec] retain];
+			self.docSpec = [[self class] createDocSpec];
 		}
         
         // register the font transformer
@@ -256,6 +253,18 @@ char kcLineWrapPrefChanged;
         [defaultsController addObserver:self forKeyPath:@"values.FragariaLineWrapNewDocuments" options:NSKeyValueObservingOptionNew context:&kcLineWrapPrefChanged];
         
         
+        
+        
+        // Create the Sets containing the valid setter/getter combinations for the Docspec
+        
+        self.objectSetterKeys = [NSSet setWithObjects:MGSFOIsSyntaxColoured, MGSFOShowLineNumberGutter, MGSFOIsEdited,
+                            MGSFOSyntaxDefinitionName, MGSFODelegate, MGSFOBreakpointDelegate, MGSFOAutoCompleteDelegate,
+                            nil];
+        
+        self.objectGetterKeys = [NSMutableSet setWithObjects:ro_MGSFOTextView, ro_MGSFOScrollView, ro_MGSFOGutterScrollView,
+                            ro_MGSFOLineNumbers, ro_MGSFOLineNumbers, MGSFOAutoCompleteDelegate,
+                            nil];
+        [(NSMutableSet *)self.objectGetterKeys unionSet:self.objectSetterKeys];
 	}
 
 	return self;
@@ -318,13 +327,13 @@ char kcLineWrapPrefChanged;
 	[gutterScrollView setDocumentView:gutterTextView];
 	
 	// update the docSpec
-	[_docSpec setValue:textView forKey:ro_MGSFOTextView];
-	[_docSpec setValue:textScrollView forKey:ro_MGSFOScrollView];
-	[_docSpec setValue:gutterScrollView forKey:ro_MGSFOGutterScrollView];
+	[self.docSpec setValue:textView forKey:ro_MGSFOTextView];
+	[self.docSpec setValue:textScrollView forKey:ro_MGSFOScrollView];
+	[self.docSpec setValue:gutterScrollView forKey:ro_MGSFOGutterScrollView];
 	
 	// add syntax colouring
-	SMLSyntaxColouring *syntaxColouring = [[[SMLSyntaxColouring alloc] initWithDocument:_docSpec] autorelease];
-	[_docSpec setValue:syntaxColouring forKey:ro_MGSFOSyntaxColouring];
+	SMLSyntaxColouring *syntaxColouring = [[[SMLSyntaxColouring alloc] initWithDocument:self.docSpec] autorelease];
+	[self.docSpec setValue:syntaxColouring forKey:ro_MGSFOSyntaxColouring];
 	
 	// add scroll view to content view
 	[contentView addSubview:[_docSpec valueForKey:ro_MGSFOScrollView]];
@@ -343,15 +352,8 @@ char kcLineWrapPrefChanged;
 
 #pragma mark -
 #pragma mark Document specification
-/*
- 
- - docSpec
- 
- */
-- (id)docSpec
-{
-	return _docSpec;
-}
+
+
 
 /*
  
@@ -360,8 +362,8 @@ char kcLineWrapPrefChanged;
  */
 - (void)setObject:(id)object forKey:(id)key
 {
-	if ([objectSetterKeys containsObject:key]) {
-		[(id)_docSpec setValue:object forKey:key];
+	if ([self.objectSetterKeys containsObject:key]) {
+		[(id)self.docSpec setValue:object forKey:key];
 	}
 }
 
@@ -372,8 +374,8 @@ char kcLineWrapPrefChanged;
  */
 - (id)objectForKey:(id)key
 {
-	if ([objectGetterKeys containsObject:key]) {
-		return [_docSpec valueForKey:key];
+	if ([self.objectGetterKeys containsObject:key]) {
+		return [self.docSpec valueForKey:key];
 	}
 	
 	return nil;
@@ -390,7 +392,7 @@ char kcLineWrapPrefChanged;
  */
 - (void)setString:(NSString *)aString
 {
-	[[self class] docSpec:_docSpec setString:aString];
+	[[self class] docSpec:self.docSpec setString:aString];
 }
 
 /*
@@ -400,7 +402,7 @@ char kcLineWrapPrefChanged;
  */
 - (void)setString:(NSString *)aString options:(NSDictionary *)options
 {
-	[[self class] docSpec:_docSpec setString:aString options:options];
+	[[self class] docSpec:self.docSpec setString:aString options:options];
 }
 
 /*
@@ -431,7 +433,7 @@ char kcLineWrapPrefChanged;
  */
 - (NSAttributedString *)attributedString
 {
-	return [[self class] attributedStringForDocSpec:_docSpec];
+	return [[self class] attributedStringForDocSpec:self.docSpec];
 }
 
 /*
@@ -441,7 +443,7 @@ char kcLineWrapPrefChanged;
  */
 - (NSAttributedString *)attributedStringWithTemporaryAttributesApplied
 {
-	return [[self class] attributedStringWithTemporaryAttributesAppliedForDocSpec:_docSpec];
+	return [[self class] attributedStringWithTemporaryAttributesAppliedForDocSpec:self.docSpec];
 }
 
 /*
@@ -451,7 +453,7 @@ char kcLineWrapPrefChanged;
  */
 - (NSString *)string
 {
-	return [[self class] stringForDocSpec:_docSpec];
+	return [[self class] stringForDocSpec:self.docSpec];
 }
 
 /*
@@ -645,4 +647,17 @@ char kcLineWrapPrefChanged;
     // update the line numbers
     [[document valueForKey:ro_MGSFOLineNumbers] updateLineNumbersCheckWidth:YES recolour:YES];
 }
+
+#pragma mark -
+#pragma mark Resource loading
+
++ (NSImage *) imageNamed:(NSString *)name
+{
+    NSBundle* bundle = [NSBundle bundleForClass:[self class]];
+    
+    NSString *path = [bundle pathForImageResource:name];
+    return path != nil ? [[[NSImage alloc]
+                           initWithContentsOfFile:path] autorelease] : nil;
+}
+
 @end

@@ -161,6 +161,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	} else {
 		goto allDone;
 	}
+    
+    NSSet* breakpoints = NULL;
+    id breakpointDelegate = [[MGSFragaria currentInstance] objectForKey:MGSFOBreakpointDelegate];
+    if (breakpointDelegate && [breakpointDelegate respondsToSelector:@selector(breakpointsForFile:)])
+    {
+        breakpoints = [breakpointDelegate breakpointsForFile:[gutterScrollView.documentView fileName]];
+    }
 	
 	layoutManager = [textView layoutManager];
 	visibleRect = [[scrollView contentView] documentVisibleRect];
@@ -183,14 +190,22 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		}
 	}
 	NSMutableString *lineNumbersString = [[[NSMutableString alloc] init] autorelease];
-
+	
+    int textLine = 0;
+    NSMutableArray* textLineBreakpoints = [NSMutableArray array];
 	while (indexNonWrap <= maxRangeVisibleRange) {
 		if (idx == indexNonWrap) {
 			lineNumber++;
-			[lineNumbersString appendFormat:@"%ld\n", (long)lineNumber];
+			[lineNumbersString appendFormat:@"%li\n", (long)lineNumber];
+            textLine++;
+            if ([breakpoints containsObject:[NSNumber numberWithInt:(int)lineNumber]])
+            {
+                [textLineBreakpoints addObject:[NSNumber numberWithInt:textLine]];
+            }
 		} else {
-			[lineNumbersString appendFormat:@"%@\n", @"."];
+			[lineNumbersString appendFormat:@"%C\n", (unsigned short)0x00B7];
 			indexNonWrap = idx;
+            textLine++;
 		}
 		
 		if (idx < maxRangeVisibleRange) {
@@ -231,7 +246,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	// Fix flickering while rubber banding: Only change the text, if NOT rubber banding.
 	if (visibleRect.origin.y >= 0.0f && visibleRect.origin.y <= textView.frame.size.height - visibleRect.size.height)
 		[[gutterScrollView documentView] setString:lineNumbersString];
+    [[gutterScrollView documentView] setBreakpointLines:textLineBreakpoints];
 	
+#warning Draw on top of string here
+    
 	[[gutterScrollView contentView] setBoundsOrigin:zeroPoint]; // To avert an occasional bug which makes the line numbers disappear
 	currentLineHeight = (NSInteger)[textView lineHeight];
 	if ((NSInteger)visibleRect.origin.y != 0 && currentLineHeight != 0) {

@@ -11,7 +11,6 @@
 
 @interface MGSSyntaxController : NSObject {
 
-	NSMutableDictionary *syntaxDefinitions;
 	NSArray *syntaxDefinitionNames;
 }
 
@@ -23,6 +22,6 @@
 - (NSDictionary *)syntaxDefinitionWithExtension:(NSString *)extension;
 - (NSString *)syntaxDefinitionNameWithExtension:(NSString *)extension;
 
-@property (readonly) NSArray *syntaxDefinitionNames;
+@property (nonatomic,readonly) NSArray *syntaxDefinitionNames;
 
 @end

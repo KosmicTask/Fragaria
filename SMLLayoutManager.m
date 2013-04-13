@@ -112,6 +112,9 @@ typedef enum {
 
 #pragma mark -
 #pragma mark Drawing
+
+#warning Drawing at specific points (howto)
+
 /*
  
  - drawGlyphsForGlyphRange:atPoint:

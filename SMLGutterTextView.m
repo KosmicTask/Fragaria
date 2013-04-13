@@ -112,6 +112,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[dottedLine stroke];
 	}
     
+    // draw breakpoints
     if (self.breakpointLines)
     {
         for (NSNumber* lineNumber in self.breakpointLines)
@@ -122,6 +123,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
     }
 }
 
+/*
+ 
+ - mouseDown:
+ 
+ */
 - (void)mouseDown:(NSEvent *)theEvent
 {
     NSPoint curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];

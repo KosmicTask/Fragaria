@@ -60,6 +60,15 @@
 	// access the NSTextView directly
 	NSTextView *textView = [fragaria objectForKey:ro_MGSFOTextView];
 	
+    // define a syntax error
+    SMLSyntaxError *syntaxError = [[SMLSyntaxError new] autorelease];
+    syntaxError.description = @"Syntax errors can be defined";
+    syntaxError.line = 1;
+    syntaxError.character = 1;
+    syntaxError.length = 10;
+    
+    fragaria.syntaxErrors = @[syntaxError];
+    
 #pragma unused(textView)
 	
 }

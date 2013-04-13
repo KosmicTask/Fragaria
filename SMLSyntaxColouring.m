@@ -20,7 +20,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 #import "MGSFragaria.h"
 #import "MGSFragariaFramework.h"
-#import "SMLSyntaxError.h"
 #import "SMLErrorPopOver.h"
 #import "SMLAutoCompleteDelegate.h"
 
@@ -53,7 +52,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 @property (retain) NSCharacterSet *attributesCharacterSet;
 @property (retain) NSCharacterSet *letterCharacterSet;
 @property (retain) NSCharacterSet *numberCharacterSet;
-@property (retain) NSArray* syntaxErrors;
 @property unichar decimalPointCharacter;
 
 - (void)parseSyntaxDictionary:(NSDictionary *)syntaxDictionary;
@@ -1289,6 +1287,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	lastLineHighlightRange = lineRange;
 }
 
+/*
+ 
+ - characterIndexFromLine:character:inString:
+ 
+ */
 - (NSInteger) characterIndexFromLine:(int)line character:(int)character inString:(NSString*) str
 {
     NSScanner* scanner = [NSScanner scannerWithString:str];
@@ -1318,6 +1321,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
     return -1;
 }
 
+/*
+ 
+ - highlightErrors
+ 
+ */
 - (void) highlightErrors
 {
     SMLTextView* textView = [document valueForKey:@"firstTextView"];
@@ -1344,7 +1352,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
     
     // Highlight all errors and add buttons
     NSMutableSet* highlightedRows = [NSMutableSet set];
-    
+#warning
     for (SMLSyntaxError* err in syntaxErrors)
     {
         // Highlight an erronous line
@@ -1354,7 +1362,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
         if (location == -1) continue;
         
         NSRange lineRange = [text lineRangeForRange:NSMakeRange(location, 0)];
-        
+     
         // Highlight row if it is not already highlighted
         if (![highlightedRows containsObject:[NSNumber numberWithInt:err.line]])
         {
@@ -1371,7 +1379,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
             NSRect linePos = [firstLayoutManager boundingRectForGlyphRange:NSMakeRange(glyphIndex, 1) inTextContainer:[textView textContainer]];
             
             // Add button
-            float scrollOffset = textView.superview.bounds.origin.x - 40; // Not sure where the 40 comes from...
+            float scrollOffset = textView.superview.bounds.origin.x - 0; 
             
             NSButton* warningButton = [[[NSButton alloc] initWithFrame:NSMakeRect(textView.superview.frame.size.width - 32 + scrollOffset, linePos.origin.y-2, 16, 16)] autorelease];
             
@@ -1389,11 +1397,24 @@ Unless required by applicable law or agreed to in writing, software distributed 
     }
 }
 
+/*
+ 
+ - widthOfString:withFont:
+ 
+ */
 - (CGFloat) widthOfString:(NSString *)string withFont:(NSFont *)font {
     NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
     return [[[[NSAttributedString alloc] initWithString:string attributes:attributes] autorelease] size].width;
 }
 
+#pragma mark -
+#pragma mark Actions
+
+/*
+ 
+ - pressedWarningBtn
+ 
+ */
 - (void) pressedWarningBtn:(id) sender
 {
     int line = (int)[sender tag];

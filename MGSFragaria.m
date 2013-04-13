@@ -264,7 +264,7 @@ char kcLineWrapPrefChanged;
         
         // Define read only keys
         self.objectGetterKeys = [NSMutableSet setWithObjects:ro_MGSFOTextView, ro_MGSFOScrollView, ro_MGSFOGutterScrollView,
-                            ro_MGSFOLineNumbers, ro_MGSFOLineNumbers, 
+                            ro_MGSFOLineNumbers, ro_MGSFOSyntaxColouring,
                             nil];
         
         // Merge both to get all getters
@@ -520,6 +520,29 @@ char kcLineWrapPrefChanged;
 - (void)reloadString
 {
     [self setString:[self string]];
+}
+
+/*
+ 
+ - setSyntaxErrors:
+ 
+ */
+- (void)setSyntaxErrors:(NSArray *)errors
+{
+    SMLSyntaxColouring *syntaxColouring = [docSpec valueForKey:ro_MGSFOSyntaxColouring];
+    syntaxColouring.syntaxErrors = errors;
+    [syntaxColouring pageRecolour];
+}
+
+/*
+ 
+ - syntaxErrors
+ 
+ */
+- (NSArray *)syntaxErrors
+{
+    SMLSyntaxColouring *syntaxColouring = [docSpec valueForKey:ro_MGSFOSyntaxColouring];
+    return syntaxColouring.syntaxErrors;
 }
 
 #pragma mark -

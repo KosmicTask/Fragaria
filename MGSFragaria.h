@@ -39,6 +39,8 @@ extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 @class MGSExtraInterfaceController;
 
 #import "MGSFragariaPreferences.h"
+#import "MGSBreakpointDelegate.h"
+#import "SMLSyntaxError.h"
 
 @protocol MGSFragariaTextViewDelegate <NSObject>
 @optional
@@ -88,6 +90,9 @@ extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 - (void)setShowsLineNumbers:(BOOL)value;
 - (BOOL)showsLineNumbers;
 - (void)reloadString;
+
+- (void)setSyntaxErrors:(NSArray *)errors;
+- (NSArray *)syntaxErrors;
 
 + (NSImage *) imageNamed:(NSString *)name;
 

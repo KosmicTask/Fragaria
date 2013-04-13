@@ -113,28 +113,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
  */
 - (void)updateLineNumbersForClipView:(NSClipView *)clipView checkWidth:(BOOL)checkWidth recolour:(BOOL)recolour
 {
-	SMLTextView *textView;
-	NSScrollView *scrollView;
-	NSScrollView *gutterScrollView;
-	NSLayoutManager *layoutManager;
-	NSRect visibleRect;
-	NSRange visibleRange;
-	NSString *textString;
-	NSString *searchString;
-	
-	NSInteger idx;
-	NSInteger lineNumber;
-	
-	NSInteger indexNonWrap;
-	NSInteger maxRangeVisibleRange;
-	NSInteger numberOfGlyphsInTextString;
-	BOOL oneMoreTime;
-	unichar lastGlyph;
-	
-	NSRange range;
-	NSInteger widthOfStringInGutter;
-	NSInteger gutterWidth;
-	NSRect currentViewBounds;
+	NSScrollView *gutterScrollView = nil;
+	NSInteger idx = 0;
+	NSInteger lineNumber = 0;
+	NSRange range = NSMakeRange(0, 0);
+	NSInteger gutterWidth = 0;
+	NSRect currentViewBounds = NSZeroRect;
 	
 	NSInteger currentLineHeight;
 	
@@ -145,7 +129,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	}
 	self.updatingLineNumbersForClipView = clipView;
 	
-	textView = [clipView documentView];
+	SMLTextView *textView = [clipView documentView];
 	
 	if ([[document valueForKey:@"showLineNumberGutter"] boolValue] == NO || textView == nil) {
 		if (checkWidth == YES && recolour == YES) {
@@ -154,7 +138,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		goto allDone;
 	}
 	
-	scrollView = (NSScrollView *)[clipView superview];
+	NSScrollView *scrollView = (NSScrollView *)[clipView superview];
 	addToScrollPoint = 0;	
 	if (scrollView == [document valueForKey:@"firstTextScrollView"]) {
 		gutterScrollView = [document valueForKey:@"firstGutterScrollView"];
@@ -162,6 +146,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		goto allDone;
 	}
     
+    // get break points from delegate
     NSSet* breakpoints = NULL;
     id breakpointDelegate = [[MGSFragaria currentInstance] objectForKey:MGSFOBreakpointDelegate];
     if (breakpointDelegate && [breakpointDelegate respondsToSelector:@selector(breakpointsForFile:)])
@@ -169,22 +154,22 @@ Unless required by applicable law or agreed to in writing, software distributed 
         breakpoints = [breakpointDelegate breakpointsForFile:[gutterScrollView.documentView fileName]];
     }
 	
-	layoutManager = [textView layoutManager];
-	visibleRect = [[scrollView contentView] documentVisibleRect];
-	visibleRange = [layoutManager glyphRangeForBoundingRect:visibleRect inTextContainer:[textView textContainer]];
-	textString = [textView string];
-	searchString = [textString substringWithRange:NSMakeRange(0,visibleRange.location)];
+	NSLayoutManager *layoutManager = [textView layoutManager];
+	NSRect visibleRect = [[scrollView contentView] documentVisibleRect];
+	NSRange visibleRange = [layoutManager glyphRangeForBoundingRect:visibleRect inTextContainer:[textView textContainer]];
+	NSString *textString = [textView string];
+	NSString *searchString = [textString substringWithRange:NSMakeRange(0,visibleRange.location)];
 	
 	for (idx = 0, lineNumber = 0; idx < (NSInteger)visibleRange.location; lineNumber++) {
 		idx = NSMaxRange([searchString lineRangeForRange:NSMakeRange(idx, 0)]);
 	}
 	
-	indexNonWrap = [searchString lineRangeForRange:NSMakeRange(idx, 0)].location;
-	maxRangeVisibleRange = NSMaxRange([textString lineRangeForRange:NSMakeRange(NSMaxRange(visibleRange), 0)]); // Set it to just after the last glyph on the last visible line 
-	numberOfGlyphsInTextString = [layoutManager numberOfGlyphs];
-	oneMoreTime = NO;
+	NSInteger indexNonWrap = [searchString lineRangeForRange:NSMakeRange(idx, 0)].location;
+	NSInteger maxRangeVisibleRange = NSMaxRange([textString lineRangeForRange:NSMakeRange(NSMaxRange(visibleRange), 0)]); // Set it to just after the last glyph on the last visible line
+	NSInteger numberOfGlyphsInTextString = [layoutManager numberOfGlyphs];
+	BOOL oneMoreTime = NO;
 	if (numberOfGlyphsInTextString != 0) {
-		lastGlyph = [textString characterAtIndex:numberOfGlyphsInTextString - 1];
+		unichar lastGlyph = [textString characterAtIndex:numberOfGlyphsInTextString - 1];
 		if (lastGlyph == '\n' || lastGlyph == '\r') {
 			oneMoreTime = YES; // Continue one more time through the loop if the last glyph isn't newline
 		}
@@ -193,11 +178,17 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
     int textLine = 0;
     NSMutableArray* textLineBreakpoints = [NSMutableArray array];
+    
+    // generate line number string
 	while (indexNonWrap <= maxRangeVisibleRange) {
+        
+        // wrap or not
 		if (idx == indexNonWrap) {
 			lineNumber++;
 			[lineNumbersString appendFormat:@"%li\n", (long)lineNumber];
             textLine++;
+            
+            // flag breakpoints
             if ([breakpoints containsObject:[NSNumber numberWithInt:(int)lineNumber]])
             {
                 [textLineBreakpoints addObject:[NSNumber numberWithInt:textLine]];
@@ -222,8 +213,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		}
 	}
 	
+    // check width is okay
 	if (checkWidth == YES) {
-		widthOfStringInGutter = [lineNumbersString sizeWithAttributes:self.attributes].width;
+		NSInteger widthOfStringInGutter = [lineNumbersString sizeWithAttributes:self.attributes].width;
 		
 		if (widthOfStringInGutter > ([[document valueForKey:@"gutterWidth"] integerValue] - 14)) { // Check if the gutterTextView has to be resized
 			[document setValue:[NSNumber numberWithInteger:widthOfStringInGutter + 20] forKey:@"gutterWidth"]; // Make it bigger than need be so it doesn't have to resized soon again
@@ -246,6 +238,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	// Fix flickering while rubber banding: Only change the text, if NOT rubber banding.
 	if (visibleRect.origin.y >= 0.0f && visibleRect.origin.y <= textView.frame.size.height - visibleRect.size.height)
 		[[gutterScrollView documentView] setString:lineNumbersString];
+    
     [[gutterScrollView documentView] setBreakpointLines:textLineBreakpoints];
 	
 #warning Draw on top of string here

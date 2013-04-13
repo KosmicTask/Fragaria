@@ -78,7 +78,6 @@ MGSFragariaFontsAndColoursPrefsViewController *fontsAndColoursPrefsViewControlle
 
 Preference strings are defined in MGSFragaria/MGSFragariaPreferences.h. Each preference name is prefixed with Fragaria for easy identification within the application preferences file.
 
-
 ```objective-c
 // default to line wrap off
 [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsLineWrapNewDocuments];
@@ -86,6 +85,32 @@ Preference strings are defined in MGSFragaria/MGSFragariaPreferences.h. Each pre
 
 
 All preferences are observed and instances of Fragaria views update immediately to reflect the new preference.
+
+
+##Breakpoint Highlighting
+
+Use the `MGSFOBreakpointDelegate` key to define a breakpoint delegate that responds to conforms to `MGSBreakpointDelegate`
+
+```objective-c
+[fragaria setObject:self forKey:MGSFODelegate];
+```
+
+The breakpoint delegate returns an `NSSet` of breakpoint line numbers.
+
+## Syntax Error Highlighting
+
+To add clickable syntax error highlights define an `NSArray` of SMLSyntaxErrors.
+
+```objective-c
+// define a syntax error
+SMLSyntaxError *syntaxError = [[SMLSyntaxError new] autorelease];
+syntaxError.description = @"Syntax errors can be defined";
+syntaxError.line = 1;
+syntaxError.character = 1;
+syntaxError.length = 10;
+    
+fragaria.syntaxErrors = @[syntaxError];
+```
 
 ##Supported languages
 Fragaria supports syntax colouring for a wide range of programming languages and configuration file formats:

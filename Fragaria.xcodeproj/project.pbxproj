@@ -50,27 +50,24 @@
 		AB69B6DA118B7F2A00903D1D /* SMLLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AB69B6D9118B7F2A00903D1D /* SMLLayoutManager.m */; };
 		AB69B74A118B80A000903D1D /* MGSFragaria.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB69B62B118B745700903D1D /* MGSFragaria.framework */; };
 		AB69B754118B830700903D1D /* MGSFragaria.h in Headers */ = {isa = PBXBuildFile; fileRef = AB69B753118B830700903D1D /* MGSFragaria.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		AB6C86C3160FA2B500488AF2 /* MGSGlyphGenerator.h in Headers */ = {isa = PBXBuildFile; fileRef = AB6C86C1160FA2B500488AF2 /* MGSGlyphGenerator.h */; };
 		AB6C86C4160FA2B500488AF2 /* MGSGlyphGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6C86C2160FA2B500488AF2 /* MGSGlyphGenerator.m */; };
 		AB6C87631610EAC800488AF2 /* General.png in Resources */ = {isa = PBXBuildFile; fileRef = AB6C87621610EAC800488AF2 /* General.png */; };
 		AB6C87641610EAC800488AF2 /* General.png in Resources */ = {isa = PBXBuildFile; fileRef = AB6C87621610EAC800488AF2 /* General.png */; };
+		AB8386D91719E3D3004408F4 /* MGSPreferencesFontsAndColours.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB8386D71719E3D3004408F4 /* MGSPreferencesFontsAndColours.xib */; };
+		AB8386DA1719E3D3004408F4 /* MGSPreferencesTextEditing.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB8386D81719E3D3004408F4 /* MGSPreferencesTextEditing.xib */; };
 		ABA1C12316144EFD00C8723F /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = ABA1C12116144D3F00C8723F /* README.md */; };
 		ABA812DC11B6855200A29990 /* LICENSE-2.0.txt in Resources */ = {isa = PBXBuildFile; fileRef = ABA812DB11B6855200A29990 /* LICENSE-2.0.txt */; };
 		ABC1D5D0160B06F7008769EB /* MGSPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB69B80A118B8D0400903D1D /* MGSPreferencesController.m */; };
 		ABC1D5D1160B06F9008769EB /* MGSPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB69B80A118B8D0400903D1D /* MGSPreferencesController.m */; };
-		ABC1D5D6160B0801008769EB /* DBPrefsWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC1D5D4160B0801008769EB /* DBPrefsWindowController.h */; };
 		ABC1D5D8160B087E008769EB /* DBPrefsWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC1D5D5160B0801008769EB /* DBPrefsWindowController.m */; };
 		ABC1D5D9160B087F008769EB /* DBPrefsWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC1D5D5160B0801008769EB /* DBPrefsWindowController.m */; };
 		ABC1D5DB160B0C51008769EB /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABC1D5DA160B0C51008769EB /* Preferences.xib */; };
 		ABC1D5DC160B0C51008769EB /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABC1D5DA160B0C51008769EB /* Preferences.xib */; };
 		ABC578D3160350240040B3FB /* MGSFragariaPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC578D2160350240040B3FB /* MGSFragariaPreferences.m */; };
-		ABC578E31603C3020040B3FB /* MGSPreferencesFontsAndColours.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABC578DE1603C3010040B3FB /* MGSPreferencesFontsAndColours.xib */; };
-		ABC578E41603C3020040B3FB /* MGSPreferencesTextEditing.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABC578DF1603C3010040B3FB /* MGSPreferencesTextEditing.xib */; };
 		ABC578E91603D6000040B3FB /* MGSFragariaFontsAndColoursPrefsViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC578E71603D5FF0040B3FB /* MGSFragariaFontsAndColoursPrefsViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		ABC578EA1603D6000040B3FB /* MGSFragariaFontsAndColoursPrefsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC578E81603D5FF0040B3FB /* MGSFragariaFontsAndColoursPrefsViewController.m */; };
 		ABC578ED1603D7ED0040B3FB /* MGSFragariaTextEditingPrefsViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC578EB1603D7EB0040B3FB /* MGSFragariaTextEditingPrefsViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		ABC578EE1603D7ED0040B3FB /* MGSFragariaTextEditingPrefsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC578EC1603D7EC0040B3FB /* MGSFragariaTextEditingPrefsViewController.m */; };
-		ABC5799716047B4E0040B3FB /* FRAFontTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC5799516047B4E0040B3FB /* FRAFontTransformer.h */; };
 		ABC5799816047B4E0040B3FB /* FRAFontTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC5799616047B4E0040B3FB /* FRAFontTransformer.m */; };
 		ABCA4D9C16137FC000E4849B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		ABCA4D9D16137FC000E4849B /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
@@ -253,14 +250,14 @@
 		AB6C86C1160FA2B500488AF2 /* MGSGlyphGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSGlyphGenerator.h; sourceTree = "<group>"; };
 		AB6C86C2160FA2B500488AF2 /* MGSGlyphGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MGSGlyphGenerator.m; sourceTree = "<group>"; };
 		AB6C87621610EAC800488AF2 /* General.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = General.png; sourceTree = "<group>"; };
+		AB8386D71719E3D3004408F4 /* MGSPreferencesFontsAndColours.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MGSPreferencesFontsAndColours.xib; sourceTree = "<group>"; };
+		AB8386D81719E3D3004408F4 /* MGSPreferencesTextEditing.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MGSPreferencesTextEditing.xib; sourceTree = "<group>"; };
 		ABA1C12116144D3F00C8723F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		ABA812DB11B6855200A29990 /* LICENSE-2.0.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "LICENSE-2.0.txt"; sourceTree = "<group>"; };
 		ABC1D5D4160B0801008769EB /* DBPrefsWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBPrefsWindowController.h; sourceTree = "<group>"; };
 		ABC1D5D5160B0801008769EB /* DBPrefsWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBPrefsWindowController.m; sourceTree = "<group>"; };
 		ABC1D5DA160B0C51008769EB /* Preferences.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Preferences.xib; sourceTree = "<group>"; };
 		ABC578D2160350240040B3FB /* MGSFragariaPreferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MGSFragariaPreferences.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		ABC578DE1603C3010040B3FB /* MGSPreferencesFontsAndColours.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MGSPreferencesFontsAndColours.xib; sourceTree = "<group>"; };
-		ABC578DF1603C3010040B3FB /* MGSPreferencesTextEditing.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MGSPreferencesTextEditing.xib; sourceTree = "<group>"; };
 		ABC578E71603D5FF0040B3FB /* MGSFragariaFontsAndColoursPrefsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSFragariaFontsAndColoursPrefsViewController.h; sourceTree = "<group>"; };
 		ABC578E81603D5FF0040B3FB /* MGSFragariaFontsAndColoursPrefsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MGSFragariaFontsAndColoursPrefsViewController.m; sourceTree = "<group>"; };
 		ABC578EB1603D7EB0040B3FB /* MGSFragariaTextEditingPrefsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGSFragariaTextEditingPrefsViewController.h; sourceTree = "<group>"; };
@@ -419,6 +416,8 @@
 		AB3972FC118C2A5D00AEF388 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				AB8386D71719E3D3004408F4 /* MGSPreferencesFontsAndColours.xib */,
+				AB8386D81719E3D3004408F4 /* MGSPreferencesTextEditing.xib */,
 				E38654AC1717652000A345B9 /* ErrorPopoverView.xib */,
 				E3C184FF1717597200801FE5 /* editor-warning.png */,
 				E3BBA50816E52FE600D89923 /* editor-breakpoint-0.png */,
@@ -791,6 +790,8 @@
 				E3BBA50D16E52FE600D89923 /* editor-breakpoint-2.png in Resources */,
 				E3C185001717597200801FE5 /* editor-warning.png in Resources */,
 				E38654AD1717652000A345B9 /* ErrorPopoverView.xib in Resources */,
+				AB8386D91719E3D3004408F4 /* MGSPreferencesFontsAndColours.xib in Resources */,
+				AB8386DA1719E3D3004408F4 /* MGSPreferencesTextEditing.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -968,7 +968,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 #pragma mark -
 #pragma mark Auto Completion
 
-- (NSRange) rangeForUserCompletion
+
+/*
+ 
+ - rangeForUserCompletion
+ */
+- (NSRange)rangeForUserCompletion
 {
     NSRange cursor = [self selectedRange];
     NSUInteger loc = cursor.location;
@@ -1017,22 +1022,35 @@ Unless required by applicable law or agreed to in writing, software distributed 
     return NSMakeRange(loc-numChars, numChars);
 }
 
-- (NSArray*) completionsForPartialWordRange:(NSRange)charRange indexOfSelectedItem:(NSInteger *)index
+/*
+ 
+ - completionsForPartialWordRange:indexOfSelectedItem;
+ 
+ */
+- (NSArray*)completionsForPartialWordRange:(NSRange)charRange indexOfSelectedItem:(NSInteger *)index
 {
 #pragma unused(index, charRange)
-    
-    id<SMLAutoCompleteDelegate> completeHandler = [fragaria.docSpec valueForKey:MGSFOAutoCompleteDelegate];
-    
-    NSArray* allCompletions = [completeHandler completions];
-    
-    NSString *matchString = [[self string] substringWithRange:charRange];
+
+    // get completion handler
     NSMutableArray* matchArray = [NSMutableArray array];
-    
-    for (NSString* completeWord in allCompletions)
-    {
-        if ([completeWord rangeOfString:matchString options:NSCaseInsensitiveSearch range:NSMakeRange(0, [completeWord length])].location == 0)
+    id<SMLAutoCompleteDelegate> completeHandler = [fragaria.docSpec valueForKey:MGSFOAutoCompleteDelegate];
+
+    // use handler
+    if (completeHandler) {
+        
+        // get all completions
+        NSArray* allCompletions = [completeHandler completions];
+        
+        // get string to match
+        NSString *matchString = [[self string] substringWithRange:charRange];
+        
+        // build array of suitable suggestions
+        for (NSString* completeWord in allCompletions)
         {
-            [matchArray addObject:completeWord];
+            if ([completeWord rangeOfString:matchString options:NSCaseInsensitiveSearch range:NSMakeRange(0, [completeWord length])].location == 0)
+            {
+                [matchArray addObject:completeWord];
+            }
         }
     }
     

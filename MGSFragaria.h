@@ -49,10 +49,11 @@ extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 {
 	@private
 	MGSExtraInterfaceController *extraInterfaceController;
+    id _docSpec;
 }
 
 @property (nonatomic, readonly, assign) MGSExtraInterfaceController *extraInterfaceController;
-@property (nonatomic,retain) id docSpec;
+@property (nonatomic, retain) id docSpec;
 
 + (id)currentInstance;
 + (void)setCurrentInstance:(MGSFragaria *)anInstance;

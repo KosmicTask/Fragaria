@@ -53,6 +53,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 @property (retain) NSCharacterSet *attributesCharacterSet;
 @property (retain) NSCharacterSet *letterCharacterSet;
 @property (retain) NSCharacterSet *numberCharacterSet;
+@property (retain) NSArray* syntaxErrors;
 @property unichar decimalPointCharacter;
 
 - (void)parseSyntaxDictionary:(NSDictionary *)syntaxDictionary;
@@ -75,7 +76,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 @implementation SMLSyntaxColouring
 
-@synthesize reactToChanges, functionDefinition, removeFromFunction, undoManager, secondString, firstString, keywords, autocompleteWords, keywordsAndAutocompleteWords, beginCommand, endCommand, beginInstruction, endInstruction, beginVariable, endVariable, firstSingleLineComment, secondSingleLineComment, singleLineComments, multiLineComments, beginFirstMultiLineComment, endFirstMultiLineComment, beginSecondMultiLineComment, endSecondMultiLineComment, keywordStartCharacterSet, keywordEndCharacterSet, attributesCharacterSet, letterCharacterSet, numberCharacterSet, decimalPointCharacter;
+@synthesize reactToChanges, functionDefinition, removeFromFunction, undoManager, secondString, firstString, keywords, autocompleteWords, keywordsAndAutocompleteWords, beginCommand, endCommand, beginInstruction, endInstruction, beginVariable, endVariable, firstSingleLineComment, secondSingleLineComment, singleLineComments, multiLineComments, beginFirstMultiLineComment, endFirstMultiLineComment, beginSecondMultiLineComment, endSecondMultiLineComment, keywordStartCharacterSet, keywordEndCharacterSet, attributesCharacterSet, letterCharacterSet, numberCharacterSet, decimalPointCharacter, syntaxErrors;
 
 #pragma mark -
 #pragma mark Instance methods
@@ -172,6 +173,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[defaultsController addObserver:self forKeyPath:@"values.FragariaVariablesColourWell" options:NSKeyValueObservingOptionNew context:@"ColoursChanged"];
 		[defaultsController addObserver:self forKeyPath:@"values.FragariaStringsColourWell" options:NSKeyValueObservingOptionNew context:@"ColoursChanged"];
 		[defaultsController addObserver:self forKeyPath:@"values.FragariaAttributesColourWell" options:NSKeyValueObservingOptionNew context:@"ColoursChanged"];
+		[defaultsController addObserver:self forKeyPath:@"values.FragariaNumbersColourWell" options:NSKeyValueObservingOptionNew context:@"ColoursChanged"];
+        
 		[defaultsController addObserver:self forKeyPath:@"values.FragariaColourCommands" options:NSKeyValueObservingOptionNew context:@"ColoursChanged"];
 		[defaultsController addObserver:self forKeyPath:@"values.FragariaColourComments" options:NSKeyValueObservingOptionNew context:@"ColoursChanged"];
 		[defaultsController addObserver:self forKeyPath:@"values.FragariaColourInstructions" options:NSKeyValueObservingOptionNew context:@"ColoursChanged"];
@@ -180,6 +183,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[defaultsController addObserver:self forKeyPath:@"values.FragariaColourVariables" options:NSKeyValueObservingOptionNew context:@"ColoursChanged"];
 		[defaultsController addObserver:self forKeyPath:@"values.FragariaColourStrings" options:NSKeyValueObservingOptionNew context:@"ColoursChanged"];
 		[defaultsController addObserver:self forKeyPath:@"values.FragariaColourAttributes" options:NSKeyValueObservingOptionNew context:@"ColoursChanged"];
+		[defaultsController addObserver:self forKeyPath:@"values.FragariaColourNumbers" options:NSKeyValueObservingOptionNew context:@"ColoursChanged"];
+        
 		[defaultsController addObserver:self forKeyPath:@"values.FragariaColourMultiLineStrings" options:NSKeyValueObservingOptionNew context:@"ColoursChanged"];
 		[defaultsController addObserver:self forKeyPath:@"values.FragariaOnlyColourTillTheEndOfLine" options:NSKeyValueObservingOptionNew context:@"ColoursChanged"];
 		[defaultsController addObserver:self forKeyPath:@"values.FragariaHighlightCurrentLine" options:NSKeyValueObservingOptionNew context:@"ColoursChanged"];
@@ -1659,35 +1664,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 /*
  
- - textView:completions:forPartialWordRange:indexOfSelectedItem
- 
- */
-
-/*
-- (NSArray *)textView:theTextView completions:(NSArray *)words forPartialWordRange:(NSRange)charRange indexOfSelectedItem:(NSInteger *)idx
-{
-#pragma unused(idx, theTextView, words, charRange)
-    
-    id<SMLAutoCompleteDelegate> completeHandler = [document valueForKey:MGSFOAutoCompleteDelegate];
-    
-    NSArray* allCompletions = [completeHandler completions];
-    
-    NSString *matchString = [[theTextView string] substringWithRange:charRange];
-    NSMutableArray* matchArray = [NSMutableArray array];
-    
-    for (NSString* completeWord in allCompletions)
-    {
-        if ([completeWord rangeOfString:matchString options:NSCaseInsensitiveSearch range:NSMakeRange(0, [completeWord length])].location == 0)
-        {
-            [matchArray addObject:completeWord];
-        }
-    }
-    
-    return matchArray;
-}*/
-
-/*
- 
  - undoManagerForTextView:
  
  */
@@ -1742,13 +1718,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
  
  */
 
-/*
 - (void)autocompleteWordsTimerSelector:(NSTimer *)theTimer
 {
 	SMLTextView *textView = [theTimer userInfo];
 	NSRange selectedRange = [textView selectedRange];
 	NSString *completeString = [self completeString];
 	NSUInteger stringLength = [completeString length];
+    
 	if (selectedRange.location <= stringLength && selectedRange.length == 0 && stringLength != 0) {
 		if (selectedRange.location == stringLength) { // If we're at the very end of the document
 			[textView complete:nil];
@@ -1764,7 +1740,18 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[autocompleteWordsTimer invalidate];
 		autocompleteWordsTimer = nil;
 	}
-}*/
+}
 
+#pragma mark -
+#pragma mark SMLAutoCompleteDelegate
 
+/*
+ 
+ - completions
+ 
+ */
+- (NSArray*) completions
+{
+    return self.keywordsAndAutocompleteWords;
+}
 @end

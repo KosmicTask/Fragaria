@@ -20,12 +20,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 #import <Cocoa/Cocoa.h>
 #import "MGSFragaria.h"
 #import "SMLTextView.h"
-    
+#import "SMLAutoCompleteDelegate.h"
+
 @class SMLLayoutManager;
 @class ICUPattern;
 @class ICUMatcher;
 
-@interface SMLSyntaxColouring : NSObject <NSTextStorageDelegate, NSTextViewDelegate, MGSFragariaTextViewDelegate> {
+@interface SMLSyntaxColouring : NSObject <NSTextStorageDelegate, NSTextViewDelegate, MGSFragariaTextViewDelegate, SMLAutoCompleteDelegate> {
 	
 	id document;
 	
@@ -67,6 +68,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSCharacterSet *letterCharacterSet, *keywordStartCharacterSet, *keywordEndCharacterSet;
 	NSCharacterSet *numberCharacterSet;
     unichar decimalPointCharacter;
+    NSArray *syntaxErrors;
     
 	ICUPattern *firstStringPattern;
 	ICUPattern *secondStringPattern;	
@@ -80,8 +82,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 @property BOOL reactToChanges;
 @property (retain) NSUndoManager *undoManager;
-
-
 
 - (id)initWithDocument:(id)document;
 - (void)pageRecolourTextView:(SMLTextView *)textView;

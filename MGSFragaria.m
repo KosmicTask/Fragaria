@@ -104,7 +104,7 @@ char kcLineWrapPrefChanged;
  */
 + (void)initialize
 {
-	[MGSPreferencesController initializeValues];
+	[MGSFragariaPreferences initializeValues];
 }
 
 /*
@@ -257,13 +257,17 @@ char kcLineWrapPrefChanged;
         
         // Create the Sets containing the valid setter/getter combinations for the Docspec
         
+        // Define read/write keys
         self.objectSetterKeys = [NSSet setWithObjects:MGSFOIsSyntaxColoured, MGSFOShowLineNumberGutter, MGSFOIsEdited,
                             MGSFOSyntaxDefinitionName, MGSFODelegate, MGSFOBreakpointDelegate, MGSFOAutoCompleteDelegate,
                             nil];
         
+        // Define read only keys
         self.objectGetterKeys = [NSMutableSet setWithObjects:ro_MGSFOTextView, ro_MGSFOScrollView, ro_MGSFOGutterScrollView,
-                            ro_MGSFOLineNumbers, ro_MGSFOLineNumbers, MGSFOAutoCompleteDelegate,
+                            ro_MGSFOLineNumbers, ro_MGSFOLineNumbers, 
                             nil];
+        
+        // Merge both to get all getters
         [(NSMutableSet *)self.objectGetterKeys unionSet:self.objectSetterKeys];
 	}
 
@@ -309,10 +313,10 @@ char kcLineWrapPrefChanged;
 	[textScrollView setDocumentView:textView];
 
     // create line numbers
-	SMLLineNumbers *lineNumbers = [[[SMLLineNumbers alloc] initWithDocument:_docSpec] autorelease];
+	SMLLineNumbers *lineNumbers = [[[SMLLineNumbers alloc] initWithDocument:self.docSpec] autorelease];
 	[[NSNotificationCenter defaultCenter] addObserver:lineNumbers selector:@selector(viewBoundsDidChange:) name:NSViewBoundsDidChangeNotification object:[textScrollView contentView]];
 	[[NSNotificationCenter defaultCenter] addObserver:lineNumbers selector:@selector(viewBoundsDidChange:) name:NSViewFrameDidChangeNotification object:[textScrollView contentView]];	
-	[_docSpec setValue:lineNumbers forKey:ro_MGSFOLineNumbers];
+	[self.docSpec setValue:lineNumbers forKey:ro_MGSFOLineNumbers];
 
 	// create gutter scrollview
 	NSScrollView *gutterScrollView = [[[NSScrollView alloc] initWithFrame:NSMakeRect(0, 0, gutterWidth, contentSize.height)] autorelease];
@@ -334,12 +338,13 @@ char kcLineWrapPrefChanged;
 	// add syntax colouring
 	SMLSyntaxColouring *syntaxColouring = [[[SMLSyntaxColouring alloc] initWithDocument:self.docSpec] autorelease];
 	[self.docSpec setValue:syntaxColouring forKey:ro_MGSFOSyntaxColouring];
-	
+	[self.docSpec setValue:syntaxColouring forKey:MGSFOAutoCompleteDelegate];
+    
 	// add scroll view to content view
-	[contentView addSubview:[_docSpec valueForKey:ro_MGSFOScrollView]];
+	[contentView addSubview:[self.docSpec valueForKey:ro_MGSFOScrollView]];
 	
 	// update line numbers
-	[[_docSpec valueForKey:ro_MGSFOLineNumbers] updateLineNumbersForClipView:[[_docSpec valueForKey:ro_MGSFOScrollView] contentView] checkWidth:NO recolour:YES];
+	[[self.docSpec valueForKey:ro_MGSFOLineNumbers] updateLineNumbersForClipView:[[self.docSpec valueForKey:ro_MGSFOScrollView] contentView] checkWidth:NO recolour:YES];
     
     // update the gutter view
     [self updateGutterView];
@@ -412,7 +417,7 @@ char kcLineWrapPrefChanged;
  */
 - (void)setAttributedString:(NSAttributedString *)aString 
 {
-	[[self class] docSpec:_docSpec setAttributedString:aString];
+	[[self class] docSpec:self.docSpec setAttributedString:aString];
 }
 
 /*
@@ -422,7 +427,7 @@ char kcLineWrapPrefChanged;
  */
 - (void)setAttributedString:(NSAttributedString *)aString options:(NSDictionary *)options
 {
-	[[self class] docSpec:_docSpec setAttributedString:aString options:options];
+	[[self class] docSpec:self.docSpec setAttributedString:aString options:options];
 }
 
 
@@ -579,7 +584,7 @@ char kcLineWrapPrefChanged;
         
         boolValue = [defaults boolForKey:MGSFragariaPrefsLineWrapNewDocuments];
         [(SMLTextView *)[self textView] setLineWrap:boolValue];
-        [[_docSpec valueForKey:ro_MGSFOLineNumbers] updateLineNumbersCheckWidth:YES recolour:YES];
+        [[self.docSpec valueForKey:ro_MGSFOLineNumbers] updateLineNumbersCheckWidth:YES recolour:YES];
     } else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 	}
@@ -594,9 +599,9 @@ char kcLineWrapPrefChanged;
  
  */
 - (void) updateGutterView {
-    id document = _docSpec;
+    id document = self.docSpec;
     
-    BOOL showGutter = [[_docSpec valueForKey:MGSFOShowLineNumberGutter] boolValue];
+    BOOL showGutter = [[self.docSpec valueForKey:MGSFOShowLineNumberGutter] boolValue];
 	NSUInteger gutterWidth = [[SMLDefaults valueForKey:MGSFragariaPrefsGutterWidth] integerValue];
     NSUInteger gutterOffset = (showGutter ? gutterWidth : 0);
 	NSRect frame, newFrame;

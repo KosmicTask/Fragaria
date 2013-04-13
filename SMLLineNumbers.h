@@ -25,8 +25,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSPoint zeroPoint;
 	NSClipView *updatingLineNumbersForClipView;
 }
-@property (nonatomic,retain) id document;
-@property (nonatomic,retain) NSDictionary* attributes;
+
 - (id)initWithDocument:(id)theDocument;
 - (void)viewBoundsDidChange:(NSNotification *)notification;
 - (void)updateLineNumbersCheckWidth:(BOOL)checkWidth recolour:(BOOL)recolour;

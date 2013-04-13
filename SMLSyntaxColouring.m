@@ -726,6 +726,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
                     }
                 }
                 
+                // TODO: handle constructs such as 1..5 which may occur within some loop constructs
+                
                 // don't colour a trailing decimal point as some languages may use it as a line terminator
                 if (colourEndLocation > 0) {
                     queryLocation = colourEndLocation - 1;

@@ -18,6 +18,7 @@ NSString * const MGSFragariaPrefsAutocompleteColourWell = @"FragariaAutocomplete
 NSString * const MGSFragariaPrefsVariablesColourWell = @"FragariaVariablesColourWell";
 NSString * const MGSFragariaPrefsStringsColourWell = @"FragariaStringsColourWell";
 NSString * const MGSFragariaPrefsAttributesColourWell = @"FragariaAttributesColourWell";
+NSString * const MGSFragariaPrefsNumbersColourWell = @"FragariaNumbersColourWell";
 NSString * const MGSFragariaPrefsBackgroundColourWell = @"FragariaBackgroundColourWell";
 NSString * const MGSFragariaPrefsTextColourWell = @"FragariaTextColourWell";
 NSString * const MGSFragariaPrefsGutterTextColourWell = @"FragariaGutterTextColourWell";
@@ -25,6 +26,7 @@ NSString * const MGSFragariaPrefsInvisibleCharactersColourWell = @"FragariaInvis
 NSString * const MGSFragariaPrefsHighlightLineColourWell = @"FragariaHighlightLineColourWell";
 
 // bool
+NSString * const MGSFragariaPrefsColourNumbers = @"FragariaColourNumbers";
 NSString * const MGSFragariaPrefsColourCommands = @"FragariaColourCommands";
 NSString * const MGSFragariaPrefsColourComments = @"FragariaColourComments";
 NSString * const MGSFragariaPrefsColourInstructions = @"FragariaColourInstructions";
@@ -104,7 +106,9 @@ static id sharedInstance = nil;
 	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.73f green:0.0f blue:0.74f alpha:1.0f]] forKey:MGSFragariaPrefsVariablesColourWell];
 	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.804f green:0.071f blue:0.153f alpha:1.0f]] forKey:MGSFragariaPrefsStringsColourWell];
 	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.50f green:0.5f blue:0.2f alpha:1.0f]] forKey:MGSFragariaPrefsAttributesColourWell];
-	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsColourCommands];
+	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.031f green:0.0f blue:0.855f alpha:1.0f]] forKey:MGSFragariaPrefsNumbersColourWell];
+    
+	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsColourNumbers];
 	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsColourCommands];
 	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsColourInstructions];
 	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsColourKeywords];

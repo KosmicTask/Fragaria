@@ -49,6 +49,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 @property (retain) NSCharacterSet *keywordEndCharacterSet;
 @property (retain) NSCharacterSet *attributesCharacterSet;
 @property (retain) NSCharacterSet *letterCharacterSet;
+@property (retain) NSCharacterSet *numberCharacterSet;
+@property unichar decimalPointCharacter;
 
 - (void)parseSyntaxDictionary:(NSDictionary *)syntaxDictionary;
 - (void)applySyntaxDefinition;
@@ -70,7 +72,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 @implementation SMLSyntaxColouring
 
-@synthesize reactToChanges, functionDefinition, removeFromFunction, undoManager, secondString, firstString, keywords, autocompleteWords, keywordsAndAutocompleteWords, beginCommand, endCommand, beginInstruction, endInstruction, beginVariable, endVariable, firstSingleLineComment, secondSingleLineComment, singleLineComments, multiLineComments, beginFirstMultiLineComment, endFirstMultiLineComment, beginSecondMultiLineComment, endSecondMultiLineComment, keywordStartCharacterSet, keywordEndCharacterSet, attributesCharacterSet, letterCharacterSet;
+@synthesize reactToChanges, functionDefinition, removeFromFunction, undoManager, secondString, firstString, keywords, autocompleteWords, keywordsAndAutocompleteWords, beginCommand, endCommand, beginInstruction, endInstruction, beginVariable, endVariable, firstSingleLineComment, secondSingleLineComment, singleLineComments, multiLineComments, beginFirstMultiLineComment, endFirstMultiLineComment, beginSecondMultiLineComment, endSecondMultiLineComment, keywordStartCharacterSet, keywordEndCharacterSet, attributesCharacterSet, letterCharacterSet, numberCharacterSet, decimalPointCharacter;
 
 #pragma mark -
 #pragma mark Instance methods
@@ -135,6 +137,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[temporaryCharacterSet removeCharactersInString:@"_-"]; // common separators in variable names
 		self.keywordEndCharacterSet = [[temporaryCharacterSet copy] autorelease];
 		
+        // number character set
+        self.numberCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789."];
+        self.decimalPointCharacter = [@"." characterAtIndex:0];
+        
 		// attributes character set
 		temporaryCharacterSet = [[[NSCharacterSet alphanumericCharacterSet] mutableCopy] autorelease];
 		[temporaryCharacterSet addCharactersInString:@" -"]; // If there are two spaces before an attribute
@@ -643,11 +649,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSRange foundRange = NSMakeRange(0, 0);
 	NSRange searchRange = NSMakeRange(0, 0);
 	NSUInteger searchSyntaxLength = 0;
-	NSUInteger colourLocation = 0, end = 0, endOfLine = 0;
+	NSUInteger colourStartLocation = 0, colourEndLocation = 0, endOfLine = 0;
     NSUInteger colourLength = 0;
 	NSUInteger endLocationInMultiLine = 0;
 	NSUInteger beginLocationInMultiLine = 0;
-	
+	NSUInteger queryLocation = 0;
+    unichar testCharacter = 0;
+    
     // adjust effective range
     //
     // When multiline strings are coloured we need to scan backwards to
@@ -686,6 +694,52 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	@try {	
 		
         //
+        // Numbers
+        //
+		if ([[SMLDefaults valueForKey:MGSFragariaPrefsColourNumbers] boolValue] == YES) {
+            
+            // reset scanner
+			[rangeScanner mgs_setScanLocation:0];
+
+            // scan range to end
+            while (![rangeScanner isAtEnd]) {
+                
+                // scan up to a number character
+                [rangeScanner scanUpToCharactersFromSet:self.numberCharacterSet intoString:NULL];
+                colourStartLocation = [rangeScanner scanLocation];
+                
+                // scan to number end
+                [rangeScanner scanCharactersFromSet:self.numberCharacterSet intoString:NULL];
+                colourEndLocation = [rangeScanner scanLocation];
+                
+                if (colourStartLocation == colourEndLocation) {
+                    break;
+                }
+                
+                // don't colour if preceding character is a letter.
+                // this prevents us from colouring numbers in variable names,
+                queryLocation = colourStartLocation + rangeLocation;
+                if (queryLocation > 0) {
+                    testCharacter = [documentString characterAtIndex:queryLocation - 1];
+                    if ([[NSCharacterSet letterCharacterSet] characterIsMember:testCharacter]) {
+                        continue;
+                    }
+                }
+                
+                // don't colour a trailing decimal point as some languages may use it as a line terminator
+                if (colourEndLocation > 0) {
+                    queryLocation = colourEndLocation - 1;
+                    testCharacter = [rangeString characterAtIndex:queryLocation];
+                    if (testCharacter == self.decimalPointCharacter) {
+                        colourEndLocation--;
+                    }
+                }
+
+                [self setColour:numbersColour range:NSMakeRange(colourStartLocation + rangeLocation, colourEndLocation - colourStartLocation)];
+            }
+        }
+
+        //
 		// Commands
         //
 		if (![self.beginCommand isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourCommands] boolValue] == YES) {
@@ -696,15 +750,15 @@ Unless required by applicable law or agreed to in writing, software distributed 
             // scan range to end
 			while (![rangeScanner isAtEnd]) {
 				[rangeScanner scanUpToString:self.beginCommand intoString:nil];
-				colourLocation = [rangeScanner scanLocation];
-				endOfLine = NSMaxRange([rangeString lineRangeForRange:NSMakeRange(colourLocation, 0)]);
+				colourStartLocation = [rangeScanner scanLocation];
+				endOfLine = NSMaxRange([rangeString lineRangeForRange:NSMakeRange(colourStartLocation, 0)]);
 				if (![rangeScanner scanUpToString:self.endCommand intoString:nil] || [rangeScanner scanLocation] >= endOfLine) {
 					[rangeScanner mgs_setScanLocation:endOfLine];
 					continue; // Don't colour it if it hasn't got a closing tag
 				} else {
 					// To avoid problems with strings like <yada <%=yada%> yada> we need to balance the number of begin- and end-tags
 					// If ever there's a beginCommand or endCommand with more than one character then do a check first
-					NSUInteger commandLocation = colourLocation + 1;
+					NSUInteger commandLocation = colourStartLocation + 1;
 					NSUInteger skipEndCommand = 0;
 					
 					while (commandLocation < endOfLine) {
@@ -728,7 +782,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 					}
 				}
 				
-				[self setColour:commandsColour range:NSMakeRange(colourLocation + rangeLocation, [rangeScanner scanLocation] - colourLocation)];
+				[self setColour:commandsColour range:NSMakeRange(colourStartLocation + rangeLocation, [rangeScanner scanLocation] - colourStartLocation)];
 			}
 		}
 		
@@ -754,14 +808,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 					searchRange = NSMakeRange(beginLocationInMultiLine, documentStringLength - beginLocationInMultiLine);
 				}
 				
-				colourLocation = [documentString rangeOfString:self.beginInstruction options:NSLiteralSearch range:searchRange].location;
-				if (colourLocation == NSNotFound) {
+				colourStartLocation = [documentString rangeOfString:self.beginInstruction options:NSLiteralSearch range:searchRange].location;
+				if (colourStartLocation == NSNotFound) {
 					break;
 				}
-				[documentScanner mgs_setScanLocation:colourLocation];
+				[documentScanner mgs_setScanLocation:colourStartLocation];
 				if (![documentScanner scanUpToString:self.endInstruction intoString:nil] || [documentScanner scanLocation] >= documentStringLength) {
 					if (shouldOnlyColourTillTheEndOfLine) {
-						[documentScanner mgs_setScanLocation:NSMaxRange([documentString lineRangeForRange:NSMakeRange(colourLocation, 0)])];
+						[documentScanner mgs_setScanLocation:NSMaxRange([documentString lineRangeForRange:NSMakeRange(colourStartLocation, 0)])];
 					} else {
 						[documentScanner mgs_setScanLocation:documentStringLength];
 					}
@@ -771,7 +825,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 					}
 				}
 				
-				[self setColour:instructionsColour range:NSMakeRange(colourLocation, [documentScanner scanLocation] - colourLocation)];
+				[self setColour:instructionsColour range:NSMakeRange(colourStartLocation, [documentScanner scanLocation] - colourStartLocation)];
 				if ([documentScanner scanLocation] > maxRangeLocation) {
 					break;
 				}
@@ -790,30 +844,30 @@ Unless required by applicable law or agreed to in writing, software distributed 
             // scan range to end
 			while (![rangeScanner isAtEnd]) {
 				[rangeScanner scanUpToCharactersFromSet:self.keywordStartCharacterSet intoString:nil];
-				colourLocation = [rangeScanner scanLocation];
-				if ((colourLocation + 1) < rangeStringLength) {
-					[rangeScanner mgs_setScanLocation:(colourLocation + 1)];
+				colourStartLocation = [rangeScanner scanLocation];
+				if ((colourStartLocation + 1) < rangeStringLength) {
+					[rangeScanner mgs_setScanLocation:(colourStartLocation + 1)];
 				}
 				[rangeScanner scanUpToCharactersFromSet:self.keywordEndCharacterSet intoString:nil];
 				
-				end = [rangeScanner scanLocation];
-				if (end > rangeStringLength || colourLocation == end) {
+				colourEndLocation = [rangeScanner scanLocation];
+				if (colourEndLocation > rangeStringLength || colourStartLocation == colourEndLocation) {
 					break;
 				}
 				
 				NSString *keywordTestString = nil;
 				if (!keywordsCaseSensitive) {
-					keywordTestString = [[documentString substringWithRange:NSMakeRange(colourLocation + rangeLocation, end - colourLocation)] lowercaseString];
+					keywordTestString = [[documentString substringWithRange:NSMakeRange(colourStartLocation + rangeLocation, colourEndLocation - colourStartLocation)] lowercaseString];
 				} else {
-					keywordTestString = [documentString substringWithRange:NSMakeRange(colourLocation + rangeLocation, end - colourLocation)];
+					keywordTestString = [documentString substringWithRange:NSMakeRange(colourStartLocation + rangeLocation, colourEndLocation - colourStartLocation)];
 				}
 				if ([keywords containsObject:keywordTestString]) {
 					if (!recolourKeywordIfAlreadyColoured) {
-						if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:colourLocation + rangeLocation effectiveRange:NULL] isEqualToDictionary:commandsColour]) {
+						if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:colourStartLocation + rangeLocation effectiveRange:NULL] isEqualToDictionary:commandsColour]) {
 							continue;
 						}
 					}	
-					[self setColour:keywordsColour range:NSMakeRange(colourLocation + rangeLocation, [rangeScanner scanLocation] - colourLocation)];
+					[self setColour:keywordsColour range:NSMakeRange(colourStartLocation + rangeLocation, [rangeScanner scanLocation] - colourStartLocation)];
 				}
 			}
 		}
@@ -829,31 +883,31 @@ Unless required by applicable law or agreed to in writing, software distributed 
             // scan range to end
 			while (![rangeScanner isAtEnd]) {
 				[rangeScanner scanUpToCharactersFromSet:self.keywordStartCharacterSet intoString:nil];
-				colourLocation = [rangeScanner scanLocation];
-				if ((colourLocation + 1) < rangeStringLength) {
-					[rangeScanner mgs_setScanLocation:(colourLocation + 1)];
+				colourStartLocation = [rangeScanner scanLocation];
+				if ((colourStartLocation + 1) < rangeStringLength) {
+					[rangeScanner mgs_setScanLocation:(colourStartLocation + 1)];
 				}
 				[rangeScanner scanUpToCharactersFromSet:self.keywordEndCharacterSet intoString:nil];
 				
-				end = [rangeScanner scanLocation];
-				if (end > rangeStringLength || colourLocation == end) {
+				colourEndLocation = [rangeScanner scanLocation];
+				if (colourEndLocation > rangeStringLength || colourStartLocation == colourEndLocation) {
 					break;
 				}
 				
 				NSString *autocompleteTestString = nil;
 				if (!keywordsCaseSensitive) {
-					autocompleteTestString = [[documentString substringWithRange:NSMakeRange(colourLocation + rangeLocation, end - colourLocation)] lowercaseString];
+					autocompleteTestString = [[documentString substringWithRange:NSMakeRange(colourStartLocation + rangeLocation, colourEndLocation - colourStartLocation)] lowercaseString];
 				} else {
-					autocompleteTestString = [documentString substringWithRange:NSMakeRange(colourLocation + rangeLocation, end - colourLocation)];
+					autocompleteTestString = [documentString substringWithRange:NSMakeRange(colourStartLocation + rangeLocation, colourEndLocation - colourStartLocation)];
 				}
 				if ([self.autocompleteWords containsObject:autocompleteTestString]) {
 					if (!recolourKeywordIfAlreadyColoured) {
-						if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:colourLocation + rangeLocation effectiveRange:NULL] isEqualToDictionary:commandsColour]) {
+						if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:colourStartLocation + rangeLocation effectiveRange:NULL] isEqualToDictionary:commandsColour]) {
 							continue;
 						}
 					}	
 					
-					[self setColour:autocompleteWordsColour range:NSMakeRange(colourLocation + rangeLocation, [rangeScanner scanLocation] - colourLocation)];
+					[self setColour:autocompleteWordsColour range:NSMakeRange(colourStartLocation + rangeLocation, [rangeScanner scanLocation] - colourStartLocation)];
 				}
 			}
 		}
@@ -869,27 +923,27 @@ Unless required by applicable law or agreed to in writing, software distributed 
             // scan range to end
 			while (![rangeScanner isAtEnd]) {
 				[rangeScanner scanUpToCharactersFromSet:self.beginVariable intoString:nil];
-				colourLocation = [rangeScanner scanLocation];
-				if (colourLocation + 1 < rangeStringLength) {
-					if ([self.firstSingleLineComment isEqualToString:@"%"] && [rangeString characterAtIndex:colourLocation + 1] == '%') { // To avoid a problem in LaTex with \%
+				colourStartLocation = [rangeScanner scanLocation];
+				if (colourStartLocation + 1 < rangeStringLength) {
+					if ([self.firstSingleLineComment isEqualToString:@"%"] && [rangeString characterAtIndex:colourStartLocation + 1] == '%') { // To avoid a problem in LaTex with \%
 						if ([rangeScanner scanLocation] < rangeStringLength) {
-							[rangeScanner mgs_setScanLocation:colourLocation + 1];
+							[rangeScanner mgs_setScanLocation:colourStartLocation + 1];
 						}
 						continue;
 					}
 				}
-				endOfLine = NSMaxRange([rangeString lineRangeForRange:NSMakeRange(colourLocation, 0)]);
+				endOfLine = NSMaxRange([rangeString lineRangeForRange:NSMakeRange(colourStartLocation, 0)]);
 				if (![rangeScanner scanUpToCharactersFromSet:self.endVariable intoString:nil] || [rangeScanner scanLocation] >= endOfLine) {
 					[rangeScanner mgs_setScanLocation:endOfLine];
-					colourLength = [rangeScanner scanLocation] - colourLocation;
+					colourLength = [rangeScanner scanLocation] - colourStartLocation;
 				} else {
-					colourLength = [rangeScanner scanLocation] - colourLocation;
+					colourLength = [rangeScanner scanLocation] - colourStartLocation;
 					if ([rangeScanner scanLocation] < rangeStringLength) {
 						[rangeScanner mgs_setScanLocation:[rangeScanner scanLocation] + 1];
 					}
 				}
 				
-				[self setColour:variablesColour range:NSMakeRange(colourLocation + rangeLocation, colourLength)];
+				[self setColour:variablesColour range:NSMakeRange(colourStartLocation + rangeLocation, colourLength)];
 			}
 		}	
 
@@ -941,25 +995,25 @@ Unless required by applicable law or agreed to in writing, software distributed 
             // scan range to end
 			while (![rangeScanner isAtEnd]) {
 				[rangeScanner scanUpToString:@" " intoString:nil];
-				colourLocation = [rangeScanner scanLocation];
-				if (colourLocation + 1 < rangeStringLength) {
-					[rangeScanner mgs_setScanLocation:colourLocation + 1];
+				colourStartLocation = [rangeScanner scanLocation];
+				if (colourStartLocation + 1 < rangeStringLength) {
+					[rangeScanner mgs_setScanLocation:colourStartLocation + 1];
 				} else {
 					break;
 				}
-				if (![[firstLayoutManager temporaryAttributesAtCharacterIndex:(colourLocation + rangeLocation) effectiveRange:NULL] isEqualToDictionary:commandsColour]) {
+				if (![[firstLayoutManager temporaryAttributesAtCharacterIndex:(colourStartLocation + rangeLocation) effectiveRange:NULL] isEqualToDictionary:commandsColour]) {
 					continue;
 				}
 				
 				[rangeScanner scanCharactersFromSet:self.attributesCharacterSet intoString:nil];
-				end = [rangeScanner scanLocation];
+				colourEndLocation = [rangeScanner scanLocation];
 				
-				if (end + 1 < rangeStringLength) {
+				if (colourEndLocation + 1 < rangeStringLength) {
 					[rangeScanner mgs_setScanLocation:[rangeScanner scanLocation] + 1];
 				}
 				
-				if ([documentString characterAtIndex:end + rangeLocation] == '=') {
-					[self setColour:attributesColour range:NSMakeRange(colourLocation + rangeLocation, end - colourLocation)];
+				if ([documentString characterAtIndex:colourEndLocation + rangeLocation] == '=') {
+					[self setColour:attributesColour range:NSMakeRange(colourStartLocation + rangeLocation, colourEndLocation - colourStartLocation)];
 				}
 			}
 		}
@@ -979,51 +1033,51 @@ Unless required by applicable law or agreed to in writing, software distributed 
                     
                     // scan for comment
                     [rangeScanner scanUpToString:singleLineComment intoString:nil];
-                    colourLocation = [rangeScanner scanLocation];
+                    colourStartLocation = [rangeScanner scanLocation];
                     
                     // common case handling
                     if ([singleLineComment isEqualToString:@"//"]) {
-                        if (colourLocation > 0 && [rangeString characterAtIndex:colourLocation - 1] == ':') {
-                            [rangeScanner mgs_setScanLocation:colourLocation + 1];
+                        if (colourStartLocation > 0 && [rangeString characterAtIndex:colourStartLocation - 1] == ':') {
+                            [rangeScanner mgs_setScanLocation:colourStartLocation + 1];
                             continue; // To avoid http:// ftp:// file:// etc.
                         }
                     } else if ([singleLineComment isEqualToString:@"#"]) {
                         if (rangeStringLength > 1) {
-                            rangeOfLine = [rangeString lineRangeForRange:NSMakeRange(colourLocation, 0)];
+                            rangeOfLine = [rangeString lineRangeForRange:NSMakeRange(colourStartLocation, 0)];
                             if ([rangeString rangeOfString:@"#!" options:NSLiteralSearch range:rangeOfLine].location != NSNotFound) {
                                 [rangeScanner mgs_setScanLocation:NSMaxRange(rangeOfLine)];
                                 continue; // Don't treat the line as a comment if it begins with #!
-                            } else if (colourLocation > 0 && [rangeString characterAtIndex:colourLocation - 1] == '$') {
-                                [rangeScanner mgs_setScanLocation:colourLocation + 1];
+                            } else if (colourStartLocation > 0 && [rangeString characterAtIndex:colourStartLocation - 1] == '$') {
+                                [rangeScanner mgs_setScanLocation:colourStartLocation + 1];
                                 continue; // To avoid $#
-                            } else if (colourLocation > 0 && [rangeString characterAtIndex:colourLocation - 1] == '&') {
-                                [rangeScanner mgs_setScanLocation:colourLocation + 1];
+                            } else if (colourStartLocation > 0 && [rangeString characterAtIndex:colourStartLocation - 1] == '&') {
+                                [rangeScanner mgs_setScanLocation:colourStartLocation + 1];
                                 continue; // To avoid &#
                             }
                         }
                     } else if ([singleLineComment isEqualToString:@"%"]) {
                         if (rangeStringLength > 1) {
-                            if (colourLocation > 0 && [rangeString characterAtIndex:colourLocation - 1] == '\\') {
-                                [rangeScanner mgs_setScanLocation:colourLocation + 1];
+                            if (colourStartLocation > 0 && [rangeString characterAtIndex:colourStartLocation - 1] == '\\') {
+                                [rangeScanner mgs_setScanLocation:colourStartLocation + 1];
                                 continue; // To avoid \% in LaTex
                             }
                         }
                     } 
                     
                     // If the comment is within an already coloured string then disregard it
-                    if (colourLocation + rangeLocation + searchSyntaxLength < documentStringLength) {
-                        if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:colourLocation + rangeLocation effectiveRange:NULL] isEqualToDictionary:stringsColour]) {
-                            [rangeScanner mgs_setScanLocation:colourLocation + 1];
+                    if (colourStartLocation + rangeLocation + searchSyntaxLength < documentStringLength) {
+                        if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:colourStartLocation + rangeLocation effectiveRange:NULL] isEqualToDictionary:stringsColour]) {
+                            [rangeScanner mgs_setScanLocation:colourStartLocation + 1];
                             continue; 
                         }
                     }
                     
                     // this is a single line comment so we can scan to the end of the line
-                    endOfLine = NSMaxRange([rangeString lineRangeForRange:NSMakeRange(colourLocation, 0)]);
+                    endOfLine = NSMaxRange([rangeString lineRangeForRange:NSMakeRange(colourStartLocation, 0)]);
                     [rangeScanner mgs_setScanLocation:endOfLine];
                     
                     // colour the comment
-                    [self setColour:commentsColour range:NSMakeRange(colourLocation + rangeLocation, [rangeScanner scanLocation] - colourLocation)];
+                    [self setColour:commentsColour range:NSMakeRange(colourStartLocation + rangeLocation, [rangeScanner scanLocation] - colourStartLocation)];
                 }
             }
 		}
@@ -1069,23 +1123,23 @@ Unless required by applicable law or agreed to in writing, software distributed 
                     searchRange = NSMakeRange(beginLocationInMultiLine, documentStringLength - beginLocationInMultiLine);
                     
                     // Look for comment start in document
-                    colourLocation = [documentString rangeOfString:beginMultiLineComment options:NSLiteralSearch range:searchRange].location;
-                    if (colourLocation == NSNotFound) {
+                    colourStartLocation = [documentString rangeOfString:beginMultiLineComment options:NSLiteralSearch range:searchRange].location;
+                    if (colourStartLocation == NSNotFound) {
                         break;
                     }
                     
                     // Increment our location.
                     // This is necessary to cover situations, such as F-Script, where the start and end comment strings are identical
-                    if (colourLocation + 1 < documentStringLength) {
-                        [documentScanner mgs_setScanLocation:colourLocation + 1];
+                    if (colourStartLocation + 1 < documentStringLength) {
+                        [documentScanner mgs_setScanLocation:colourStartLocation + 1];
                         
                         // If the comment is within a string disregard it
-                        if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:colourLocation effectiveRange:NULL] isEqualToDictionary:stringsColour]) {
+                        if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:colourStartLocation effectiveRange:NULL] isEqualToDictionary:stringsColour]) {
                             beginLocationInMultiLine++;
                             continue; 
                         }
                     } else {
-                        [documentScanner mgs_setScanLocation:colourLocation];
+                        [documentScanner mgs_setScanLocation:colourStartLocation];
                     }
                     
                     // Scan up to comment end
@@ -1093,11 +1147,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
                         
                         // Comment end not found
                         if (shouldOnlyColourTillTheEndOfLine) {
-                            [documentScanner mgs_setScanLocation:NSMaxRange([documentString lineRangeForRange:NSMakeRange(colourLocation, 0)])];
+                            [documentScanner mgs_setScanLocation:NSMaxRange([documentString lineRangeForRange:NSMakeRange(colourStartLocation, 0)])];
                         } else {
                             [documentScanner mgs_setScanLocation:documentStringLength];
                         }
-                        colourLength = [documentScanner scanLocation] - colourLocation;
+                        colourLength = [documentScanner scanLocation] - colourStartLocation;
                     } else {
                         
                         // Comment end found
@@ -1106,7 +1160,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
                             // Safely advance scanner
                             [documentScanner mgs_setScanLocation:[documentScanner scanLocation] + searchSyntaxLength];
                         }
-                        colourLength = [documentScanner scanLocation] - colourLocation;
+                        colourLength = [documentScanner scanLocation] - colourStartLocation;
                         
                         // HTML specific
                         if ([endMultiLineComment isEqualToString:@"-->"]) {
@@ -1117,12 +1171,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
                                     continue; // If the comment --> is followed by </script> or </style> it is probably not a real comment
                                 }
                             }
-                            [documentScanner mgs_setScanLocation:colourLocation + colourLength]; // Reset the scanner position
+                            [documentScanner mgs_setScanLocation:colourStartLocation + colourLength]; // Reset the scanner position
                         }
                     }
 
                     // Colour the range
-                    [self setColour:commentsColour range:NSMakeRange(colourLocation, colourLength)];
+                    [self setColour:commentsColour range:NSMakeRange(colourStartLocation, colourLength)];
 
                     // We may be done
                     if ([documentScanner scanLocation] > maxRangeLocation) {
@@ -1196,6 +1250,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	attributesColour = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsAttributesColourWell]], NSForegroundColorAttributeName, nil];
 	
 	lineHighlightColour = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsHighlightLineColourWell]], NSBackgroundColorAttributeName, nil];
+
+	numbersColour = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsNumbersColourWell]], NSForegroundColorAttributeName, nil];
+
 }
 
 /*

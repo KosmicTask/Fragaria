@@ -35,7 +35,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSInteger lastCursorLocation;
 	
 	NSDictionary *commandsColour, *commentsColour, *instructionsColour, *keywordsColour, *autocompleteWordsColour,
-					*stringsColour, *variablesColour, *attributesColour, *lineHighlightColour;
+					*stringsColour, *variablesColour, *attributesColour, *lineHighlightColour,  *numbersColour;
 	
 	NSSet *keywords;
 	NSSet *autocompleteWords;
@@ -65,7 +65,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSCharacterSet *beginVariable;
 	NSCharacterSet *endVariable;
 	NSCharacterSet *letterCharacterSet, *keywordStartCharacterSet, *keywordEndCharacterSet;
-	
+	NSCharacterSet *numberCharacterSet;
+    unichar decimalPointCharacter;
+    
 	ICUPattern *firstStringPattern;
 	ICUPattern *secondStringPattern;	
 	ICUMatcher *firstStringMatcher;

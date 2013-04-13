@@ -24,8 +24,10 @@ extern NSString * const MGSFragariaPrefsTextColourWell;
 extern NSString * const MGSFragariaPrefsGutterTextColourWell;
 extern NSString * const MGSFragariaPrefsInvisibleCharactersColourWell;
 extern NSString * const MGSFragariaPrefsHighlightLineColourWell;
+extern NSString * const MGSFragariaPrefsNumbersColourWell;
 
 // bool
+extern NSString * const MGSFragariaPrefsColourNumbers;
 extern NSString * const MGSFragariaPrefsColourCommands;
 extern NSString * const MGSFragariaPrefsColourComments;
 extern NSString * const MGSFragariaPrefsColourInstructions;

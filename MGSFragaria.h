@@ -32,6 +32,7 @@ extern NSString * const ro_MGSFOGutterScrollView; // readonly
 extern NSString * const MGSFODelegate;
 extern NSString * const MGSFOBreakpointDelegate;
 extern NSString * const MGSFOAutoCompleteDelegate;
+extern NSString * const MGSFOSyntaxColouringDelegate;
 extern NSString * const ro_MGSFOLineNumbers; // readonly
 extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 
@@ -41,6 +42,7 @@ extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 #import "MGSFragariaPreferences.h"
 #import "MGSBreakpointDelegate.h"
 #import "SMLSyntaxError.h"
+#import "SMLSyntaxColouringDelegate.h"
 
 @protocol MGSFragariaTextViewDelegate <NSObject>
 @optional

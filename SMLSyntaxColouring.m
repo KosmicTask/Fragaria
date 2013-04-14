@@ -22,6 +22,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 #import "MGSFragariaFramework.h"
 #import "SMLErrorPopOver.h"
 #import "SMLAutoCompleteDelegate.h"
+#import "SMLSyntaxColouringDelegate.h"
 
 // class extension
 @interface SMLSyntaxColouring()
@@ -73,6 +74,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)highlightLineRange:(NSRange)lineRange;
 - (void)undoManagerDidUndo:(NSNotification *)aNote;
 - (BOOL)isSyntaxColouringRequired;
+- (NSDictionary *)syntaxDictionary;
 @end
 
 @implementation SMLSyntaxColouring
@@ -237,7 +239,18 @@ Unless required by applicable law or agreed to in writing, software distributed 
  
  */
 - (void)applySyntaxDefinition
-{	
+{			
+	// parse
+	[self parseSyntaxDictionary:self.syntaxDictionary];
+}
+
+/*
+ 
+ - syntaxDictionary
+ 
+ */
+- (NSDictionary *)syntaxDictionary
+{
 	NSString *definitionName = [document valueForKey:MGSFOSyntaxDefinitionName];
 	
 	// if document has no syntax definition name then assign one
@@ -247,9 +260,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 	// get syntax dictionary
 	NSDictionary *syntaxDictionary = [[MGSSyntaxController sharedInstance] syntaxDictionaryWithName:definitionName];
-		
-	// parse
-	[self parseSyntaxDictionary:syntaxDictionary];	
+    
+    return syntaxDictionary;
 }
 
 /*
@@ -704,12 +716,31 @@ Unless required by applicable law or agreed to in writing, software distributed 
     // uncolour the range
 	[self removeColoursFromRange:effectiveRange];
 	
-	@try {	
+    // colouring delegate
+    id colouringDelegate = [document valueForKey:MGSFOSyntaxColouringDelegate];
+    BOOL delegateCanColour = [colouringDelegate respondsToSelector:@selector(fragariaDocument:string:colourRange:info:)];
+    BOOL delegateDidColour = NO;
+    NSDictionary *delegateInfo =  nil;
+	
+    @try {
 		
         //
         // Numbers
         //
-		if ([[SMLDefaults valueForKey:MGSFragariaPrefsColourNumbers] boolValue] == YES) {
+        NSNumber *doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourNumbers];
+       
+        // let delegate do colouring
+        if (delegateCanColour) {
+            
+            // TODO: provide a callback mechansim, perhaps a block, that can call -setColour:range as required
+            delegateInfo = @{@"type" : @"number", @"willColour" : doColouring, @"colourInfo" : numbersColour, @"syntaxInfo" : self.syntaxDictionary};
+            delegateDidColour = [colouringDelegate fragariaDocument:document string:documentString colourRange:rangeToRecolour info:delegateInfo];
+        } else {
+            delegateDidColour = NO;
+        }
+        
+        // do colouring
+		if ([doColouring boolValue] && !delegateDidColour) {
             
             // reset scanner
 			[rangeScanner mgs_setScanLocation:0];

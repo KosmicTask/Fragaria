@@ -41,6 +41,7 @@ NSString * const ro_MGSFOGutterScrollView = @"firstGutterScrollView"; // readonl
 NSString * const MGSFODelegate = @"delegate";
 NSString * const MGSFOBreakpointDelegate = @"breakpointDelegate";
 NSString * const MGSFOAutoCompleteDelegate = @"autoCompleteDelegate";
+NSString * const MGSFOSyntaxColouringDelegate = @"syntaxColouringDelegate";
 NSString * const ro_MGSFOLineNumbers = @"lineNumbers"; // readonly
 NSString * const ro_MGSFOSyntaxColouring = @"syntaxColouring"; // readonly
 
@@ -265,7 +266,7 @@ char kcLineWrapPrefChanged;
         
         // Define read/write keys
         self.objectSetterKeys = [NSSet setWithObjects:MGSFOIsSyntaxColoured, MGSFOShowLineNumberGutter, MGSFOIsEdited,
-                            MGSFOSyntaxDefinitionName, MGSFODelegate, MGSFOBreakpointDelegate, MGSFOAutoCompleteDelegate,
+                            MGSFOSyntaxDefinitionName, MGSFODelegate, MGSFOBreakpointDelegate, MGSFOAutoCompleteDelegate, MGSFOSyntaxColouringDelegate,
                             nil];
         
         // Define read only keys

@@ -55,6 +55,7 @@
 		AB6C87641610EAC800488AF2 /* General.png in Resources */ = {isa = PBXBuildFile; fileRef = AB6C87621610EAC800488AF2 /* General.png */; };
 		AB8386D91719E3D3004408F4 /* MGSPreferencesFontsAndColours.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB8386D71719E3D3004408F4 /* MGSPreferencesFontsAndColours.xib */; };
 		AB8386DA1719E3D3004408F4 /* MGSPreferencesTextEditing.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB8386D81719E3D3004408F4 /* MGSPreferencesTextEditing.xib */; };
+		AB8387AA171B4505004408F4 /* SMLSyntaxColouringDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8387A9171B4505004408F4 /* SMLSyntaxColouringDelegate.h */; };
 		ABA1C12316144EFD00C8723F /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = ABA1C12116144D3F00C8723F /* README.md */; };
 		ABA812DC11B6855200A29990 /* LICENSE-2.0.txt in Resources */ = {isa = PBXBuildFile; fileRef = ABA812DB11B6855200A29990 /* LICENSE-2.0.txt */; };
 		ABC1D5D0160B06F7008769EB /* MGSPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB69B80A118B8D0400903D1D /* MGSPreferencesController.m */; };
@@ -252,6 +253,7 @@
 		AB6C87621610EAC800488AF2 /* General.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = General.png; sourceTree = "<group>"; };
 		AB8386D71719E3D3004408F4 /* MGSPreferencesFontsAndColours.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MGSPreferencesFontsAndColours.xib; sourceTree = "<group>"; };
 		AB8386D81719E3D3004408F4 /* MGSPreferencesTextEditing.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MGSPreferencesTextEditing.xib; sourceTree = "<group>"; };
+		AB8387A9171B4505004408F4 /* SMLSyntaxColouringDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLSyntaxColouringDelegate.h; sourceTree = "<group>"; };
 		ABA1C12116144D3F00C8723F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		ABA812DB11B6855200A29990 /* LICENSE-2.0.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "LICENSE-2.0.txt"; sourceTree = "<group>"; };
 		ABC1D5D4160B0801008769EB /* DBPrefsWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBPrefsWindowController.h; sourceTree = "<group>"; };
@@ -482,6 +484,7 @@
 				E3C1850117175ED900801FE5 /* SMLErrorPopOver.h */,
 				E3C1850217175ED900801FE5 /* SMLErrorPopOver.m */,
 				E373BF121718A64700D71602 /* SMLAutoCompleteDelegate.h */,
+				AB8387A9171B4505004408F4 /* SMLSyntaxColouringDelegate.h */,
 			);
 			name = Smultron;
 			sourceTree = "<group>";
@@ -632,6 +635,7 @@
 				ABC578ED1603D7ED0040B3FB /* MGSFragariaTextEditingPrefsViewController.h in Headers */,
 				ABF28AF114C075D400ECAD48 /* NSScanner+Fragaria.h in Headers */,
 				E3C1850317175ED900801FE5 /* SMLErrorPopOver.h in Headers */,
+				AB8387AA171B4505004408F4 /* SMLSyntaxColouringDelegate.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

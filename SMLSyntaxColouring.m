@@ -52,6 +52,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 @property (retain) NSCharacterSet *attributesCharacterSet;
 @property (retain) NSCharacterSet *letterCharacterSet;
 @property (retain) NSCharacterSet *numberCharacterSet;
+@property (assign) BOOL syntaxDefinitionAllowsColouring;
+
 @property unichar decimalPointCharacter;
 
 - (void)parseSyntaxDictionary:(NSDictionary *)syntaxDictionary;
@@ -70,11 +72,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)setColour:(NSDictionary *)colour range:(NSRange)range;
 - (void)highlightLineRange:(NSRange)lineRange;
 - (void)undoManagerDidUndo:(NSNotification *)aNote;
+- (BOOL)isSyntaxColouringRequired;
 @end
 
 @implementation SMLSyntaxColouring
 
-@synthesize reactToChanges, functionDefinition, removeFromFunction, undoManager, secondString, firstString, keywords, autocompleteWords, keywordsAndAutocompleteWords, beginCommand, endCommand, beginInstruction, endInstruction, beginVariable, endVariable, firstSingleLineComment, secondSingleLineComment, singleLineComments, multiLineComments, beginFirstMultiLineComment, endFirstMultiLineComment, beginSecondMultiLineComment, endSecondMultiLineComment, keywordStartCharacterSet, keywordEndCharacterSet, attributesCharacterSet, letterCharacterSet, numberCharacterSet, decimalPointCharacter, syntaxErrors;
+@synthesize reactToChanges, functionDefinition, removeFromFunction, undoManager, secondString, firstString, keywords, autocompleteWords, keywordsAndAutocompleteWords, beginCommand, endCommand, beginInstruction, endInstruction, beginVariable, endVariable, firstSingleLineComment, secondSingleLineComment, singleLineComments, multiLineComments, beginFirstMultiLineComment, endFirstMultiLineComment, beginSecondMultiLineComment, endSecondMultiLineComment, keywordStartCharacterSet, keywordEndCharacterSet, attributesCharacterSet, letterCharacterSet, numberCharacterSet, decimalPointCharacter, syntaxErrors, syntaxDefinitionAllowsColouring;
 
 #pragma mark -
 #pragma mark Instance methods
@@ -235,7 +238,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
  */
 - (void)applySyntaxDefinition
 {	
-	NSString *definitionName = [document valueForKey:@"syntaxDefinition"];
+	NSString *definitionName = [document valueForKey:MGSFOSyntaxDefinitionName];
 	
 	// if document has no syntax definition name then assign one
 	if (!definitionName) {
@@ -256,40 +259,36 @@ Unless required by applicable law or agreed to in writing, software distributed 
  */
 - (NSString *)assignSyntaxDefinition
 {
-	NSString *definitionName = [document valueForKey:@"syntaxDefinition"];
+	NSString *definitionName = [document valueForKey:MGSFOSyntaxDefinitionName];
 	if (definitionName) return definitionName;
 
 	NSString *defaultDefinitionName  = [SMLDefaults valueForKey:MGSFragariaPrefsSyntaxColouringPopUpString];
 	NSString *documentExtension = [[document valueForKey:@"name"] pathExtension];
 	
-	if ([[SMLDefaults valueForKey:@"SyntaxColouringMatrix"] integerValue] == 1) { // Always use...
-		definitionName = defaultDefinitionName;
-	} else {
-		NSString *lowercaseExtension = nil;
-		
-		// If there is no extension try to guess definition from first line
-		if ([documentExtension isEqualToString:@""]) { 
-			
-			NSString *string = [[[document valueForKey:@"firstTextScrollView"] documentView] string];
-			NSString *firstLine = [string substringWithRange:[string lineRangeForRange:NSMakeRange(0,0)]];
-			if ([firstLine hasPrefix:@"#!"] || [firstLine hasPrefix:@"%"] || [firstLine hasPrefix:@"<?"]) {
-				lowercaseExtension = [self guessSyntaxDefinitionExtensionFromFirstLine:firstLine];
-			} 
-		} else {
-			lowercaseExtension = [documentExtension lowercaseString];
-		}
-		
-		if (lowercaseExtension) {
-			definitionName = [[MGSSyntaxController sharedInstance] syntaxDefinitionNameWithExtension:lowercaseExtension];
-		}
-	}
+    NSString *lowercaseExtension = nil;
+    
+    // If there is no extension try to guess definition from first line
+    if ([documentExtension isEqualToString:@""]) { 
+        
+        NSString *string = [[[document valueForKey:@"firstTextScrollView"] documentView] string];
+        NSString *firstLine = [string substringWithRange:[string lineRangeForRange:NSMakeRange(0,0)]];
+        if ([firstLine hasPrefix:@"#!"] || [firstLine hasPrefix:@"%"] || [firstLine hasPrefix:@"<?"]) {
+            lowercaseExtension = [self guessSyntaxDefinitionExtensionFromFirstLine:firstLine];
+        } 
+    } else {
+        lowercaseExtension = [documentExtension lowercaseString];
+    }
+    
+    if (lowercaseExtension) {
+        definitionName = [[MGSSyntaxController sharedInstance] syntaxDefinitionNameWithExtension:lowercaseExtension];
+    }
 	
 	if (!definitionName) {
 		definitionName = [MGSSyntaxController standardSyntaxDefinitionName];
 	}
 	
 	// update document definition
-	[document setValue:definitionName forKey:@"syntaxDefinition"];
+	[document setValue:definitionName forKey:MGSFOSyntaxDefinitionName];
 	
 	return definitionName;
 }
@@ -305,6 +304,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSMutableArray *keywordsAndAutocompleteWordsTemporary = [NSMutableArray array];
 	
 	// If the plist file is malformed be sure to set the values to something
+    id value = [syntaxDictionary valueForKey:@"allowSyntaxColouring"];
+    if (value && [value isKindOfClass:[NSNumber class]]) {
+        self.syntaxDefinitionAllowsColouring = [value boolValue];
+    } else {
+        // default to YES
+        self.syntaxDefinitionAllowsColouring = YES;
+    }
+    
 	if ([syntaxDictionary valueForKey:@"keywords"]) {
 		self.keywords = [[[NSSet alloc] initWithArray:[syntaxDictionary valueForKey:@"keywords"]] autorelease];
 		[keywordsAndAutocompleteWordsTemporary addObjectsFromArray:[syntaxDictionary valueForKey:@"keywords"]];
@@ -315,7 +322,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[keywordsAndAutocompleteWordsTemporary addObjectsFromArray:[syntaxDictionary valueForKey:@"autocompleteWords"]];
 	}
 	
-	if ([[SMLDefaults valueForKey:@"ColourAutocompleteWordsAsKeywords"] boolValue] == YES) {
+	if ([[SMLDefaults valueForKey:MGSFragariaPrefsColourAutocomplete] boolValue] == YES) {
 		self.keywords = [NSSet setWithArray:keywordsAndAutocompleteWordsTemporary];
 	}
 	
@@ -591,7 +598,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
  */
 - (void)pageRecolourTextView:(SMLTextView *)textView
 {
-	if ([[document valueForKey:@"isSyntaxColoured"] boolValue] == NO) {
+	if (!self.isSyntaxColouringRequired) {
 		return;
 	}
 	
@@ -617,7 +624,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		return;
 	}
 
-	if ([[document valueForKey:@"isSyntaxColoured"] boolValue] == NO) {
+	if (!self.isSyntaxColouringRequired) {
 		return;
 	}
 	
@@ -1269,6 +1276,15 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 /*
  
+ - isSyntaxColouringRequired
+ 
+ */
+- (BOOL)isSyntaxColouringRequired
+{
+    return ([[document valueForKey:MGSFOIsSyntaxColoured] boolValue] && self.syntaxDefinitionAllowsColouring ? YES : NO);
+}
+/*
+ 
  - highlightLineRange:
  
  */
@@ -1352,7 +1368,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
     
     // Highlight all errors and add buttons
     NSMutableSet* highlightedRows = [NSMutableSet set];
-#warning
+
     for (SMLSyntaxError* err in syntaxErrors)
     {
         // Highlight an erronous line
@@ -1481,7 +1497,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 	if ([[SMLDefaults valueForKey:MGSFragariaPrefsHighlightCurrentLine] boolValue] == YES) {
 		[self highlightLineRange:[completeString lineRangeForRange:[textView selectedRange]]];
-	} else if ([[document valueForKey:@"isSyntaxColoured"] boolValue] == YES) {
+	} else if ([self isSyntaxColouringRequired]) {
 		[self pageRecolourTextView:textView];
 	}
 	

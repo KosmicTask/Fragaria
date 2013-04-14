@@ -202,7 +202,7 @@ static id sharedInstance = nil;
     }
     // Comment Or Uncomment
     else if (action == @selector(commentOrUncommentAction:) ) {
-		if ([[[SMLCurrentDocument valueForKey:@"syntaxColouring"] valueForKey:@"firstSingleLineComment"] isEqualToString:@""]) {
+		if ([[[SMLCurrentDocument valueForKey:ro_MGSFOSyntaxColouring] valueForKey:@"firstSingleLineComment"] isEqualToString:@""]) {
 			enableMenuItem = NO;
 		}
 	} 
@@ -236,8 +236,8 @@ static id sharedInstance = nil;
 	
 	id document = SMLCurrentDocument;
 	
-	[[[document valueForKey:@"syntaxColouring"] undoManager] registerUndoWithTarget:self selector:@selector(performUndoChangeEncoding:) object:[NSArray arrayWithObject:[document valueForKey:@"encoding"]]];
-	[[[document valueForKey:@"syntaxColouring"] undoManager] setActionName:NAME_FOR_UNDO_CHANGE_ENCODING];
+	[[[document valueForKey:ro_MGSFOSyntaxColouring] undoManager] registerUndoWithTarget:self selector:@selector(performUndoChangeEncoding:) object:[NSArray arrayWithObject:[document valueForKey:@"encoding"]]];
+	[[[document valueForKey:ro_MGSFOSyntaxColouring] undoManager] setActionName:NAME_FOR_UNDO_CHANGE_ENCODING];
 	
 	[document setValue:[NSNumber numberWithInteger:encoding] forKey:@"encoding"];
 	[document setValue:[NSString localizedNameOfStringEncoding:encoding] forKey:@"encodingName"];
@@ -254,8 +254,8 @@ static id sharedInstance = nil;
 {
 	id document = SMLCurrentDocument;
 	
-	[[[document valueForKey:@"syntaxColouring"] undoManager] registerUndoWithTarget:self selector:@selector(performUndoChangeEncoding:) object:[NSArray arrayWithObject:[document valueForKey:@"encoding"]]];
-	[[[document valueForKey:@"syntaxColouring"] undoManager] setActionName:NAME_FOR_UNDO_CHANGE_ENCODING];
+	[[[document valueForKey:ro_MGSFOSyntaxColouring] undoManager] registerUndoWithTarget:self selector:@selector(performUndoChangeEncoding:) object:[NSArray arrayWithObject:[document valueForKey:@"encoding"]]];
+	[[[document valueForKey:ro_MGSFOSyntaxColouring] undoManager] setActionName:NAME_FOR_UNDO_CHANGE_ENCODING];
 	
 	[document setValue:[sender objectAtIndex:0] forKey:@"encoding"];
 	[document setValue:[NSString localizedNameOfStringEncoding:[[sender objectAtIndex:0] unsignedIntegerValue]] forKey:@"encodingName"];
@@ -282,7 +282,7 @@ static id sharedInstance = nil;
 	if ([completeString length] < 1) {
 		return;
 	}
-	[[SMLCurrentDocument valueForKey:@"syntaxColouring"] setReactToChanges:NO];
+	[[SMLCurrentDocument valueForKey:ro_MGSFOSyntaxColouring] setReactToChanges:NO];
 	NSRange selectedRange;
 	
 	NSArray *array = [SMLCurrentTextView selectedRanges];
@@ -375,9 +375,9 @@ static id sharedInstance = nil;
 		}
 		sumOfAllCharactersRemoved = sumOfAllCharactersRemoved + charactersRemoved;
 	}
-	[[SMLCurrentDocument valueForKey:@"syntaxColouring"] setReactToChanges:YES];
+	[[SMLCurrentDocument valueForKey:ro_MGSFOSyntaxColouring] setReactToChanges:YES];
 	
-	[[SMLCurrentDocument valueForKey:@"syntaxColouring"] pageRecolour];
+	[[SMLCurrentDocument valueForKey:ro_MGSFOSyntaxColouring] pageRecolour];
 	
 	if (sumOfAllCharactersRemoved == 0) {
 		NSBeep();
@@ -385,7 +385,7 @@ static id sharedInstance = nil;
 		if ([[SMLCurrentDocument valueForKey:@"isEdited"] boolValue] == NO) {
 			[self setEdited: YES];
 		}
-		[[SMLCurrentDocument valueForKey:@"lineNumbers"] updateLineNumbersCheckWidth:NO recolour:NO];
+		[[SMLCurrentDocument valueForKey:ro_MGSFOLineNumbers] updateLineNumbersCheckWidth:NO recolour:NO];
 	}
 	
 	if ([updatedSelectionsArray count] > 0) {
@@ -407,7 +407,7 @@ static id sharedInstance = nil;
 	if ([completeString length] < 1) {
 		return;
 	}
-	[[SMLCurrentDocument valueForKey:@"syntaxColouring"] setReactToChanges:NO];
+	[[SMLCurrentDocument valueForKey:ro_MGSFOSyntaxColouring] setReactToChanges:NO];
 	NSRange selectedRange;
 	
 	NSMutableString *replacementString;
@@ -477,13 +477,13 @@ static id sharedInstance = nil;
 
 	}
 	
-	[[SMLCurrentDocument valueForKey:@"syntaxColouring"] setReactToChanges:YES];
+	[[SMLCurrentDocument valueForKey:ro_MGSFOSyntaxColouring] setReactToChanges:YES];
 	
-	[[SMLCurrentDocument valueForKey:@"syntaxColouring"] pageRecolour];
+	[[SMLCurrentDocument valueForKey:ro_MGSFOSyntaxColouring] pageRecolour];
 	
 	[self setEdited:YES];
 	
-	[[SMLCurrentDocument valueForKey:@"lineNumbers"] updateLineNumbersCheckWidth:NO recolour:NO];
+	[[SMLCurrentDocument valueForKey:ro_MGSFOLineNumbers] updateLineNumbersCheckWidth:NO recolour:NO];
 	
 	if ([updatedSelectionsArray count] > 0) {
 		[textView setSelectedRanges:updatedSelectionsArray];
@@ -522,7 +522,7 @@ static id sharedInstance = nil;
 	if ([completeString length] < 1) {
 		return;
 	}
-	[[SMLCurrentDocument valueForKey:@"syntaxColouring"] setReactToChanges:NO];
+	[[SMLCurrentDocument valueForKey:ro_MGSFOSyntaxColouring] setReactToChanges:NO];
 	NSRange selectedRange;
 	
 	NSArray *array = [SMLCurrentTextView selectedRanges];
@@ -578,14 +578,14 @@ static id sharedInstance = nil;
 		sumOfAllCharactersRemoved = sumOfAllCharactersRemoved + charactersRemoved;
 	}
 	
-	[[SMLCurrentDocument valueForKey:@"syntaxColouring"] setReactToChanges:YES];
-	[[SMLCurrentDocument valueForKey:@"syntaxColouring"] pageRecolour];
+	[[SMLCurrentDocument valueForKey:ro_MGSFOSyntaxColouring] setReactToChanges:YES];
+	[[SMLCurrentDocument valueForKey:ro_MGSFOSyntaxColouring] pageRecolour];
 	
 	if (sumOfAllCharactersRemoved == 0) {
 		NSBeep();
 	} else {
 		[self setEdited:YES];
-		[[SMLCurrentDocument valueForKey:@"lineNumbers"] updateLineNumbersCheckWidth:NO recolour:NO];
+		[[SMLCurrentDocument valueForKey:ro_MGSFOLineNumbers] updateLineNumbersCheckWidth:NO recolour:NO];
 	}
 	
 	if ([updatedSelectionsArray count] > 0) {
@@ -686,7 +686,7 @@ static id sharedInstance = nil;
 - (void)performEntab
 {	
 	NSTextView *textView = SMLCurrentTextView;
-	[[SMLCurrentDocument valueForKey:@"syntaxColouring"] setReactToChanges:NO];
+	[[SMLCurrentDocument valueForKey:ro_MGSFOSyntaxColouring] setReactToChanges:NO];
 	NSRange selectedRange;
 	NSRange savedRange = [textView selectedRange];
 	
@@ -710,11 +710,11 @@ static id sharedInstance = nil;
 
 	}
 	
-	[[SMLCurrentDocument valueForKey:@"syntaxColouring"] setReactToChanges:YES];
+	[[SMLCurrentDocument valueForKey:ro_MGSFOSyntaxColouring] setReactToChanges:YES];
 	
 	[self setEdited:YES];
 	
-	[[SMLCurrentDocument valueForKey:@"syntaxColouring"] pageRecolour]; 
+	[[SMLCurrentDocument valueForKey:ro_MGSFOSyntaxColouring] pageRecolour];
 
 	[textView setSelectedRange:NSMakeRange(savedRange.location, 0)];
 }
@@ -727,7 +727,7 @@ static id sharedInstance = nil;
 - (void)performDetab
 {	
 	NSTextView *textView = SMLCurrentTextView;
-	[[SMLCurrentDocument valueForKey:@"syntaxColouring"] setReactToChanges:NO];
+	[[SMLCurrentDocument valueForKey:ro_MGSFOSyntaxColouring] setReactToChanges:NO];
 	NSRange selectedRange;
 	NSRange savedRange = [textView selectedRange];
 	
@@ -751,11 +751,11 @@ static id sharedInstance = nil;
 		
 	}
 	
-	[[SMLCurrentDocument valueForKey:@"syntaxColouring"] setReactToChanges:YES];
+	[[SMLCurrentDocument valueForKey:ro_MGSFOSyntaxColouring] setReactToChanges:YES];
 	
 	[self setEdited:YES];
 	
-	[[SMLCurrentDocument valueForKey:@"syntaxColouring"] pageRecolour]; 
+	[[SMLCurrentDocument valueForKey:ro_MGSFOSyntaxColouring] pageRecolour];
 	[textView setSelectedRange:NSMakeRange(savedRange.location, 0)];
 }
 
@@ -1015,13 +1015,13 @@ static id sharedInstance = nil;
 	
 	NSTextView *textView = SMLCurrentTextView;
 	NSString *completeString = [textView string];
-	NSString *commentString = [[SMLCurrentDocument valueForKey:@"syntaxColouring"] valueForKey:@"firstSingleLineComment"];
+	NSString *commentString = [[SMLCurrentDocument valueForKey:ro_MGSFOSyntaxColouring] valueForKey:@"firstSingleLineComment"];
 	NSUInteger commentStringLength = [commentString length];
 	if ([commentString isEqualToString:@""] || [completeString length] < commentStringLength) {
 		NSBeep();
 		return;
 	}
-	[[SMLCurrentDocument valueForKey:@"syntaxColouring"] setReactToChanges:NO];	
+	[[SMLCurrentDocument valueForKey:ro_MGSFOSyntaxColouring] setReactToChanges:NO];
 	
 	NSArray *array = [textView selectedRanges];
 	NSRange selectedRange = NSMakeRange(0, 0);
@@ -1094,13 +1094,13 @@ static id sharedInstance = nil;
 		[updatedSelectionsArray addObject:[NSValue valueWithRange:NSMakeRange(locationOfFirstLine, locationOfLastLine - locationOfFirstLine + charactersInserted)]];
 	}
 	
-	[[SMLCurrentDocument valueForKey:@"syntaxColouring"] setReactToChanges:YES];
+	[[SMLCurrentDocument valueForKey:ro_MGSFOSyntaxColouring] setReactToChanges:YES];
 	
-	[[SMLCurrentDocument valueForKey:@"syntaxColouring"] pageRecolour];
+	[[SMLCurrentDocument valueForKey:ro_MGSFOSyntaxColouring] pageRecolour];
 	
 	[self setEdited:YES];
 	
-	[[SMLCurrentDocument valueForKey:@"lineNumbers"] updateLineNumbersCheckWidth:NO recolour:NO];
+	[[SMLCurrentDocument valueForKey:ro_MGSFOLineNumbers] updateLineNumbersCheckWidth:NO recolour:NO];
 	
 	if (selectedRange.length > 0) {
 		[textView setSelectedRanges:updatedSelectionsArray];
@@ -1122,7 +1122,7 @@ static id sharedInstance = nil;
 	
 	NSTextView *textView = SMLCurrentTextView;
 	NSString *text = [textView string];
-	[[SMLCurrentDocument valueForKey:@"syntaxColouring"] setReactToChanges:NO];	
+	[[SMLCurrentDocument valueForKey:ro_MGSFOSyntaxColouring] setReactToChanges:NO];
 	NSArray *array = [textView selectedRanges];
 	NSInteger sumOfDeletedLineEndings = 0;
 	NSMutableArray *updatedSelectionsArray = [NSMutableArray array];
@@ -1141,10 +1141,10 @@ static id sharedInstance = nil;
 		[updatedSelectionsArray addObject:[NSValue valueWithRange:NSMakeRange(selectedRange.location, newLength)]];
 	}
 	
-	[[SMLCurrentDocument valueForKey:@"syntaxColouring"] setReactToChanges:YES];
+	[[SMLCurrentDocument valueForKey:ro_MGSFOSyntaxColouring] setReactToChanges:YES];
 	
 	[self setEdited:YES];	
-	[[SMLCurrentDocument valueForKey:@"lineNumbers"] updateLineNumbersCheckWidth:YES recolour:YES];
+	[[SMLCurrentDocument valueForKey:ro_MGSFOLineNumbers] updateLineNumbersCheckWidth:YES recolour:YES];
 	
 	if ([updatedSelectionsArray count] > 0) {
 		[textView setSelectedRanges:updatedSelectionsArray];
@@ -1160,8 +1160,8 @@ static id sharedInstance = nil;
 {
 	id document = SMLCurrentDocument;
 	
-	[[[document valueForKey:@"syntaxColouring"] undoManager] registerUndoWithTarget:self selector:@selector(performUndoChangeLineEndings:) object:[NSArray arrayWithObject:[document valueForKey:@"lineEndings"]]];
-	[[[document valueForKey:@"syntaxColouring"] undoManager] setActionName:NAME_FOR_UNDO_CHANGE_LINE_ENDINGS];
+	[[[document valueForKey:ro_MGSFOSyntaxColouring] undoManager] registerUndoWithTarget:self selector:@selector(performUndoChangeLineEndings:) object:[NSArray arrayWithObject:[document valueForKey:@"lineEndings"]]];
+	[[[document valueForKey:ro_MGSFOSyntaxColouring] undoManager] setActionName:NAME_FOR_UNDO_CHANGE_LINE_ENDINGS];
 	
 	[document setValue:[NSNumber numberWithInteger:[sender tag] - 150] forKey:@"lineEndings"];
 	
@@ -1172,7 +1172,7 @@ static id sharedInstance = nil;
 	[textView replaceCharactersInRange:NSMakeRange(0, [text length]) withString:convertedString];
 	[textView setSelectedRange:selectedRange];
 	
-	[[document valueForKey:@"syntaxColouring"] pageRecolour];
+	[[document valueForKey:ro_MGSFOSyntaxColouring] pageRecolour];
 	
 	[self setEdited:YES];
 }
@@ -1186,8 +1186,8 @@ static id sharedInstance = nil;
 {
 	id document = SMLCurrentDocument;
 	
-	[[[document valueForKey:@"syntaxColouring"] undoManager] registerUndoWithTarget:self selector:@selector(performUndoChangeLineEndings:) object:[NSArray arrayWithObject:[document valueForKey:@"lineEndings"]]];
-	[[[document valueForKey:@"syntaxColouring"] undoManager] setActionName:NAME_FOR_UNDO_CHANGE_LINE_ENDINGS];
+	[[[document valueForKey:ro_MGSFOSyntaxColouring] undoManager] registerUndoWithTarget:self selector:@selector(performUndoChangeLineEndings:) object:[NSArray arrayWithObject:[document valueForKey:@"lineEndings"]]];
+	[[[document valueForKey:ro_MGSFOSyntaxColouring] undoManager] setActionName:NAME_FOR_UNDO_CHANGE_LINE_ENDINGS];
 	
 	[document setValue:[sender objectAtIndex:0] forKey:@"lineEndings"];
 	
@@ -1198,7 +1198,7 @@ static id sharedInstance = nil;
 	[textView replaceCharactersInRange:NSMakeRange(0, [text length]) withString:convertedString];
 	[textView setSelectedRange:selectedRange];
 	
-	[[document valueForKey:@"syntaxColouring"] pageRecolour];
+	[[document valueForKey:ro_MGSFOSyntaxColouring] pageRecolour];
 	
 	[self setEdited:YES];
 }
@@ -1214,11 +1214,11 @@ static id sharedInstance = nil;
 - (IBAction)changeSyntaxDefinitionAction:(id)sender
 {
 	id document = SMLCurrentDocument;
-	[document setValue:[sender title] forKey:@"syntaxDefinition"];
+	[document setValue:[sender title] forKey:MGSFOSyntaxDefinitionName];
 	[document setValue:[NSNumber numberWithBool:YES] forKey:@"hasManuallyChangedSyntaxDefinition"];
-	[[document valueForKey:@"syntaxColouring"] applySyntaxDefinition];
+	[[document valueForKey:ro_MGSFOSyntaxColouring] applySyntaxDefinition];
 	
-	[[document valueForKey:@"syntaxColouring"] pageRecolour];
+	[[document valueForKey:ro_MGSFOSyntaxColouring] pageRecolour];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"MGSFragariaSyntaxDefinitionChanged" object:[MGSFragaria currentInstance] userInfo:nil];
 
 }

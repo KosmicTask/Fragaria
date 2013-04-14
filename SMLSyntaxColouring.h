@@ -61,7 +61,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	BOOL keywordsCaseSensitive;
 	BOOL recolourKeywordIfAlreadyColoured;
 	BOOL syntaxErrorsAreDirty;
-	
+	BOOL syntaxDefinitionAllowsColouring;
+    
 	NSCharacterSet *attributesCharacterSet;
 	NSCharacterSet *beginVariable;
 	NSCharacterSet *endVariable;

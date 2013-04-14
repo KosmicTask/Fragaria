@@ -133,7 +133,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 	if ([[document valueForKey:@"showLineNumberGutter"] boolValue] == NO || textView == nil) {
 		if (checkWidth == YES && recolour == YES) {
-			[[document valueForKey:@"syntaxColouring"] pageRecolourTextView:textView];
+			[[document valueForKey:ro_MGSFOSyntaxColouring] pageRecolourTextView:textView];
 		}
 		goto allDone;
 	}
@@ -232,7 +232,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	}
 	
 	if (recolour == YES) {
-		[[document valueForKey:@"syntaxColouring"] pageRecolourTextView:textView];
+		[[document valueForKey:ro_MGSFOSyntaxColouring] pageRecolourTextView:textView];
 	}
 	
 	// Fix flickering while rubber banding: Only change the text, if NOT rubber banding.

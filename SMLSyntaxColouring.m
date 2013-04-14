@@ -110,7 +110,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		self.undoManager = [[[NSUndoManager alloc] init] autorelease];
 
 		// configure the document text view
-		NSTextView *textView = [document valueForKey:@"firstTextView"];
+		NSTextView *textView = [document valueForKey:ro_MGSFOTextView];
 		NSAssert([textView isKindOfClass:[NSTextView class]], @"bad textview");
 		[textView setDelegate:self];
 		[[textView textStorage] setDelegate:self];
@@ -209,7 +209,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[self applyColourDefaults];
 		[self pageRecolour];
 		if ([[SMLDefaults valueForKey:MGSFragariaPrefsHighlightCurrentLine] boolValue] == YES) {
-			NSRange range = [[self completeString] lineRangeForRange:[[document valueForKey:@"firstTextView"] selectedRange]];
+			NSRange range = [[self completeString] lineRangeForRange:[[document valueForKey:ro_MGSFOTextView] selectedRange]];
 			[self highlightLineRange:range];
 			lastLineHighlightRange = range;
 		} else {
@@ -263,14 +263,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	if (definitionName) return definitionName;
 
 	NSString *defaultDefinitionName  = [SMLDefaults valueForKey:MGSFragariaPrefsSyntaxColouringPopUpString];
-	NSString *documentExtension = [[document valueForKey:@"name"] pathExtension];
+	NSString *documentExtension = [[document valueForKey:MGSFODocumentName] pathExtension];
 	
     NSString *lowercaseExtension = nil;
     
     // If there is no extension try to guess definition from first line
     if ([documentExtension isEqualToString:@""]) { 
         
-        NSString *string = [[[document valueForKey:@"firstTextScrollView"] documentView] string];
+        NSString *string = [[[document valueForKey:ro_MGSFOScrollView] documentView] string];
         NSString *firstLine = [string substringWithRange:[string lineRangeForRange:NSMakeRange(0,0)]];
         if ([firstLine hasPrefix:@"#!"] || [firstLine hasPrefix:@"%"] || [firstLine hasPrefix:@"<?"]) {
             lowercaseExtension = [self guessSyntaxDefinitionExtensionFromFirstLine:firstLine];
@@ -554,7 +554,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
  */
 - (NSString *)completeString
 {
-	return [[document valueForKey:@"firstTextView"] string];
+	return [[document valueForKey:ro_MGSFOTextView] string];
 }
 
 #pragma mark -
@@ -588,7 +588,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
  */
 - (void)pageRecolour
 {
-	[self pageRecolourTextView:[document valueForKey:@"firstTextView"]];
+	[self pageRecolourTextView:[document valueForKey:ro_MGSFOTextView]];
 }
 
 /*
@@ -1344,7 +1344,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
  */
 - (void) highlightErrors
 {
-    SMLTextView* textView = [document valueForKey:@"firstTextView"];
+    SMLTextView* textView = [document valueForKey:ro_MGSFOTextView];
     NSString* text = [self completeString];
     
     // Clear all highlights
@@ -1507,7 +1507,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		autocompleteWordsTimer = [NSTimer scheduledTimerWithTimeInterval:[[SMLDefaults valueForKey:MGSFragariaPrefsAutocompleteAfterDelay] floatValue] target:self selector:@selector(autocompleteWordsTimerSelector:) userInfo:textView repeats:NO];
 	}
 	
-	[[document valueForKey:@"lineNumbers"] updateLineNumbersCheckWidth:NO recolour:NO];
+	[[document valueForKey:ro_MGSFOLineNumbers] updateLineNumbersCheckWidth:NO recolour:NO];
 	
 }
 /*

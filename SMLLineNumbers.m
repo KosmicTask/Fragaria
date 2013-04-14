@@ -103,7 +103,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
  */
 - (void)updateLineNumbersCheckWidth:(BOOL)checkWidth recolour:(BOOL)recolour
 {
-	[self updateLineNumbersForClipView:[[document valueForKey:@"firstTextScrollView"] contentView] checkWidth:checkWidth recolour:recolour];
+	[self updateLineNumbersForClipView:[[document valueForKey:ro_MGSFOScrollView] contentView] checkWidth:checkWidth recolour:recolour];
 }
 
 /*
@@ -131,7 +131,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 	SMLTextView *textView = [clipView documentView];
 	
-	if ([[document valueForKey:@"showLineNumberGutter"] boolValue] == NO || textView == nil) {
+	if ([[document valueForKey:MGSFOShowLineNumberGutter] boolValue] == NO || textView == nil) {
 		if (checkWidth == YES && recolour == YES) {
 			[[document valueForKey:ro_MGSFOSyntaxColouring] pageRecolourTextView:textView];
 		}
@@ -140,8 +140,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
 	NSScrollView *scrollView = (NSScrollView *)[clipView superview];
 	addToScrollPoint = 0;	
-	if (scrollView == [document valueForKey:@"firstTextScrollView"]) {
-		gutterScrollView = [document valueForKey:@"firstGutterScrollView"];
+	if (scrollView == [document valueForKey:ro_MGSFOScrollView]) {
+		gutterScrollView = [document valueForKey:ro_MGSFOGutterScrollView];
 	} else {
 		goto allDone;
 	}
@@ -217,17 +217,17 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	if (checkWidth == YES) {
 		NSInteger widthOfStringInGutter = [lineNumbersString sizeWithAttributes:self.attributes].width;
 		
-		if (widthOfStringInGutter > ([[document valueForKey:@"gutterWidth"] integerValue] - 14)) { // Check if the gutterTextView has to be resized
-			[document setValue:[NSNumber numberWithInteger:widthOfStringInGutter + 20] forKey:@"gutterWidth"]; // Make it bigger than need be so it doesn't have to resized soon again
-			if ([[document valueForKey:@"showLineNumberGutter"] boolValue] == YES) {
-				gutterWidth = [[document valueForKey:@"gutterWidth"] integerValue];
+		if (widthOfStringInGutter > ([[document valueForKey:MGSFOGutterWidth] integerValue] - 14)) { // Check if the gutterTextView has to be resized
+			[document setValue:[NSNumber numberWithInteger:widthOfStringInGutter + 20] forKey:MGSFOGutterWidth]; // Make it bigger than need be so it doesn't have to resized soon again
+			if ([[document valueForKey:MGSFOShowLineNumberGutter] boolValue] == YES) {
+				gutterWidth = [[document valueForKey:MGSFOGutterWidth] integerValue];
 			} else {
 				gutterWidth = 0;
 			}
 			currentViewBounds = [[gutterScrollView superview] bounds];
 			[scrollView setFrame:NSMakeRect(gutterWidth, 0, currentViewBounds.size.width - gutterWidth, currentViewBounds.size.height)];
 			
-			[gutterScrollView setFrame:NSMakeRect(0, 0, [[document valueForKey:@"gutterWidth"] integerValue], currentViewBounds.size.height)];
+			[gutterScrollView setFrame:NSMakeRect(0, 0, [[document valueForKey:MGSFOGutterWidth] integerValue], currentViewBounds.size.height)];
 		}
 	}
 	

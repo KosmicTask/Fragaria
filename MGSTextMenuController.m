@@ -382,7 +382,7 @@ static id sharedInstance = nil;
 	if (sumOfAllCharactersRemoved == 0) {
 		NSBeep();
 	} else {
-		if ([[SMLCurrentDocument valueForKey:@"isEdited"] boolValue] == NO) {
+		if ([[SMLCurrentDocument valueForKey:MGSFOIsEdited] boolValue] == NO) {
 			[self setEdited: YES];
 		}
 		[[SMLCurrentDocument valueForKey:ro_MGSFOLineNumbers] updateLineNumbersCheckWidth:NO recolour:NO];

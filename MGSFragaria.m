@@ -22,6 +22,13 @@ NSString * const MGSFOIsEdited = @"isEdited";
 NSString * const MGSFOSyntaxDefinitionName = @"syntaxDefinition";
 NSString * const MGSFODocumentName = @"name";
 
+// class name strings
+// TODO: expose these to allow subclass name definition
+NSString * const MGSFOEditorTextViewClassName = @"editorTextViewClassName";
+NSString * const MGSFOLineNumbersClassName = @"lineNumbersClassName";
+NSString * const MGSFOGutterTextViewClassName = @"gutterTextViewClassName";
+NSString * const MGSFOSyntaxColouringClassName = @"syntaxColouringClassName";
+
 // integer
 NSString * const MGSFOGutterWidth = @"gutterWidth";
 
@@ -235,6 +242,7 @@ char kcLineWrapPrefChanged;
 	if ((self = [super init])) {
 		_currentInstance = self;
 		
+        // a doc spec is mandatory
 		if (object) {
 			self.docSpec = object;
 		} else {
@@ -245,15 +253,13 @@ char kcLineWrapPrefChanged;
         FRAFontTransformer *fontTransformer = [[[FRAFontTransformer alloc] init] autorelease];
         [NSValueTransformer setValueTransformer:fontTransformer forName:@"FontTransformer"];
         
+        // observe defaults that affect rendering
         NSUserDefaultsController *defaultsController = [NSUserDefaultsController sharedUserDefaultsController];
         [defaultsController addObserver:self forKeyPath:@"values.FragariaGutterWidth" options:NSKeyValueObservingOptionNew context:&kcGutterWidthPrefChanged];
         [defaultsController addObserver:self forKeyPath:@"values.FragariaSyntaxColourNewDocuments" options:NSKeyValueObservingOptionNew context:&kcSyntaxColourPrefChanged];
         [defaultsController addObserver:self forKeyPath:@"values.FragariaAutoSpellCheck" options:NSKeyValueObservingOptionNew context:&kcSpellCheckPrefChanged];
         [defaultsController addObserver:self forKeyPath:@"values.FragariaShowLineNumberGutter" options:NSKeyValueObservingOptionNew context:&kcLineNumberPrefChanged];
         [defaultsController addObserver:self forKeyPath:@"values.FragariaLineWrapNewDocuments" options:NSKeyValueObservingOptionNew context:&kcLineWrapPrefChanged];
-        
-        
-        
         
         // Create the Sets containing the valid setter/getter combinations for the Docspec
         
@@ -297,6 +303,13 @@ char kcLineWrapPrefChanged;
     
 	NSInteger gutterWidth = [[SMLDefaults valueForKey:MGSFragariaPrefsGutterWidth] integerValue];
     
+    // TODO: allow user to pass in custom class name in doc spec. This will likely entail refactoring
+    // the relevant clas headers to exposure sufficient information to make subclassing feasible.
+    Class editorTextViewClass = [SMLTextView class];
+    Class lineNumberClass = [SMLLineNumbers class];
+    Class gutterTextViewClass = [SMLGutterTextView class];
+    Class syntaxColouringClass = [SMLSyntaxColouring class];
+    
 	// create text scrollview
 	NSScrollView *textScrollView = [[[NSScrollView alloc] initWithFrame:NSMakeRect(0, 0, [contentView bounds].size.width, [contentView bounds].size.height)] autorelease];
 	NSSize contentSize = [textScrollView contentSize];
@@ -308,12 +321,12 @@ char kcLineWrapPrefChanged;
 	[textScrollView setPostsFrameChangedNotifications:YES];
 		
 	// create textview
-	SMLTextView *textView = [[[SMLTextView alloc] initWithFrame:NSMakeRect(0, 0, contentSize.width, contentSize.height)] autorelease];
+	SMLTextView *textView = [[[editorTextViewClass alloc] initWithFrame:NSMakeRect(0, 0, contentSize.width, contentSize.height)] autorelease];
     [textView setFragaria:self];
 	[textScrollView setDocumentView:textView];
 
     // create line numbers
-	SMLLineNumbers *lineNumbers = [[[SMLLineNumbers alloc] initWithDocument:self.docSpec] autorelease];
+	SMLLineNumbers *lineNumbers = [[[lineNumberClass alloc] initWithDocument:self.docSpec] autorelease];
 	[[NSNotificationCenter defaultCenter] addObserver:lineNumbers selector:@selector(viewBoundsDidChange:) name:NSViewBoundsDidChangeNotification object:[textScrollView contentView]];
 	[[NSNotificationCenter defaultCenter] addObserver:lineNumbers selector:@selector(viewBoundsDidChange:) name:NSViewFrameDidChangeNotification object:[textScrollView contentView]];	
 	[self.docSpec setValue:lineNumbers forKey:ro_MGSFOLineNumbers];
@@ -327,7 +340,7 @@ char kcLineWrapPrefChanged;
 	[[gutterScrollView contentView] setAutoresizesSubviews:YES];
 	
 	// create gutter textview
-	SMLGutterTextView *gutterTextView = [[[SMLGutterTextView alloc] initWithFrame:NSMakeRect(0, 0, gutterWidth, contentSize.height - 50)] autorelease];
+	SMLGutterTextView *gutterTextView = [[[gutterTextViewClass alloc] initWithFrame:NSMakeRect(0, 0, gutterWidth, contentSize.height - 50)] autorelease];
 	[gutterScrollView setDocumentView:gutterTextView];
 	
 	// update the docSpec
@@ -336,7 +349,7 @@ char kcLineWrapPrefChanged;
 	[self.docSpec setValue:gutterScrollView forKey:ro_MGSFOGutterScrollView];
 	
 	// add syntax colouring
-	SMLSyntaxColouring *syntaxColouring = [[[SMLSyntaxColouring alloc] initWithDocument:self.docSpec] autorelease];
+	SMLSyntaxColouring *syntaxColouring = [[[syntaxColouringClass alloc] initWithDocument:self.docSpec] autorelease];
 	[self.docSpec setValue:syntaxColouring forKey:ro_MGSFOSyntaxColouring];
 	[self.docSpec setValue:syntaxColouring forKey:MGSFOAutoCompleteDelegate];
     

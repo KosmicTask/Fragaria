@@ -35,6 +35,9 @@
 	//
 	[fragaria setObject:self forKey:MGSFODelegate];
 	
+    // set the syntax colouring delegate
+    [fragaria setObject:self forKey:MGSFOSyntaxColouringDelegate];
+    
 	// define our syntax definition
 	[self setSyntaxDefinition:@"Objective-C"];
 	
@@ -228,5 +231,202 @@
      that may be relevant to the application: eg: a plist that may contain custom data.
      */
     NSLog(@"notification : %@", [aNotification name]); 
+}
+
+#pragma mark -
+#pragma mark SMLSyntaxColouringDelegate
+
+/*
+ 
+ For more information on custom colouring see SMLSyntaxColouringDelegate.h
+ 
+ */
+
+/*
+ 
+ - fragariaDocument:willColourWithBlock:string:range:info
+ 
+ */
+- (void) fragariaDocument:(id)document willColourWithBlock:(BOOL (^)(NSDictionary *, NSRange))colourWithBlock string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info
+{
+#pragma unused(document, colourWithBlock, string, range, info)
+    NSLog(@"Will colour document.");
+    
+    // we can call colourWithBlock to perform initial colouration
+}
+/*
+ 
+ - fragariaDocument:willColourTagWithBlock:string:range:info
+ 
+ */
+- (BOOL) fragariaDocument:(id)document willColourTagWithBlock:(BOOL (^)(NSDictionary *, NSRange))colourWithBlock string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info
+{
+    #pragma unused(document, string)
+    BOOL success = NO;
+    
+    // query info
+    NSString *tag = [info objectForKey:SMLSyntaxTag];
+    NSInteger tagID = [[info objectForKey:SMLSyntaxTagID] integerValue];
+    BOOL willColour = [[info objectForKey:SMLSyntaxWillColour] boolValue];
+    NSDictionary *attributes = [info objectForKey:SMLSyntaxAttributes];
+    NSDictionary *syntaxInfo = [info objectForKey:SMLSyntaxInfo];
+
+    // compiler comfort
+    (void)syntaxInfo;
+
+    
+    NSLog(@"willColourTagWithBlock Colouring tag : %@ id : %li caller will colour : %@", tag, tagID, (willColour ? @"YES" : @"NO"));
+    
+    // tag
+    switch (tagID) {
+        case kSMLSyntaxTagNumber:
+            
+            // we can call colourWithBlock to perform initial tag colouration
+            if (NO) {
+                
+                // colour the whole string with the number tag colour
+                colourWithBlock(attributes, range);
+                
+                success = YES;
+            }
+            break;
+            
+        case kSMLSyntaxTagCommand:
+            break;
+            
+        case kSMLSyntaxTagInstruction:
+            break;
+            
+        case kSMLSyntaxTagKeyword:
+            break;
+            
+        case kSMLSyntaxTagAutoComplete:
+            break;
+            
+        case kSMLSyntaxTagVariable:
+            break;
+            
+        case kSMLSyntaxTagFirstString:
+            break;
+            
+        case kSMLSyntaxTagSecondString:
+            break;
+            
+        case kSMLSyntaxTagAttribute:
+            break;
+
+        case kSMLSyntaxTagSingleLineComment:
+            break;
+            
+        case kSMLSyntaxTagMultiLineComment:
+            
+            // we can prevent further colouring by returning YES
+            if (NO) {
+                success = YES;
+            }
+            
+            break;
+            
+        case kSMLSyntaxTagSecondStringPass2:
+            break;
+    }
+    
+
+    // return YES if code has been fully coloured and no further colouring of tag is required.
+    // return NO if we want the caller to colour the code for the current tag.
+    return success;
+}
+
+/*
+ 
+ - fragariaDocument:willColourTagWithBlock:string:range:info
+ 
+ */
+- (void) fragariaDocument:(id)document didColourTagWithBlock:(BOOL (^)(NSDictionary *, NSRange))colourWithBlock string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info
+{
+#pragma unused(document, string)
+    
+    // query info
+    NSString *tag = [info objectForKey:SMLSyntaxTag];
+    NSInteger tagID = [[info objectForKey:SMLSyntaxTagID] integerValue];
+    BOOL willColour = [[info objectForKey:SMLSyntaxWillColour] boolValue];
+    NSDictionary *attributes = [info objectForKey:SMLSyntaxAttributes];
+    NSDictionary *syntaxInfo = [info objectForKey:SMLSyntaxInfo];
+    
+    // compiler comfort
+    (void)syntaxInfo;
+    
+    NSLog(@"didColourTagWithBlock Colouring tag : %@ id : %li caller will colour : %@", tag, tagID, (willColour ? @"YES" : @"NO"));
+    
+    NSString *subString = [string substringWithRange:range];
+    NSScanner *rangeScanner = [NSScanner scannerWithString:subString];
+    [rangeScanner setScanLocation:0];
+    
+    // tag
+    switch (tagID) {
+        case kSMLSyntaxTagNumber:
+            
+            break;
+            
+        case kSMLSyntaxTagCommand:
+            break;
+            
+        case kSMLSyntaxTagInstruction:
+            break;
+            
+        case kSMLSyntaxTagKeyword:
+        {
+            // normally we iterate over the string using an NSScanner to identiy our substrings.
+            // in this simple case we just colour the occurence of a given string as a false keyword.
+            NSString *fauxKeyword = @" noodle";
+            while (![rangeScanner isAtEnd]) {
+                if ([rangeScanner scanUpToString:fauxKeyword intoString:nil]) {
+                    NSUInteger location = [rangeScanner scanLocation];
+                    NSRange testRange = NSMakeRange(location, [fauxKeyword length]);
+                    colourWithBlock(attributes, testRange);
+                }
+            }
+        }
+            break;
+            
+        case kSMLSyntaxTagAutoComplete:
+            break;
+            
+        case kSMLSyntaxTagVariable:
+            break;
+            
+        case kSMLSyntaxTagFirstString:
+            break;
+            
+        case kSMLSyntaxTagSecondString:
+            break;
+            
+        case kSMLSyntaxTagAttribute:
+            break;
+            
+        case kSMLSyntaxTagSingleLineComment:
+            break;
+            
+        case kSMLSyntaxTagMultiLineComment:
+            break;
+            
+        case kSMLSyntaxTagSecondStringPass2:
+            break;
+    }
+}
+
+
+/*
+ 
+ - fragariaDocument:willColourWithBlock:string:range:info
+ 
+ */
+- (void) fragariaDocument:(id)document didColourWithBlock:(BOOL (^)(NSDictionary *, NSRange))colourWithBlock string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info
+{
+    #pragma unused(document, colourWithBlock, string, range, info)
+    NSLog(@"Did colour document.");
+    
+    // we can call colourWithBlock to perform final colouration
+
 }
 @end

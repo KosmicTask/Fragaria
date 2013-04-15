@@ -112,6 +112,12 @@ syntaxError.length = 10;
 fragaria.syntaxErrors = @[syntaxError];
 ```
 
+##Custom colouring
+
+The `SMLSyntaxColouringDelegate` protocol allows a delegate to influence the syntax colouring for each of a number of tags, where a tag denotes a syntactical grouping such as numbers, attributes, comments or keywords. 
+
+The delegate can completely override the colouring for a given tag or provide additional colouring support. Document level delegate messages provide an opportunity to provide colouring for custom tag configurations. For more details see `SMLSyntaxColouringDelegate.h` and  the example code in `FragariaAppDelegate.m`.
+
 ##Supported languages
 Fragaria supports syntax colouring for a wide range of programming languages and configuration file formats:
 

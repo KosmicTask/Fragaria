@@ -24,6 +24,27 @@ Unless required by applicable law or agreed to in writing, software distributed 
 #import "SMLAutoCompleteDelegate.h"
 #import "SMLSyntaxColouringDelegate.h"
 
+// syntax colouring information dictionary keys
+NSString *SMLSyntaxTag = @"tag";
+NSString *SMLSyntaxTagID = @"tagID";
+NSString *SMLSyntaxWillColour = @"willColour";
+NSString *SMLSyntaxAttributes = @"attributes";
+NSString *SMLSyntaxInfo = @"syntaxInfo";
+
+// syntax colouring tag names
+NSString *SMLSyntaxTagNumber = @"number";
+NSString *SMLSyntaxTagCommand = @"command";
+NSString *SMLSyntaxTagInstruction = @"instruction";
+NSString *SMLSyntaxTagKeyword = @"keyword";
+NSString *SMLSyntaxTagAutoComplete = @"autocomplete";
+NSString *SMLSyntaxTagVariable = @"variable";
+NSString *SMLSyntaxTagFirstString = @"firstString";
+NSString *SMLSyntaxTagSecondString = @"secondString";
+NSString *SMLSyntaxTagAttribute = @"attribute";
+NSString *SMLSyntaxTagSingleLineComment = @"singleLineComment";
+NSString *SMLSyntaxTagMultiLineComment = @"multiLineComment";
+NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
+
 // class extension
 @interface SMLSyntaxColouring()
 
@@ -718,23 +739,45 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	
     // colouring delegate
     id colouringDelegate = [document valueForKey:MGSFOSyntaxColouringDelegate];
-    BOOL delegateCanColour = [colouringDelegate respondsToSelector:@selector(fragariaDocument:string:colourRange:info:)];
+    BOOL delegateRespondsToWillColourTag = [colouringDelegate respondsToSelector:@selector(fragariaDocument:willColourTagWithBlock:string:range:info:)];
+    BOOL delegateRespondsToDidColourTag = [colouringDelegate respondsToSelector:@selector(fragariaDocument:didColourTagWithBlock:string:range:info:)];
     BOOL delegateDidColour = NO;
     NSDictionary *delegateInfo =  nil;
 	
+    // a block that the colour delegate can use to effect colouring
+    BOOL (^colourRangeBlock)(NSDictionary *, NSRange) = ^(NSDictionary *colourInfo, NSRange range) {
+        [self setColour:colourInfo range:range];
+        
+        return YES;
+    };
+    
     @try {
 		
+        //
+        // tell delegate we will colour the document
+        //
+        if ([colouringDelegate respondsToSelector:@selector(fragariaDocument:willColourWithBlock:string:range:info:)]) {
+            
+            // build minimal delegate info dictionary
+            delegateInfo = @{SMLSyntaxInfo : self.syntaxDictionary};
+            
+            [colouringDelegate fragariaDocument:document willColourWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+        }
+        
         //
         // Numbers
         //
         NSNumber *doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourNumbers];
        
-        // let delegate do colouring
-        if (delegateCanColour) {
+        // initial delegate tag colouring
+        if (delegateRespondsToWillColourTag) {
             
-            // TODO: provide a callback mechansim, perhaps a block, that can call -setColour:range as required
-            delegateInfo = @{@"type" : @"number", @"willColour" : doColouring, @"colourInfo" : numbersColour, @"syntaxInfo" : self.syntaxDictionary};
-            delegateDidColour = [colouringDelegate fragariaDocument:document string:documentString colourRange:rangeToRecolour info:delegateInfo];
+            // build delegate info dictionary
+            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagNumber, SMLSyntaxTagID : @(kSMLSyntaxTagNumber), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : numbersColour, SMLSyntaxInfo : self.syntaxDictionary};
+            
+            // call the delegate
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            
         } else {
             delegateDidColour = NO;
         }
@@ -785,10 +828,30 @@ Unless required by applicable law or agreed to in writing, software distributed 
             }
         }
 
+        // final delegate tag colouring
+        if (delegateRespondsToDidColourTag) {
+            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        } 
+
         //
 		// Commands
         //
-		if (![self.beginCommand isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourCommands] boolValue] == YES) {
+        doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourCommands];
+        
+        // initial delegate tag colouring
+        if (delegateRespondsToWillColourTag) {
+            
+            // build delegate info dictionary
+            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagCommand, SMLSyntaxTagID : @(kSMLSyntaxTagCommand), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : commandsColour, SMLSyntaxInfo : self.syntaxDictionary};
+            
+            // call the delegate
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            
+        } else {
+            delegateDidColour = NO;
+        }
+
+		if (![self.beginCommand isEqualToString:@""] && [doColouring boolValue] && !delegateDidColour) {
 			searchSyntaxLength = [self.endCommand length];
 			unichar beginCommandCharacter = [self.beginCommand characterAtIndex:0];
 			unichar endCommandCharacter = [self.endCommand characterAtIndex:0];
@@ -835,11 +898,31 @@ Unless required by applicable law or agreed to in writing, software distributed 
 			}
 		}
 		
+        // final delegate tag colouring
+        if (delegateRespondsToDidColourTag) {
+            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        }
+
 
         //
 		// Instructions
         //
-		if (![self.beginInstruction isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourInstructions] boolValue] == YES) {
+        doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourInstructions];
+        
+        // initial delegate tag colouring
+        if (delegateRespondsToWillColourTag) {
+            
+            // build delegate info dictionary
+            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagInstruction, SMLSyntaxTagID : @(kSMLSyntaxTagInstruction), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : instructionsColour, SMLSyntaxInfo : self.syntaxDictionary};
+            
+            // call the delegate
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            
+        } else {
+            delegateDidColour = NO;
+        }
+
+		if (![self.beginInstruction isEqualToString:@""] && [doColouring boolValue] && !delegateDidColour) {
 			// It takes too long to scan the whole document if it's large, so for instructions, first multi-line comment and second multi-line comment search backwards and begin at the start of the first beginInstruction etc. that it finds from the present position and, below, break the loop if it has passed the scanned range (i.e. after the end instruction)
 			
 			beginLocationInMultiLine = [documentString rangeOfString:self.beginInstruction options:NSBackwardsSearch range:NSMakeRange(0, rangeLocation)].location;
@@ -884,11 +967,31 @@ Unless required by applicable law or agreed to in writing, software distributed 
 				beginLocationInMultiLine = [documentScanner scanLocation];
 			}
 		}
-		
+
+        // final delegate tag colouring
+        if (delegateRespondsToDidColourTag) {
+            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        }
+
 		//
 		// Keywords
         //
-		if ([keywords count] != 0 && [[SMLDefaults valueForKey:MGSFragariaPrefsColourKeywords] boolValue] == YES) {
+        doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourKeywords];
+        
+        // initial delegate tag colouring
+        if (delegateRespondsToWillColourTag) {
+            
+            // build delegate info dictionary
+            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagKeyword, SMLSyntaxTagID : @(kSMLSyntaxTagKeyword), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : keywordsColour, SMLSyntaxInfo : self.syntaxDictionary};
+            
+            // call the delegate
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            
+        } else {
+            delegateDidColour = NO;
+        }
+
+		if ([keywords count] != 0 && [doColouring boolValue] && !delegateDidColour) {
             
             // reset scanner
 			[rangeScanner mgs_setScanLocation:0];
@@ -923,11 +1026,31 @@ Unless required by applicable law or agreed to in writing, software distributed 
 				}
 			}
 		}
-			
+
+        // final delegate tag colouring
+        if (delegateRespondsToDidColourTag) {
+            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        }
+
 		//
 		// Autocomplete
         //
-		if ([self.autocompleteWords count] != 0 && [[SMLDefaults valueForKey:MGSFragariaPrefsColourAutocomplete] boolValue] == YES) {
+        doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourAutocomplete];
+        
+        // initial delegate tag colouring
+        if (delegateRespondsToWillColourTag) {
+            
+            // build delegate info dictionary
+            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagAutoComplete, SMLSyntaxTagID : @(kSMLSyntaxTagAutoComplete), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : autocompleteWordsColour, SMLSyntaxInfo : self.syntaxDictionary};
+            
+            // call the delegate
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            
+        } else {
+            delegateDidColour = NO;
+        }
+
+		if ([self.autocompleteWords count] != 0 && [doColouring boolValue] && !delegateDidColour) {
             
             // reset scanner
 			[rangeScanner mgs_setScanLocation:0];
@@ -964,10 +1087,30 @@ Unless required by applicable law or agreed to in writing, software distributed 
 			}
 		}
 		
+        // final delegate tag colouring
+        if (delegateRespondsToDidColourTag) {
+            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        }
+
 		//
 		// Variables
         //
-		if (self.beginVariable != nil && [[SMLDefaults valueForKey:MGSFragariaPrefsColourVariables] boolValue] == YES) {
+        doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourVariables];
+        
+        // initial delegate tag colouring
+        if (delegateRespondsToWillColourTag) {
+            
+            // build delegate info dictionary
+            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagVariable, SMLSyntaxTagID : @(kSMLSyntaxTagVariable), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : variablesColour, SMLSyntaxInfo : self.syntaxDictionary};
+            
+            // call the delegate
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            
+        } else {
+            delegateDidColour = NO;
+        }
+
+		if (self.beginVariable != nil && [doColouring boolValue]  && !delegateDidColour) {
             
             // reset scanner
 			[rangeScanner mgs_setScanLocation:0];
@@ -999,10 +1142,31 @@ Unless required by applicable law or agreed to in writing, software distributed 
 			}
 		}	
 
+        // final delegate tag colouring
+        if (delegateRespondsToDidColourTag) {
+            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        }
+
 		//
 		// Second string, first pass
         //
-		if (![self.secondString isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourStrings] boolValue] == YES) {
+
+        doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourStrings];
+        
+        // initial delegate tag colouring
+        if (delegateRespondsToWillColourTag) {
+            
+            // build delegate info dictionary
+            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagSecondString, SMLSyntaxTagID : @(kSMLSyntaxTagSecondString), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : stringsColour, SMLSyntaxInfo : self.syntaxDictionary};
+            
+            // call the delegate
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            
+        } else {
+            delegateDidColour = NO;
+        }
+
+		if (![self.secondString isEqualToString:@""] && [doColouring boolValue] && !delegateDidColour) {
 			@try {
 				secondStringMatcher = [[ICUMatcher alloc] initWithPattern:secondStringPattern overString:rangeString];
 			}
@@ -1015,11 +1179,31 @@ Unless required by applicable law or agreed to in writing, software distributed 
 				[self setColour:stringsColour range:NSMakeRange(foundRange.location + rangeLocation + 1, foundRange.length - 1)];
 			}
 		}
-		
+
+        // final delegate tag colouring
+        if (delegateRespondsToDidColourTag) {
+            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        }
+
 		//
 		// First string
         //
-		if (![self.firstString isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourStrings] boolValue] == YES) {
+        doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourStrings];
+        
+        // initial delegate tag colouring
+        if (delegateRespondsToWillColourTag) {
+            
+            // build delegate info dictionary
+            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagFirstString, SMLSyntaxTagID : @(kSMLSyntaxTagFirstString), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : stringsColour, SMLSyntaxInfo : self.syntaxDictionary};
+            
+            // call the delegate
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            
+        } else {
+            delegateDidColour = NO;
+        }
+
+		if (![self.firstString isEqualToString:@""] && [doColouring boolValue] && !delegateDidColour) {
 			@try {
 				firstStringMatcher = [[ICUMatcher alloc] initWithPattern:firstStringPattern overString:rangeString];
 			}
@@ -1035,11 +1219,31 @@ Unless required by applicable law or agreed to in writing, software distributed 
 				[self setColour:stringsColour range:NSMakeRange(foundRange.location + rangeLocation + 1, foundRange.length - 1)];
 			}
 		}
-		
+
+        // final delegate tag colouring
+        if (delegateRespondsToDidColourTag) {
+            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        }
+
 		//
 		// Attributes
         //
-		if ([[SMLDefaults valueForKey:MGSFragariaPrefsColourAttributes] boolValue] == YES) {
+        doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourAttributes];
+        
+        // initial delegate tag colouring
+        if (delegateRespondsToWillColourTag) {
+            
+            // build delegate info dictionary
+            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagAttribute, SMLSyntaxTagID : @(kSMLSyntaxTagAttribute), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : attributesColour, SMLSyntaxInfo : self.syntaxDictionary};
+            
+            // call the delegate
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            
+        } else {
+            delegateDidColour = NO;
+        }
+
+		if ([doColouring boolValue] && !delegateDidColour) {
             
             // reset scanner
 			[rangeScanner mgs_setScanLocation:0];
@@ -1070,11 +1274,31 @@ Unless required by applicable law or agreed to in writing, software distributed 
 			}
 		}
 		
+        // final delegate tag colouring
+        if (delegateRespondsToDidColourTag) {
+            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        }
+
 		//
 		// Colour single-line comments
         //
+        doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourComments];
+        
+        // initial delegate tag colouring
+        if (delegateRespondsToWillColourTag) {
+            
+            // build delegate info dictionary
+            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagSingleLineComment, SMLSyntaxTagID : @(kSMLSyntaxTagSingleLineComment), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : commentsColour, SMLSyntaxInfo : self.syntaxDictionary};
+            
+            // call the delegate
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            
+        } else {
+            delegateDidColour = NO;
+        }
+
         for (NSString *singleLineComment in self.singleLineComments) {
-            if (![singleLineComment isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourComments] boolValue] == YES) {
+            if (![singleLineComment isEqualToString:@""] && [doColouring boolValue] && !delegateDidColour) {
                 
                 // reset scanner
                 [rangeScanner mgs_setScanLocation:0];
@@ -1134,9 +1358,29 @@ Unless required by applicable law or agreed to in writing, software distributed 
             }
 		}
         
+        // final delegate tag colouring
+        if (delegateRespondsToDidColourTag) {
+            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        }
+
 		//
 		// Multi-line comments
         //
+        doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourComments];
+        
+        // initial delegate tag colouring
+        if (delegateRespondsToWillColourTag) {
+            
+            // build delegate info dictionary
+            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagMultiLineComment, SMLSyntaxTagID : @(kSMLSyntaxTagMultiLineComment), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : commentsColour, SMLSyntaxInfo : self.syntaxDictionary};
+            
+            // call the delegate
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            
+        } else {
+            delegateDidColour = NO;
+        }
+
         for (NSArray *multiLineComment in self.multiLineComments) {
             
             // Get strings
@@ -1144,7 +1388,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
             NSString *endMultiLineComment = [multiLineComment objectAtIndex:1];
             
             // Is colouring required?
-            if (![beginMultiLineComment isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourComments] boolValue] == YES) {
+            if (![beginMultiLineComment isEqualToString:@""] && [doColouring boolValue]  && !delegateDidColour) {
                 
                 // Default to start of document
                 beginLocationInMultiLine = 0;
@@ -1241,10 +1485,30 @@ Unless required by applicable law or agreed to in writing, software distributed 
             }
 		}
         
+        // final delegate tag colouring
+        if (delegateRespondsToDidColourTag) {
+            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        }
+
 		//
 		// Second string, second pass
         //
-		if (![self.secondString isEqualToString:@""] && [[SMLDefaults valueForKey:MGSFragariaPrefsColourStrings] boolValue] == YES) {
+        doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourStrings];
+        
+        // initial delegate tag colouring
+        if (delegateRespondsToWillColourTag) {
+            
+            // build delegate info dictionary
+            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagSecondStringPass2, SMLSyntaxTagID : @(kSMLSyntaxTagSecondStringPass2), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : stringsColour, SMLSyntaxInfo : self.syntaxDictionary};
+            
+            // call the delegate
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            
+        } else {
+            delegateDidColour = NO;
+        }
+
+		if (![self.secondString isEqualToString:@""] && [doColouring boolValue] && !delegateDidColour) {
 			@try {
 				[secondStringMatcher reset];
 			}
@@ -1260,6 +1524,22 @@ Unless required by applicable law or agreed to in writing, software distributed 
 				[self setColour:stringsColour range:NSMakeRange(foundRange.location + rangeLocation + 1, foundRange.length - 1)];
 			}
 		}
+
+        // final delegate tag colouring
+        if (delegateRespondsToDidColourTag) {
+            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        }
+
+        //
+        // tell delegate we are did colour the document
+        //
+        if ([colouringDelegate respondsToSelector:@selector(fragariaDocument:didColourWithBlock:string:range:info:)]) {
+            
+            // build minimal delegate info dictionary
+            delegateInfo = @{@"syntaxInfo" : self.syntaxDictionary};
+            
+            [colouringDelegate fragariaDocument:document didColourWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+        }
 
         //
         // Errors

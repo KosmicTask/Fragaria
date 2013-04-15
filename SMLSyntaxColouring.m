@@ -793,6 +793,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 			unichar beginCommandCharacter = [self.beginCommand characterAtIndex:0];
 			unichar endCommandCharacter = [self.endCommand characterAtIndex:0];
             
+            // reset scanner
+			[rangeScanner mgs_setScanLocation:0];
+
             // scan range to end
 			while (![rangeScanner isAtEnd]) {
 				[rangeScanner scanUpToString:self.beginCommand intoString:nil];
@@ -846,7 +849,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 			}			
 
 			searchSyntaxLength = [self.endInstruction length];
-            
+
+            // reset scanner
+			[documentScanner mgs_setScanLocation:0];
+
             // scan document to end
 			while (![documentScanner isAtEnd]) {
 				searchRange = NSMakeRange(beginLocationInMultiLine, rangeToRecolour.length);

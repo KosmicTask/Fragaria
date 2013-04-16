@@ -62,11 +62,36 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[self setHorizontallyResizable:YES];
 		[self setAutoresizingMask:NSViewHeightSizable];
 		
+        // TODO:
+        if (NO) {
+            /* vlidholt/fragaria adopts this approach to try and improve line number accuracy.
+             
+              Not sure if this the answer to the EOF line number alignment issue.
+             
+              These settings would need to respond to changes in font / size and be replicated in the SMLTextView.
+             
+              Think about it.
+             
+              The issue may be more to do with positioning the gutter scrcoll view.
+              Does line wrapping make the issue worse?
+             
+             */
+            NSMutableParagraphStyle * style = [[[NSMutableParagraphStyle alloc] init] autorelease];
+            [style setAlignment:NSRightTextAlignment];
+            [style setLineSpacing:1.0];
+            [style setMinimumLineHeight:11.0];
+            [style setMaximumLineHeight:11.0];
+            [self setDefaultParagraphStyle:style];
+            
+            [self  setTypingAttributes: [NSDictionary dictionaryWithObjectsAndKeys:
+                                         [self defaultParagraphStyle], NSParagraphStyleAttributeName,
+                                         nil]];
+        }
+        
 		[self setFont:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]]];
 		[self setTextColor:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsGutterTextColourWell]]];
 		[self setInsertionPointColor:[NSColor textColor]];
 
-        
 		[self setBackgroundColor:[NSColor colorWithCalibratedWhite:0.94f alpha:1.0f]];
 
 		NSUserDefaultsController *defaultsController = [NSUserDefaultsController sharedUserDefaultsController];

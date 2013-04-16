@@ -1505,7 +1505,7 @@
 							<string key="NSFrame">{{91, 411}, {210, 26}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="945283340"/>
+							<reference key="NSNextKeyView"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSComboBoxCell" key="NSCell" id="904507824">
 								<int key="NSCellFlags">72351808</int>
@@ -1681,6 +1681,7 @@
 							<string key="NSFrame">{{596, 415}, {51, 19}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView" ref="945283340"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="828755097">
 								<int key="NSCellFlags">-2080374784</int>
@@ -4190,7 +4191,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">615</int>
+			<int key="maxID">617</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -4306,9 +4307,11 @@
 							<string>shiftRightAction:</string>
 							<string>toLowercaseAction:</string>
 							<string>toUppercaseAction:</string>
+							<string>toggleBreakpointAction:</string>
 						</object>
 						<object class="NSArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -4349,6 +4352,7 @@
 							<string>shiftRightAction:</string>
 							<string>toLowercaseAction:</string>
 							<string>toUppercaseAction:</string>
+							<string>toggleBreakpointAction:</string>
 						</object>
 						<object class="NSArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -4418,6 +4422,10 @@
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">toUppercaseAction:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">toggleBreakpointAction:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 						</object>

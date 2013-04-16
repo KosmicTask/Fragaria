@@ -70,6 +70,11 @@ typedef NSInteger SMLSyntaxGroupInteger;
  SMLSyntaxAttributes: NSDictionary of NSAttributed string attributes used to colour the string.
  SMLSyntaxInfo: NSDictionary containing Fragaria syntax definition.
  
+ Syntax Info dictionary keys
+ ===========================
+ 
+ For key values see SMLSyntaxDefinition.h
+ 
  Delegate calling
  ================
  

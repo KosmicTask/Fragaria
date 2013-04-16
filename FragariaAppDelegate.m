@@ -269,6 +269,8 @@
     NSInteger groupID = [[info objectForKey:SMLSyntaxGroupID] integerValue];
     BOOL willColour = [[info objectForKey:SMLSyntaxWillColour] boolValue];
     NSDictionary *attributes = [info objectForKey:SMLSyntaxAttributes];
+    
+    // for key values see SMLSyntaxDefinition.h
     NSDictionary *syntaxInfo = [info objectForKey:SMLSyntaxInfo];
 
     // compiler comfort

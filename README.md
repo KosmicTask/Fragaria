@@ -118,6 +118,7 @@ The `SMLSyntaxColouringDelegate` protocol allows a delegate to influence the syn
 
 The delegate can completely override the colouring for a given group or provide additional colouring support. Document level delegate messages provide an opportunity to provide colouring for custom group configurations. For more details see `SMLSyntaxColouringDelegate.h` and  the example code in `FragariaAppDelegate.m`.
 
+
 ##Supported languages
 Fragaria supports syntax colouring for a wide range of programming languages and configuration file formats:
 
@@ -249,7 +250,8 @@ xml
 
 To define a new syntax definition:
 
-1. Generate a plist that defines the language syntax. The plist structure is simple and browsing the [existing definitions](Syntax%20Definitions) should provide plenty of enlightenment.
+1. Generate a plist that defines the language syntax. The plist structure is simple and browsing the [existing definitions](Syntax%20Definitions) should provide some enlightenment. The plist keys are defined in ` SMLSyntaxDefinition.h`. For much deeper insight see `SMLSyntaxColouring - recolourRange:`.
+
 2. Insert a reference to the new plist into [SyntaxDefinitions.plist](SyntaxDefinitions.plist)
 
 ##Where did it come from?

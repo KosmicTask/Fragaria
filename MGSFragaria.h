@@ -43,6 +43,7 @@ extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 #import "MGSBreakpointDelegate.h"
 #import "SMLSyntaxError.h"
 #import "SMLSyntaxColouringDelegate.h"
+#import "SMLSyntaxDefinition.h"
 
 @protocol MGSFragariaTextViewDelegate <NSObject>
 @optional

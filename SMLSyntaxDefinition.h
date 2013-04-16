@@ -1,5 +1,5 @@
 //
-//  MGSSyntaxDefinition.h
+//  SMLSyntaxDefinition.h
 //  Fragaria
 //
 //  Created by Jonathan on 16/04/2013.

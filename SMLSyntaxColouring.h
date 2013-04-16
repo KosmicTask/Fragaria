@@ -64,10 +64,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	BOOL syntaxDefinitionAllowsColouring;
     
 	NSCharacterSet *attributesCharacterSet;
-	NSCharacterSet *beginVariable;
-	NSCharacterSet *endVariable;
+	NSCharacterSet *beginVariableCharacterSet;
+	NSCharacterSet *endVariableCharacterSet;
 	NSCharacterSet *letterCharacterSet, *keywordStartCharacterSet, *keywordEndCharacterSet;
 	NSCharacterSet *numberCharacterSet;
+    NSCharacterSet *nameCharacterSet;
     unichar decimalPointCharacter;
     NSArray *syntaxErrors;
     

@@ -87,8 +87,8 @@ NSString *SMLSyntaxDefinitionIncludeInKeywordEndCharacterSet = @"includeInKeywor
 @property (retain) NSArray *keywordsAndAutocompleteWords;
 @property (retain) NSString *beginInstruction;
 @property (retain) NSString *endInstruction;
-@property (retain) NSCharacterSet *beginVariable;
-@property (retain) NSCharacterSet *endVariable;
+@property (retain) NSCharacterSet *beginVariableCharacterSet;
+@property (retain) NSCharacterSet *endVariableCharacterSet;
 @property (retain) NSString *firstSingleLineComment;
 @property (retain) NSString *secondSingleLineComment;
 @property (retain) NSMutableArray *singleLineComments;
@@ -102,6 +102,7 @@ NSString *SMLSyntaxDefinitionIncludeInKeywordEndCharacterSet = @"includeInKeywor
 @property (retain) NSCharacterSet *attributesCharacterSet;
 @property (retain) NSCharacterSet *letterCharacterSet;
 @property (retain) NSCharacterSet *numberCharacterSet;
+@property (retain) NSCharacterSet *nameCharacterSet;
 @property (assign) BOOL syntaxDefinitionAllowsColouring;
 
 @property unichar decimalPointCharacter;
@@ -128,7 +129,7 @@ NSString *SMLSyntaxDefinitionIncludeInKeywordEndCharacterSet = @"includeInKeywor
 
 @implementation SMLSyntaxColouring
 
-@synthesize reactToChanges, functionDefinition, removeFromFunction, undoManager, secondString, firstString, keywords, autocompleteWords, keywordsAndAutocompleteWords, beginCommand, endCommand, beginInstruction, endInstruction, beginVariable, endVariable, firstSingleLineComment, secondSingleLineComment, singleLineComments, multiLineComments, beginFirstMultiLineComment, endFirstMultiLineComment, beginSecondMultiLineComment, endSecondMultiLineComment, keywordStartCharacterSet, keywordEndCharacterSet, attributesCharacterSet, letterCharacterSet, numberCharacterSet, decimalPointCharacter, syntaxErrors, syntaxDefinitionAllowsColouring;
+@synthesize reactToChanges, functionDefinition, removeFromFunction, undoManager, secondString, firstString, keywords, autocompleteWords, keywordsAndAutocompleteWords, beginCommand, endCommand, beginInstruction, endInstruction, beginVariableCharacterSet, endVariableCharacterSet, firstSingleLineComment, secondSingleLineComment, singleLineComments, multiLineComments, beginFirstMultiLineComment, endFirstMultiLineComment, beginSecondMultiLineComment, endSecondMultiLineComment, keywordStartCharacterSet, keywordEndCharacterSet, attributesCharacterSet, letterCharacterSet, numberCharacterSet, decimalPointCharacter, syntaxErrors, syntaxDefinitionAllowsColouring, nameCharacterSet;
 
 #pragma mark -
 #pragma mark Instance methods
@@ -179,9 +180,14 @@ NSString *SMLSyntaxDefinitionIncludeInKeywordEndCharacterSet = @"includeInKeywor
 
 		// letter character set
 		self.letterCharacterSet = [NSCharacterSet letterCharacterSet];
-		
-		// keyword start character set
+
+        // name character set
 		NSMutableCharacterSet *temporaryCharacterSet = [[[NSCharacterSet letterCharacterSet] mutableCopy] autorelease];
+		[temporaryCharacterSet addCharactersInString:@"_"];
+		self.nameCharacterSet = [[temporaryCharacterSet copy] autorelease];
+
+		// keyword start character set
+		temporaryCharacterSet = [[[NSCharacterSet letterCharacterSet] mutableCopy] autorelease];
 		[temporaryCharacterSet addCharactersInString:@"_:@#"];
 		self.keywordStartCharacterSet = [[temporaryCharacterSet copy] autorelease];
 		
@@ -473,18 +479,18 @@ NSString *SMLSyntaxDefinitionIncludeInKeywordEndCharacterSet = @"includeInKeywor
 	value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionBeginVariable];
     if (value) {
         NSAssert([value isKindOfClass:[NSString class]], @"NSString expected");
-		self.beginVariable = [NSCharacterSet characterSetWithCharactersInString:value];
+		self.beginVariableCharacterSet = [NSCharacterSet characterSetWithCharactersInString:value];
 	} else {
-        self.beginVariable = [NSCharacterSet characterSetWithCharactersInString:@""];
+        self.beginVariableCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@""];
     }
 	
     // end variable
 	value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionEndVariable];
     if (value) {
         NSAssert([value isKindOfClass:[NSString class]], @"NSString expected");
-		self.endVariable = [NSCharacterSet characterSetWithCharactersInString:value];
+		self.endVariableCharacterSet = [NSCharacterSet characterSetWithCharactersInString:value];
 	} else {
-		self.endVariable = [NSCharacterSet characterSetWithCharactersInString:@""];
+		self.endVariableCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@""];
 	}
 
     // first string
@@ -918,11 +924,14 @@ NSString *SMLSyntaxDefinitionIncludeInKeywordEndCharacterSet = @"includeInKeywor
                 queryLocation = colourStartLocation + rangeLocation;
                 if (queryLocation > 0) {
                     testCharacter = [documentString characterAtIndex:queryLocation - 1];
-                    if ([[NSCharacterSet letterCharacterSet] characterIsMember:testCharacter]) {
+                    
+                    // numbers can occur in variable, class and function names
+                    // eg: var_1 should not be coloured as a number
+                    if ([self.nameCharacterSet characterIsMember:testCharacter]) {
                         continue;
                     }
                 }
-                
+
                 // TODO: handle constructs such as 1..5 which may occur within some loop constructs
                 
                 // don't colour a trailing decimal point as some languages may use it as a line terminator
@@ -1220,14 +1229,14 @@ NSString *SMLSyntaxDefinitionIncludeInKeywordEndCharacterSet = @"includeInKeywor
             delegateDidColour = NO;
         }
 
-		if (self.beginVariable != nil && [doColouring boolValue]  && !delegateDidColour) {
+		if (self.beginVariableCharacterSet != nil && [doColouring boolValue]  && !delegateDidColour) {
             
             // reset scanner
 			[rangeScanner mgs_setScanLocation:0];
             
             // scan range to end
 			while (![rangeScanner isAtEnd]) {
-				[rangeScanner scanUpToCharactersFromSet:self.beginVariable intoString:nil];
+				[rangeScanner scanUpToCharactersFromSet:self.beginVariableCharacterSet intoString:nil];
 				colourStartLocation = [rangeScanner scanLocation];
 				if (colourStartLocation + 1 < rangeStringLength) {
 					if ([self.firstSingleLineComment isEqualToString:@"%"] && [rangeString characterAtIndex:colourStartLocation + 1] == '%') { // To avoid a problem in LaTex with \%
@@ -1238,7 +1247,7 @@ NSString *SMLSyntaxDefinitionIncludeInKeywordEndCharacterSet = @"includeInKeywor
 					}
 				}
 				endOfLine = NSMaxRange([rangeString lineRangeForRange:NSMakeRange(colourStartLocation, 0)]);
-				if (![rangeScanner scanUpToCharactersFromSet:self.endVariable intoString:nil] || [rangeScanner scanLocation] >= endOfLine) {
+				if (![rangeScanner scanUpToCharactersFromSet:self.endVariableCharacterSet intoString:nil] || [rangeScanner scanLocation] >= endOfLine) {
 					[rangeScanner mgs_setScanLocation:endOfLine];
 					colourLength = [rangeScanner scanLocation] - colourStartLocation;
 				} else {

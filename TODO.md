@@ -6,8 +6,6 @@
 
 1. Scrolling causes a lot of recolouring. Something seems amiss here.
 
-1. Number colouring is not quite robust enough. In particular variables such as temp_1 have the _1 coloured as a number.
-
 1. Unit tests. Define strings. Colour them and validate the coring.
 
 1. Define source files in the bundle for each supported language type. These can be loaded in the example app to validate colouring. An NSStepper might be useful too.

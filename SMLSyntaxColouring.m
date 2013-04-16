@@ -346,6 +346,8 @@ NSString *SMLSyntaxGroupSecondStringPass2 = @"secondStringPass2";
 	NSMutableArray *keywordsAndAutocompleteWordsTemporary = [NSMutableArray array];
 	
 	// If the plist file is malformed be sure to set the values to something
+    
+    // syntax colouring
     id value = [syntaxDictionary valueForKey:@"allowSyntaxColouring"];
     if (value && [value isKindOfClass:[NSNumber class]]) {
         self.syntaxDefinitionAllowsColouring = [value boolValue];
@@ -354,28 +356,37 @@ NSString *SMLSyntaxGroupSecondStringPass2 = @"secondStringPass2";
         self.syntaxDefinitionAllowsColouring = YES;
     }
     
-	if ([syntaxDictionary valueForKey:@"keywords"]) {
-		self.keywords = [[[NSSet alloc] initWithArray:[syntaxDictionary valueForKey:@"keywords"]] autorelease];
+    // keywords
+    value = [syntaxDictionary valueForKey:@"keywords"];
+	if (value) {
+		self.keywords = [[[NSSet alloc] initWithArray:value] autorelease];
 		[keywordsAndAutocompleteWordsTemporary addObjectsFromArray:[syntaxDictionary valueForKey:@"keywords"]];
 	}
 	
-	if ([syntaxDictionary valueForKey:@"autocompleteWords"]) {
-		self.autocompleteWords = [[[NSSet alloc] initWithArray:[syntaxDictionary valueForKey:@"autocompleteWords"]] autorelease];
+    // autocomplete words
+    value = [syntaxDictionary valueForKey:@"autocompleteWords"];
+	if (value) {
+		self.autocompleteWords = [[[NSSet alloc] initWithArray:value] autorelease];
 		[keywordsAndAutocompleteWordsTemporary addObjectsFromArray:[syntaxDictionary valueForKey:@"autocompleteWords"]];
 	}
 	
+    // colour autocomplete words
 	if ([[SMLDefaults valueForKey:MGSFragariaPrefsColourAutocomplete] boolValue] == YES) {
 		self.keywords = [NSSet setWithArray:keywordsAndAutocompleteWordsTemporary];
 	}
 	
 	self.keywordsAndAutocompleteWords = [keywordsAndAutocompleteWordsTemporary sortedArrayUsingSelector:@selector(compare:)];
 	
-	if ([syntaxDictionary valueForKey:@"recolourKeywordIfAlreadyColoured"]) {
-		recolourKeywordIfAlreadyColoured = [[syntaxDictionary valueForKey:@"recolourKeywordIfAlreadyColoured"] boolValue];
+    // recolour keywords
+    value = [syntaxDictionary valueForKey:@"recolourKeywordIfAlreadyColoured"];
+	if (value) {
+		recolourKeywordIfAlreadyColoured = [value boolValue];
 	}
 	
-	if ([syntaxDictionary valueForKey:@"keywordsCaseSensitive"]) {
-		keywordsCaseSensitive = [[syntaxDictionary valueForKey:@"keywordsCaseSensitive"] boolValue];
+    // keywords case sensitive
+    value = [syntaxDictionary valueForKey:@"keywordsCaseSensitive"];
+	if (value) {
+		keywordsCaseSensitive = [value boolValue];
 	}
 	
 	if (keywordsCaseSensitive == NO) {
@@ -388,64 +399,80 @@ NSString *SMLSyntaxGroupSecondStringPass2 = @"secondStringPass2";
 		self.keywords = lowerCaseKeywordsSet;
 	}
 	
-	if ([syntaxDictionary valueForKey:@"beginCommand"]) {
-		self.beginCommand = [syntaxDictionary valueForKey:@"beginCommand"];
+    // begin command
+    value = [syntaxDictionary valueForKey:@"beginCommand"];
+	if (value) {
+		self.beginCommand = value;
 	} else { 
 		self.beginCommand = @"";
 	}
     
-	if ([syntaxDictionary valueForKey:@"endCommand"]) {
-		self.endCommand = [syntaxDictionary valueForKey:@"endCommand"];
+    // end command
+	value = [syntaxDictionary valueForKey:@"endCommand"];
+    if (value) {
+		self.endCommand = value;
 	} else { 
 		self.endCommand = @"";
 	}
     
-	if ([syntaxDictionary valueForKey:@"beginInstruction"]) {
-		self.beginInstruction = [syntaxDictionary valueForKey:@"beginInstruction"];
+    // begin instruction
+	value = [syntaxDictionary valueForKey:@"beginInstruction"];
+    if (value) {
+		self.beginInstruction = value;
 	} else {
 		self.beginInstruction = @"";
 	}
 
-	if ([syntaxDictionary valueForKey:@"endInstruction"]) {
-		self.endInstruction = [syntaxDictionary valueForKey:@"endInstruction"];
+    // end instruction
+	value = [syntaxDictionary valueForKey:@"endInstruction"];
+    if (value) {
+		self.endInstruction = value;
 	} else {
 		self.endInstruction = @"";
 	}
 	
-	if ([syntaxDictionary valueForKey:@"beginVariable"]) {
-		self.beginVariable = [NSCharacterSet characterSetWithCharactersInString:[syntaxDictionary valueForKey:@"beginVariable"]];
+    // begin variable
+	value = [syntaxDictionary valueForKey:@"beginVariable"];
+    if (value) {
+		self.beginVariable = [NSCharacterSet characterSetWithCharactersInString:value];
 	} else {
         self.beginVariable = [NSCharacterSet characterSetWithCharactersInString:@""];
     }
 	
-
-	if ([syntaxDictionary valueForKey:@"endVariable"]) {
-		self.endVariable = [NSCharacterSet characterSetWithCharactersInString:[syntaxDictionary valueForKey:@"endVariable"]];
+    // end variable
+	value = [syntaxDictionary valueForKey:@"endVariable"];
+    if (value) {
+		self.endVariable = [NSCharacterSet characterSetWithCharactersInString:value];
 	} else {
 		self.endVariable = [NSCharacterSet characterSetWithCharactersInString:@""];
 	}
 
-	if ([syntaxDictionary valueForKey:@"firstString"]) {
-		self.firstString = [syntaxDictionary valueForKey:@"firstString"];
-		if (![[syntaxDictionary valueForKey:@"firstString"] isEqualToString:@""]) {
-			firstStringUnichar = [[syntaxDictionary valueForKey:@"firstString"] characterAtIndex:0];
+    // first string
+	value = [syntaxDictionary valueForKey:@"firstString"];
+    if (value) {
+		self.firstString = value;
+		if (![value isEqualToString:@""]) {
+			firstStringUnichar = [value characterAtIndex:0];
 		}
 	} else {
 		self.firstString = @"";
 	}
 	
-	if ([syntaxDictionary valueForKey:@"secondString"]) {
-		self.secondString = [syntaxDictionary valueForKey:@"secondString"];
-		if (![[syntaxDictionary valueForKey:@"secondString"] isEqualToString:@""]) {
-			secondStringUnichar = [[syntaxDictionary valueForKey:@"secondString"] characterAtIndex:0];
+    // second string
+	value = [syntaxDictionary valueForKey:@"secondString"];
+    if (value) {
+		self.secondString = value;
+		if (![value isEqualToString:@""]) {
+			secondStringUnichar = [value characterAtIndex:0];
 		}
 	} else { 
 		self.secondString = @"";
 	}
 	
-    // single line comment definitions
-	if ([syntaxDictionary valueForKey:@"firstSingleLineComment"]) {
-		self.firstSingleLineComment = [syntaxDictionary valueForKey:@"firstSingleLineComment"];
+    // first single line comment
+	value = [syntaxDictionary valueForKey:@"firstSingleLineComment"];
+    if (value) {
+		self.firstSingleLineComment = value;
 	} else {
 		self.firstSingleLineComment = @"";
 	}
@@ -453,22 +480,27 @@ NSString *SMLSyntaxGroupSecondStringPass2 = @"secondStringPass2";
     self.singleLineComments = [NSMutableArray arrayWithCapacity:2];
     [self.singleLineComments addObject:firstSingleLineComment];
 	
-	if ([syntaxDictionary valueForKey:@"secondSingleLineComment"]) {
-		self.secondSingleLineComment = [syntaxDictionary valueForKey:@"secondSingleLineComment"];
+    // second single line comment
+	value = [syntaxDictionary valueForKey:@"secondSingleLineComment"];
+    if (value) {
+		self.secondSingleLineComment = value;
 	} else {
 		self.secondSingleLineComment = @"";
 	}
     [self.singleLineComments addObject:secondSingleLineComment];
 	
-    // multi line comment definitions
-	if ([syntaxDictionary valueForKey:@"beginFirstMultiLineComment"]) {
-		self.beginFirstMultiLineComment = [syntaxDictionary valueForKey:@"beginFirstMultiLineComment"];
+    // begin first multi line comment
+	value = [syntaxDictionary valueForKey:@"beginFirstMultiLineComment"];
+    if (value) {
+		self.beginFirstMultiLineComment = value;
 	} else {
 		self.beginFirstMultiLineComment = @"";
 	}
 	
-	if ([syntaxDictionary valueForKey:@"endFirstMultiLineComment"]) {
-		self.endFirstMultiLineComment = [syntaxDictionary valueForKey:@"endFirstMultiLineComment"];
+    // end first multi line comment
+	value = [syntaxDictionary valueForKey:@"endFirstMultiLineComment"];
+    if (value) {
+		self.endFirstMultiLineComment = value;
 	} else {
 		self.endFirstMultiLineComment = @"";
 	}
@@ -476,53 +508,68 @@ NSString *SMLSyntaxGroupSecondStringPass2 = @"secondStringPass2";
     self.multiLineComments = [NSMutableArray arrayWithCapacity:2];
 	[self.multiLineComments addObject:[NSArray arrayWithObjects:self.beginFirstMultiLineComment, self.endFirstMultiLineComment, nil]];
 	
-	if ([syntaxDictionary valueForKey:@"beginSecondMultiLineComment"]) {
-		self.beginSecondMultiLineComment = [syntaxDictionary valueForKey:@"beginSecondMultiLineComment"];
+    // begin second multi line comment
+	value = [syntaxDictionary valueForKey:@"beginSecondMultiLineComment"];
+    if (value) {
+		self.beginSecondMultiLineComment = value;
 	} else {
 		self.beginSecondMultiLineComment = @"";
 	}
      
-	if ([syntaxDictionary valueForKey:@"endSecondMultiLineComment"]) {
-		self.endSecondMultiLineComment = [syntaxDictionary valueForKey:@"endSecondMultiLineComment"];
+    // end second multi line comment
+	value = [syntaxDictionary valueForKey:@"endSecondMultiLineComment"];
+    if (value) {
+		self.endSecondMultiLineComment = value;
 	} else {
 		self.endSecondMultiLineComment = @"";
 	}
 	[self.multiLineComments addObject:[NSArray arrayWithObjects:self.beginSecondMultiLineComment, self.endSecondMultiLineComment, nil]];
 
-	
-	if ([syntaxDictionary valueForKey:@"functionDefinition"]) {
-		self.functionDefinition = [syntaxDictionary valueForKey:@"functionDefinition"];
+	// function definition
+	value = [syntaxDictionary valueForKey:@"functionDefinition"];
+    if (value) {
+		self.functionDefinition = value;
 	} else {
 		self.functionDefinition = @"";
 	}
 	
-	if ([syntaxDictionary valueForKey:@"removeFromFunction"]) {
-		self.removeFromFunction = [syntaxDictionary valueForKey:@"removeFromFunction"];
+    // remove from function
+	value = [syntaxDictionary valueForKey:@"removeFromFunction"];
+    if (value) {
+		self.removeFromFunction = value;
 	} else {
 		self.removeFromFunction = @"";
 	}
 	
-	if ([syntaxDictionary valueForKey:@"excludeFromKeywordStartCharacterSet"]) {
+    // exclude characters from keyword start character set
+	value = [syntaxDictionary valueForKey:@"excludeFromKeywordStartCharacterSet"];
+    if (value) {
 		NSMutableCharacterSet *temporaryCharacterSet = [[keywordStartCharacterSet mutableCopy] autorelease];
-		[temporaryCharacterSet removeCharactersInString:[syntaxDictionary valueForKey:@"excludeFromKeywordStartCharacterSet"]];
+		[temporaryCharacterSet removeCharactersInString:value];
 		self.keywordStartCharacterSet = [[temporaryCharacterSet copy] autorelease];
 	}
 	
-	if ([syntaxDictionary valueForKey:@"excludeFromKeywordEndCharacterSet"]) {
+    // exclude characters from keyword end character set
+	value = [syntaxDictionary valueForKey:@"excludeFromKeywordEndCharacterSet"];
+    if (value) {
 		NSMutableCharacterSet *temporaryCharacterSet = [[keywordEndCharacterSet mutableCopy] autorelease];
-		[temporaryCharacterSet removeCharactersInString:[syntaxDictionary valueForKey:@"excludeFromKeywordEndCharacterSet"]];
+		[temporaryCharacterSet removeCharactersInString:value];
 		self.keywordEndCharacterSet = [[temporaryCharacterSet copy] autorelease];
 	}
 	
-	if ([syntaxDictionary valueForKey:@"includeInKeywordStartCharacterSet"]) {
+    // include characters in keyword start character set
+	value = [syntaxDictionary valueForKey:@"includeInKeywordStartCharacterSet"];
+    if (value) {
 		NSMutableCharacterSet *temporaryCharacterSet = [[keywordStartCharacterSet mutableCopy] autorelease];
-		[temporaryCharacterSet addCharactersInString:[syntaxDictionary valueForKey:@"includeInKeywordStartCharacterSet"]];
+		[temporaryCharacterSet addCharactersInString:value];
 		self.keywordStartCharacterSet = [[temporaryCharacterSet copy] autorelease];
 	}
 	
-	if ([syntaxDictionary valueForKey:@"includeInKeywordEndCharacterSet"]) {
+    // include characters in keyword end character set
+	value = [syntaxDictionary valueForKey:@"includeInKeywordEndCharacterSet"];
+    if (value) {
 		NSMutableCharacterSet *temporaryCharacterSet = [[keywordEndCharacterSet mutableCopy] autorelease];
-		[temporaryCharacterSet addCharactersInString:[syntaxDictionary valueForKey:@"includeInKeywordEndCharacterSet"]];
+		[temporaryCharacterSet addCharactersInString:value];
 		self.keywordEndCharacterSet = [[temporaryCharacterSet copy] autorelease];
 	}
 

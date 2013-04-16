@@ -252,7 +252,7 @@
 #pragma unused(document, colourWithBlock, string, range, info)
     NSLog(@"Will colour document.");
     
-    // we can call colourWithBlock to perform initial colouration
+    // we can call colourWithBlock to perform initial colouring
 }
 /*
  
@@ -276,7 +276,6 @@
     // compiler comfort
     (void)syntaxInfo;
 
-    
     NSLog(@"willColourGroupWithBlock Colouring group : %@ id : %li caller will colour : %@", group, groupID, (willColour ? @"YES" : @"NO"));
     
     // group
@@ -367,7 +366,6 @@
     // group
     switch (groupID) {
         case kSMLSyntaxGroupNumber:
-            
             break;
             
         case kSMLSyntaxGroupCommand:
@@ -378,14 +376,21 @@
             
         case kSMLSyntaxGroupKeyword:
         {
-            // normally we iterate over the string using an NSScanner to identiy our substrings.
+            // we can iterate over the string using an NSScanner to identiy our substrings or use a regex.
             // in this simple case we just colour the occurence of a given string as a false keyword.
-            NSString *fauxKeyword = @" noodle";
-            while (![rangeScanner isAtEnd]) {
-                if ([rangeScanner scanUpToString:fauxKeyword intoString:nil]) {
-                    NSUInteger location = [rangeScanner scanLocation];
-                    NSRange testRange = NSMakeRange(location, [fauxKeyword length]);
-                    colourWithBlock(attributes, testRange);
+            NSString *fauxKeyword = @"kosmic";
+            while (YES) {
+                
+                // look for the keyword
+                [rangeScanner scanUpToString:fauxKeyword intoString:nil];
+                if ([rangeScanner isAtEnd]) break;
+                     
+                NSUInteger location = [rangeScanner scanLocation];
+                if ([rangeScanner scanString:fauxKeyword intoString:NULL]) {
+                    NSRange colourRange = NSMakeRange(range.location + location, [rangeScanner scanLocation] - location);
+                    
+                    // the block will colour the string
+                    colourWithBlock(attributes, colourRange);
                 }
             }
         }
@@ -417,7 +422,6 @@
     }
 }
 
-
 /*
  
  - fragariaDocument:willColourWithBlock:string:range:info
@@ -428,7 +432,7 @@
     #pragma unused(document, colourWithBlock, string, range, info)
     NSLog(@"Did colour document.");
     
-    // we can call colourWithBlock to perform final colouration
+    // we can call colourWithBlock to perform final colouring
 
 }
 @end

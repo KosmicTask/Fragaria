@@ -818,6 +818,8 @@ NSString *SMLSyntaxDefinitionIncludeInKeywordEndCharacterSet = @"includeInKeywor
 	NSUInteger queryLocation = 0;
     unichar testCharacter = 0;
     
+    //NSLog(@"rangeToRecolor location %i length %i", rangeToRecolour.location, rangeToRecolour.length);
+    
     // adjust effective range
     //
     // When multiline strings are coloured we need to scan backwards to
@@ -831,6 +833,8 @@ NSString *SMLSyntaxDefinitionIncludeInKeywordEndCharacterSet = @"includeInKeywor
 		}
 	}
 	
+    NSLog(@"rangeToRecolor location %i length %i", effectiveRange.location, effectiveRange.length);
+
     // setup working locations based on teh effective range
 	NSUInteger rangeLocation = effectiveRange.location;
 	NSUInteger maxRangeLocation = NSMaxRange(effectiveRange);

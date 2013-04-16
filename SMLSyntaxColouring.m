@@ -338,7 +338,6 @@ NSString *SMLSyntaxDefinitionIncludeInKeywordEndCharacterSet = @"includeInKeywor
 	NSString *definitionName = [document valueForKey:MGSFOSyntaxDefinitionName];
 	if (definitionName) return definitionName;
 
-	NSString *defaultDefinitionName  = [SMLDefaults valueForKey:MGSFragariaPrefsSyntaxColouringPopUpString];
 	NSString *documentExtension = [[document valueForKey:MGSFODocumentName] pathExtension];
 	
     NSString *lowercaseExtension = nil;
@@ -833,8 +832,6 @@ NSString *SMLSyntaxDefinitionIncludeInKeywordEndCharacterSet = @"includeInKeywor
 		}
 	}
 	
-    NSLog(@"rangeToRecolor location %i length %i", effectiveRange.location, effectiveRange.length);
-
     // setup working locations based on teh effective range
 	NSUInteger rangeLocation = effectiveRange.location;
 	NSUInteger maxRangeLocation = NSMaxRange(effectiveRange);

@@ -236,13 +236,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	}
 	
 	// Fix flickering while rubber banding: Only change the text, if NOT rubber banding.
-	if (visibleRect.origin.y >= 0.0f && visibleRect.origin.y <= textView.frame.size.height - visibleRect.size.height)
+	if (visibleRect.origin.y >= 0.0f && visibleRect.origin.y <= textView.frame.size.height - visibleRect.size.height) {
 		[[gutterScrollView documentView] setString:lineNumbersString];
+    }
     
+    // set breakpoint lines
     [[gutterScrollView documentView] setBreakpointLines:textLineBreakpoints];
-	
-#warning Draw on top of string here
-    
+	   
 	[[gutterScrollView contentView] setBoundsOrigin:zeroPoint]; // To avert an occasional bug which makes the line numbers disappear
 	currentLineHeight = (NSInteger)[textView lineHeight];
 	if ((NSInteger)visibleRect.origin.y != 0 && currentLineHeight != 0) {

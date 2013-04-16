@@ -45,6 +45,34 @@ NSString *SMLSyntaxGroupSingleLineComment = @"singleLineComment";
 NSString *SMLSyntaxGroupMultiLineComment = @"multiLineComment";
 NSString *SMLSyntaxGroupSecondStringPass2 = @"secondStringPass2";
 
+// syntax definition dictionary keys
+
+NSString *SMLSyntaxDefinitionAllowSyntaxColouring = @"allowSyntaxColouring";
+NSString *SMLSyntaxDefinitionKeywords = @"keywords";
+NSString *SMLSyntaxDefinitionAutocompleteWords = @"autocompleteWords";
+NSString *SMLSyntaxDefinitionRecolourKeywordIfAlreadyColoured = @"recolourKeywordIfAlreadyColoured";
+NSString *SMLSyntaxDefinitionKeywordsCaseSensitive = @"keywordsCaseSensitive";
+NSString *SMLSyntaxDefinitionBeginCommand = @"beginCommand";
+NSString *SMLSyntaxDefinitionEndCommand = @"endCommand";
+NSString *SMLSyntaxDefinitionBeginInstruction = @"beginInstruction";
+NSString *SMLSyntaxDefinitionEndInstruction = @"endInstruction";
+NSString *SMLSyntaxDefinitionBeginVariable = @"beginVariable";
+NSString *SMLSyntaxDefinitionEndVariable = @"endVariable";
+NSString *SMLSyntaxDefinitionFirstString = @"firstString";
+NSString *SMLSyntaxDefinitionSecondString = @"secondString";
+NSString *SMLSyntaxDefinitionFirstSingleLineComment = @"firstSingleLineComment";
+NSString *SMLSyntaxDefinitionSecondSingleLineComment = @"secondSingleLineComment";
+NSString *SMLSyntaxDefinitionBeginFirstMultiLineComment = @"beginFirstMultiLineComment";
+NSString *SMLSyntaxDefinitionEndFirstMultiLineComment = @"endFirstMultiLineComment";
+NSString *SMLSyntaxDefinitionBeginSecondMultiLineComment = @"beginSecondMultiLineComment";
+NSString *SMLSyntaxDefinitionEndSecondMultiLineComment = @"endSecondMultiLineComment";
+NSString *SMLSyntaxDefinitionFunctionDefinition = @"functionDefinition";
+NSString *SMLSyntaxDefinitionRemoveFromFunction = @"removeFromFunction";
+NSString *SMLSyntaxDefinitionExcludeFromKeywordStartCharacterSet = @"excludeFromKeywordStartCharacterSet";
+NSString *SMLSyntaxDefinitionExcludeFromKeywordEndCharacterSet = @"excludeFromKeywordEndCharacterSet";
+NSString *SMLSyntaxDefinitionIncludeInKeywordStartCharacterSet = @"includeInKeywordStartCharacterSet";
+NSString *SMLSyntaxDefinitionIncludeInKeywordEndCharacterSet = @"includeInKeywordEndCharacterSet";
+
 // class extension
 @interface SMLSyntaxColouring()
 
@@ -348,8 +376,9 @@ NSString *SMLSyntaxGroupSecondStringPass2 = @"secondStringPass2";
 	// If the plist file is malformed be sure to set the values to something
     
     // syntax colouring
-    id value = [syntaxDictionary valueForKey:@"allowSyntaxColouring"];
-    if (value && [value isKindOfClass:[NSNumber class]]) {
+    id value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionAllowSyntaxColouring];
+    if (value) {
+        NSAssert([value isKindOfClass:[NSNumber class]], @"NSNumber expected");
         self.syntaxDefinitionAllowsColouring = [value boolValue];
     } else {
         // default to YES
@@ -357,35 +386,40 @@ NSString *SMLSyntaxGroupSecondStringPass2 = @"secondStringPass2";
     }
     
     // keywords
-    value = [syntaxDictionary valueForKey:@"keywords"];
+    value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionKeywords];
 	if (value) {
+        NSAssert([value isKindOfClass:[NSArray class]], @"NSArray expected");
 		self.keywords = [[[NSSet alloc] initWithArray:value] autorelease];
-		[keywordsAndAutocompleteWordsTemporary addObjectsFromArray:[syntaxDictionary valueForKey:@"keywords"]];
+		[keywordsAndAutocompleteWordsTemporary addObjectsFromArray:value];
 	}
 	
     // autocomplete words
-    value = [syntaxDictionary valueForKey:@"autocompleteWords"];
+    value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionAutocompleteWords];
 	if (value) {
+        NSAssert([value isKindOfClass:[NSArray class]], @"NSArray expected");
 		self.autocompleteWords = [[[NSSet alloc] initWithArray:value] autorelease];
-		[keywordsAndAutocompleteWordsTemporary addObjectsFromArray:[syntaxDictionary valueForKey:@"autocompleteWords"]];
+		[keywordsAndAutocompleteWordsTemporary addObjectsFromArray:value];
 	}
 	
-    // colour autocomplete words
+    // colour autocomplete words is a preference
 	if ([[SMLDefaults valueForKey:MGSFragariaPrefsColourAutocomplete] boolValue] == YES) {
 		self.keywords = [NSSet setWithArray:keywordsAndAutocompleteWordsTemporary];
 	}
 	
+    // keywords and autocomplete words
 	self.keywordsAndAutocompleteWords = [keywordsAndAutocompleteWordsTemporary sortedArrayUsingSelector:@selector(compare:)];
 	
     // recolour keywords
-    value = [syntaxDictionary valueForKey:@"recolourKeywordIfAlreadyColoured"];
+    value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionRecolourKeywordIfAlreadyColoured];
 	if (value) {
+        NSAssert([value isKindOfClass:[NSNumber class]], @"NSNumber expected");
 		recolourKeywordIfAlreadyColoured = [value boolValue];
 	}
 	
     // keywords case sensitive
-    value = [syntaxDictionary valueForKey:@"keywordsCaseSensitive"];
+    value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionKeywordsCaseSensitive];
 	if (value) {
+        NSAssert([value isKindOfClass:[NSNumber class]], @"NSNumber expected");
 		keywordsCaseSensitive = [value boolValue];
 	}
 	
@@ -400,56 +434,63 @@ NSString *SMLSyntaxGroupSecondStringPass2 = @"secondStringPass2";
 	}
 	
     // begin command
-    value = [syntaxDictionary valueForKey:@"beginCommand"];
+    value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionBeginCommand];
 	if (value) {
+        NSAssert([value isKindOfClass:[NSString class]], @"NSString expected");
 		self.beginCommand = value;
 	} else { 
 		self.beginCommand = @"";
 	}
     
     // end command
-	value = [syntaxDictionary valueForKey:@"endCommand"];
+	value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionEndCommand];
     if (value) {
+        NSAssert([value isKindOfClass:[NSString class]], @"NSString expected");
 		self.endCommand = value;
 	} else { 
 		self.endCommand = @"";
 	}
     
     // begin instruction
-	value = [syntaxDictionary valueForKey:@"beginInstruction"];
+	value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionBeginInstruction];
     if (value) {
+        NSAssert([value isKindOfClass:[NSString class]], @"NSString expected");
 		self.beginInstruction = value;
 	} else {
 		self.beginInstruction = @"";
 	}
 
     // end instruction
-	value = [syntaxDictionary valueForKey:@"endInstruction"];
+	value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionEndInstruction];
     if (value) {
+        NSAssert([value isKindOfClass:[NSString class]], @"NSString expected");
 		self.endInstruction = value;
 	} else {
 		self.endInstruction = @"";
 	}
 	
     // begin variable
-	value = [syntaxDictionary valueForKey:@"beginVariable"];
+	value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionBeginVariable];
     if (value) {
+        NSAssert([value isKindOfClass:[NSString class]], @"NSString expected");
 		self.beginVariable = [NSCharacterSet characterSetWithCharactersInString:value];
 	} else {
         self.beginVariable = [NSCharacterSet characterSetWithCharactersInString:@""];
     }
 	
     // end variable
-	value = [syntaxDictionary valueForKey:@"endVariable"];
+	value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionEndVariable];
     if (value) {
+        NSAssert([value isKindOfClass:[NSString class]], @"NSString expected");
 		self.endVariable = [NSCharacterSet characterSetWithCharactersInString:value];
 	} else {
 		self.endVariable = [NSCharacterSet characterSetWithCharactersInString:@""];
 	}
 
     // first string
-	value = [syntaxDictionary valueForKey:@"firstString"];
+	value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionFirstString];
     if (value) {
+        NSAssert([value isKindOfClass:[NSString class]], @"NSString expected");
 		self.firstString = value;
 		if (![value isEqualToString:@""]) {
 			firstStringUnichar = [value characterAtIndex:0];
@@ -459,8 +500,9 @@ NSString *SMLSyntaxGroupSecondStringPass2 = @"secondStringPass2";
 	}
 	
     // second string
-	value = [syntaxDictionary valueForKey:@"secondString"];
+	value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionSecondString];
     if (value) {
+        NSAssert([value isKindOfClass:[NSString class]], @"NSString expected");
 		self.secondString = value;
 		if (![value isEqualToString:@""]) {
 			secondStringUnichar = [value characterAtIndex:0];
@@ -470,8 +512,9 @@ NSString *SMLSyntaxGroupSecondStringPass2 = @"secondStringPass2";
 	}
 	
     // first single line comment
-	value = [syntaxDictionary valueForKey:@"firstSingleLineComment"];
+	value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionFirstSingleLineComment];
     if (value) {
+        NSAssert([value isKindOfClass:[NSString class]], @"NSString expected");
 		self.firstSingleLineComment = value;
 	} else {
 		self.firstSingleLineComment = @"";
@@ -481,8 +524,9 @@ NSString *SMLSyntaxGroupSecondStringPass2 = @"secondStringPass2";
     [self.singleLineComments addObject:firstSingleLineComment];
 	
     // second single line comment
-	value = [syntaxDictionary valueForKey:@"secondSingleLineComment"];
+	value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionSecondSingleLineComment];
     if (value) {
+        NSAssert([value isKindOfClass:[NSString class]], @"NSString expected");
 		self.secondSingleLineComment = value;
 	} else {
 		self.secondSingleLineComment = @"";
@@ -490,16 +534,18 @@ NSString *SMLSyntaxGroupSecondStringPass2 = @"secondStringPass2";
     [self.singleLineComments addObject:secondSingleLineComment];
 	
     // begin first multi line comment
-	value = [syntaxDictionary valueForKey:@"beginFirstMultiLineComment"];
+	value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionBeginFirstMultiLineComment];
     if (value) {
+        NSAssert([value isKindOfClass:[NSString class]], @"NSString expected");
 		self.beginFirstMultiLineComment = value;
 	} else {
 		self.beginFirstMultiLineComment = @"";
 	}
 	
     // end first multi line comment
-	value = [syntaxDictionary valueForKey:@"endFirstMultiLineComment"];
+	value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionEndFirstMultiLineComment];
     if (value) {
+        NSAssert([value isKindOfClass:[NSString class]], @"NSString expected");
 		self.endFirstMultiLineComment = value;
 	} else {
 		self.endFirstMultiLineComment = @"";
@@ -509,16 +555,18 @@ NSString *SMLSyntaxGroupSecondStringPass2 = @"secondStringPass2";
 	[self.multiLineComments addObject:[NSArray arrayWithObjects:self.beginFirstMultiLineComment, self.endFirstMultiLineComment, nil]];
 	
     // begin second multi line comment
-	value = [syntaxDictionary valueForKey:@"beginSecondMultiLineComment"];
+	value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionBeginSecondMultiLineComment];
     if (value) {
+        NSAssert([value isKindOfClass:[NSString class]], @"NSString expected");
 		self.beginSecondMultiLineComment = value;
 	} else {
 		self.beginSecondMultiLineComment = @"";
 	}
      
     // end second multi line comment
-	value = [syntaxDictionary valueForKey:@"endSecondMultiLineComment"];
+	value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionEndSecondMultiLineComment];
     if (value) {
+        NSAssert([value isKindOfClass:[NSString class]], @"NSString expected");
 		self.endSecondMultiLineComment = value;
 	} else {
 		self.endSecondMultiLineComment = @"";
@@ -526,48 +574,54 @@ NSString *SMLSyntaxGroupSecondStringPass2 = @"secondStringPass2";
 	[self.multiLineComments addObject:[NSArray arrayWithObjects:self.beginSecondMultiLineComment, self.endSecondMultiLineComment, nil]];
 
 	// function definition
-	value = [syntaxDictionary valueForKey:@"functionDefinition"];
+	value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionFunctionDefinition];
     if (value) {
+        NSAssert([value isKindOfClass:[NSString class]], @"NSString expected");
 		self.functionDefinition = value;
 	} else {
 		self.functionDefinition = @"";
 	}
 	
     // remove from function
-	value = [syntaxDictionary valueForKey:@"removeFromFunction"];
+	value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionRemoveFromFunction];
     if (value) {
+        NSAssert([value isKindOfClass:[NSString class]], @"NSString expected");
 		self.removeFromFunction = value;
 	} else {
 		self.removeFromFunction = @"";
 	}
 	
     // exclude characters from keyword start character set
-	value = [syntaxDictionary valueForKey:@"excludeFromKeywordStartCharacterSet"];
+	value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionExcludeFromKeywordStartCharacterSet];
     if (value) {
+        NSAssert([value isKindOfClass:[NSString class]], @"NSString expected");
 		NSMutableCharacterSet *temporaryCharacterSet = [[keywordStartCharacterSet mutableCopy] autorelease];
 		[temporaryCharacterSet removeCharactersInString:value];
 		self.keywordStartCharacterSet = [[temporaryCharacterSet copy] autorelease];
 	}
 	
     // exclude characters from keyword end character set
-	value = [syntaxDictionary valueForKey:@"excludeFromKeywordEndCharacterSet"];
+	value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionExcludeFromKeywordEndCharacterSet];
     if (value) {
+        NSAssert([value isKindOfClass:[NSString class]], @"NSString expected");
 		NSMutableCharacterSet *temporaryCharacterSet = [[keywordEndCharacterSet mutableCopy] autorelease];
 		[temporaryCharacterSet removeCharactersInString:value];
 		self.keywordEndCharacterSet = [[temporaryCharacterSet copy] autorelease];
 	}
 	
     // include characters in keyword start character set
-	value = [syntaxDictionary valueForKey:@"includeInKeywordStartCharacterSet"];
+	value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionIncludeInKeywordStartCharacterSet];
     if (value) {
+        NSAssert([value isKindOfClass:[NSString class]], @"NSString expected");
 		NSMutableCharacterSet *temporaryCharacterSet = [[keywordStartCharacterSet mutableCopy] autorelease];
 		[temporaryCharacterSet addCharactersInString:value];
 		self.keywordStartCharacterSet = [[temporaryCharacterSet copy] autorelease];
 	}
 	
     // include characters in keyword end character set
-	value = [syntaxDictionary valueForKey:@"includeInKeywordEndCharacterSet"];
+	value = [syntaxDictionary valueForKey:SMLSyntaxDefinitionIncludeInKeywordEndCharacterSet];
     if (value) {
+        NSAssert([value isKindOfClass:[NSString class]], @"NSString expected");
 		NSMutableCharacterSet *temporaryCharacterSet = [[keywordEndCharacterSet mutableCopy] autorelease];
 		[temporaryCharacterSet addCharactersInString:value];
 		self.keywordEndCharacterSet = [[temporaryCharacterSet copy] autorelease];

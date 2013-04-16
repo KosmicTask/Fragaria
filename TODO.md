@@ -15,3 +15,5 @@
 1. Delegate colouring seems useful. Perhaps it can be extended.
 
 1. Would SMLTextView subclassing be beneficial? The client could pass in the required subclass name in the docspec.
+
+9. Pull in syntax colouring changes from https://github.com/faceleg/Fragaria. This adds additional regex based colouring and support for Markdown.

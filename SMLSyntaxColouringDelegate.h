@@ -9,42 +9,42 @@
 #import <Foundation/Foundation.h>
 
 // syntax colouring information dictionary keys
-extern NSString *SMLSyntaxTag;
-extern NSString *SMLSyntaxTagID;
+extern NSString *SMLSyntaxGroup;
+extern NSString *SMLSyntaxGroupID;
 extern NSString *SMLSyntaxWillColour;
 extern NSString *SMLSyntaxAttributes;
 extern NSString *SMLSyntaxInfo;
 
-// syntax colouring tag names
-extern NSString *SMLSyntaxTagNumber;
-extern NSString *SMLSyntaxTagCommand;
-extern NSString *SMLSyntaxTagInstruction;
-extern NSString *SMLSyntaxTagKeyword;
-extern NSString *SMLSyntaxTagAutoComplete;
-extern NSString *SMLSyntaxTagVariable;
-extern NSString *SMLSyntaxTagFirstString;
-extern NSString *SMLSyntaxTagSecondString;
-extern NSString *SMLSyntaxTagAttribute;
-extern NSString *SMLSyntaxTagSingleLineComment;
-extern NSString *SMLSyntaxTagMultiLineComment;
-extern NSString *SMLSyntaxTagSecondStringPass2;
+// syntax colouring group names
+extern NSString *SMLSyntaxGroupNumber;
+extern NSString *SMLSyntaxGroupCommand;
+extern NSString *SMLSyntaxGroupInstruction;
+extern NSString *SMLSyntaxGroupKeyword;
+extern NSString *SMLSyntaxGroupAutoComplete;
+extern NSString *SMLSyntaxGroupVariable;
+extern NSString *SMLSyntaxGroupFirstString;
+extern NSString *SMLSyntaxGroupSecondString;
+extern NSString *SMLSyntaxGroupAttribute;
+extern NSString *SMLSyntaxGroupSingleLineComment;
+extern NSString *SMLSyntaxGroupMultiLineComment;
+extern NSString *SMLSyntaxGroupSecondStringPass2;
 
-// syntax colouring tag IDs
+// syntax colouring group IDs
 enum {
-    kSMLSyntaxTagNumber = 0,
-    kSMLSyntaxTagCommand = 1,
-    kSMLSyntaxTagInstruction = 2,
-    kSMLSyntaxTagKeyword = 3,
-    kSMLSyntaxTagAutoComplete = 4,
-    kSMLSyntaxTagVariable = 5,
-    kSMLSyntaxTagSecondString = 6,
-    kSMLSyntaxTagFirstString = 7,
-    kSMLSyntaxTagAttribute = 8,
-    kSMLSyntaxTagSingleLineComment = 9,
-    kSMLSyntaxTagMultiLineComment = 10,
-    kSMLSyntaxTagSecondStringPass2 = 11
+    kSMLSyntaxGroupNumber = 0,
+    kSMLSyntaxGroupCommand = 1,
+    kSMLSyntaxGroupInstruction = 2,
+    kSMLSyntaxGroupKeyword = 3,
+    kSMLSyntaxGroupAutoComplete = 4,
+    kSMLSyntaxGroupVariable = 5,
+    kSMLSyntaxGroupSecondString = 6,
+    kSMLSyntaxGroupFirstString = 7,
+    kSMLSyntaxGroupAttribute = 8,
+    kSMLSyntaxGroupSingleLineComment = 9,
+    kSMLSyntaxGroupMultiLineComment = 10,
+    kSMLSyntaxGroupSecondStringPass2 = 11
 };
-typedef NSInteger SMLSyntaxTagInteger;
+typedef NSInteger SMLSyntaxGroupInteger;
 
 @protocol SMLSyntaxColouringDelegate <NSObject>
 
@@ -64,8 +64,8 @@ typedef NSInteger SMLSyntaxTagInteger;
  Info dictionary keys 
  ======================
  
- SMLSyntaxTag: NSString describing the tag being coloured.
- SMLSyntaxTagID:  NSNumber identyfying the tag being coloured.
+ SMLSyntaxGroup: NSString describing the group being coloured.
+ SMLSyntaxGroupID:  NSNumber identyfying the group being coloured.
  SMLSyntaxWillColour: NSNumber containing a BOOL indicating whether the caller will colour the string.
  SMLSyntaxAttributes: NSDictionary of NSAttributed string attributes used to colour the string.
  SMLSyntaxInfo: NSDictionary containing Fragaria syntax definition.
@@ -78,21 +78,21 @@ typedef NSInteger SMLSyntaxTagInteger;
   // we will colour this document
  - fragariaDocument:willColourWithBlock:string:range:info
  
- // the *ColourTagWithBlock methods are sent for each tag defined by SMLSyntaxTagInteger
- foreach tag
+ // the *ColourGroupWithBlock methods are sent for each group defined by SMLSyntaxGroupInteger
+ foreach group
  
-    // Fragaria will colour this tag.
+    // Fragaria will colour this group.
     // to do initial colouring: colour as required and have the delegate return NO.
-    // to prevent tag colouring simply return YES.
+    // to prevent group colouring simply return YES.
     // to completely override the colouring: colour as required and have the delegate return YES.
-    BOOL delegateDidColour = (- fragariaDocument:willColourTagWithBlock:string:range:info)
+    BOOL delegateDidColour = (- fragariaDocument:willColourGroupWithBlock:string:range:info)
 
     // if delegateDidColour is NO then the Fragaria will colour the code once the above method returns.
     // if delegateDidColour is YES then the Fragaria will NOT colour the code any further once the above method returns.
  
-    // Fragaria did colour this tag.
+    // Fragaria did colour this group.
     // an opportunity for additional colouring to complement that already performed by Fragaria.
-    - fragariaDocument:didColourTagWithBlock:string:range:info
+    - fragariaDocument:didColourGroupWithBlock:string:range:info
  end
  
  // we did colour this document
@@ -104,7 +104,7 @@ typedef NSInteger SMLSyntaxTagInteger;
  Each delegate method includes a block that can can be called with a dictionary of attributes and a range to affect colouring.
  */
 - (void)fragariaDocument:(id)document willColourWithBlock:(BOOL (^)(NSDictionary *, NSRange))block string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info;
-- (BOOL)fragariaDocument:(id)document willColourTagWithBlock:(BOOL (^)(NSDictionary *, NSRange))block string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info;
-- (void)fragariaDocument:(id)document didColourTagWithBlock:(BOOL (^)(NSDictionary *, NSRange))block string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info;
+- (BOOL)fragariaDocument:(id)document willColourGroupWithBlock:(BOOL (^)(NSDictionary *, NSRange))block string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info;
+- (void)fragariaDocument:(id)document didColourGroupWithBlock:(BOOL (^)(NSDictionary *, NSRange))block string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info;
 - (void)fragariaDocument:(id)document didColourWithBlock:(BOOL (^)(NSDictionary *, NSRange))block string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info;
 @end

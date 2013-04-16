@@ -256,17 +256,17 @@
 }
 /*
  
- - fragariaDocument:willColourTagWithBlock:string:range:info
+ - fragariaDocument:willColourGroupWithBlock:string:range:info
  
  */
-- (BOOL) fragariaDocument:(id)document willColourTagWithBlock:(BOOL (^)(NSDictionary *, NSRange))colourWithBlock string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info
+- (BOOL) fragariaDocument:(id)document willColourGroupWithBlock:(BOOL (^)(NSDictionary *, NSRange))colourWithBlock string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info
 {
     #pragma unused(document, string)
     BOOL success = NO;
     
     // query info
-    NSString *tag = [info objectForKey:SMLSyntaxTag];
-    NSInteger tagID = [[info objectForKey:SMLSyntaxTagID] integerValue];
+    NSString *group = [info objectForKey:SMLSyntaxGroup];
+    NSInteger groupID = [[info objectForKey:SMLSyntaxGroupID] integerValue];
     BOOL willColour = [[info objectForKey:SMLSyntaxWillColour] boolValue];
     NSDictionary *attributes = [info objectForKey:SMLSyntaxAttributes];
     NSDictionary *syntaxInfo = [info objectForKey:SMLSyntaxInfo];
@@ -275,50 +275,50 @@
     (void)syntaxInfo;
 
     
-    NSLog(@"willColourTagWithBlock Colouring tag : %@ id : %li caller will colour : %@", tag, tagID, (willColour ? @"YES" : @"NO"));
+    NSLog(@"willColourGroupWithBlock Colouring group : %@ id : %li caller will colour : %@", group, groupID, (willColour ? @"YES" : @"NO"));
     
-    // tag
-    switch (tagID) {
-        case kSMLSyntaxTagNumber:
+    // group
+    switch (groupID) {
+        case kSMLSyntaxGroupNumber:
             
-            // we can call colourWithBlock to perform initial tag colouration
+            // we can call colourWithBlock to perform initial group colouration
             if (NO) {
                 
-                // colour the whole string with the number tag colour
+                // colour the whole string with the number group colour
                 colourWithBlock(attributes, range);
                 
                 success = YES;
             }
             break;
             
-        case kSMLSyntaxTagCommand:
+        case kSMLSyntaxGroupCommand:
             break;
             
-        case kSMLSyntaxTagInstruction:
+        case kSMLSyntaxGroupInstruction:
             break;
             
-        case kSMLSyntaxTagKeyword:
+        case kSMLSyntaxGroupKeyword:
             break;
             
-        case kSMLSyntaxTagAutoComplete:
+        case kSMLSyntaxGroupAutoComplete:
             break;
             
-        case kSMLSyntaxTagVariable:
+        case kSMLSyntaxGroupVariable:
             break;
             
-        case kSMLSyntaxTagFirstString:
+        case kSMLSyntaxGroupFirstString:
             break;
             
-        case kSMLSyntaxTagSecondString:
+        case kSMLSyntaxGroupSecondString:
             break;
             
-        case kSMLSyntaxTagAttribute:
+        case kSMLSyntaxGroupAttribute:
             break;
 
-        case kSMLSyntaxTagSingleLineComment:
+        case kSMLSyntaxGroupSingleLineComment:
             break;
             
-        case kSMLSyntaxTagMultiLineComment:
+        case kSMLSyntaxGroupMultiLineComment:
             
             // we can prevent further colouring by returning YES
             if (NO) {
@@ -327,28 +327,28 @@
             
             break;
             
-        case kSMLSyntaxTagSecondStringPass2:
+        case kSMLSyntaxGroupSecondStringPass2:
             break;
     }
     
 
-    // return YES if code has been fully coloured and no further colouring of tag is required.
-    // return NO if we want the caller to colour the code for the current tag.
+    // return YES if code has been fully coloured and no further colouring of group is required.
+    // return NO if we want the caller to colour the code for the current group.
     return success;
 }
 
 /*
  
- - fragariaDocument:willColourTagWithBlock:string:range:info
+ - fragariaDocument:willColourGroupWithBlock:string:range:info
  
  */
-- (void) fragariaDocument:(id)document didColourTagWithBlock:(BOOL (^)(NSDictionary *, NSRange))colourWithBlock string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info
+- (void) fragariaDocument:(id)document didColourGroupWithBlock:(BOOL (^)(NSDictionary *, NSRange))colourWithBlock string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info
 {
 #pragma unused(document, string)
     
     // query info
-    NSString *tag = [info objectForKey:SMLSyntaxTag];
-    NSInteger tagID = [[info objectForKey:SMLSyntaxTagID] integerValue];
+    NSString *group = [info objectForKey:SMLSyntaxGroup];
+    NSInteger groupID = [[info objectForKey:SMLSyntaxGroupID] integerValue];
     BOOL willColour = [[info objectForKey:SMLSyntaxWillColour] boolValue];
     NSDictionary *attributes = [info objectForKey:SMLSyntaxAttributes];
     NSDictionary *syntaxInfo = [info objectForKey:SMLSyntaxInfo];
@@ -356,25 +356,25 @@
     // compiler comfort
     (void)syntaxInfo;
     
-    NSLog(@"didColourTagWithBlock Colouring tag : %@ id : %li caller will colour : %@", tag, tagID, (willColour ? @"YES" : @"NO"));
+    NSLog(@"didColourGroupWithBlock Colouring group : %@ id : %li caller will colour : %@", group, groupID, (willColour ? @"YES" : @"NO"));
     
     NSString *subString = [string substringWithRange:range];
     NSScanner *rangeScanner = [NSScanner scannerWithString:subString];
     [rangeScanner setScanLocation:0];
     
-    // tag
-    switch (tagID) {
-        case kSMLSyntaxTagNumber:
+    // group
+    switch (groupID) {
+        case kSMLSyntaxGroupNumber:
             
             break;
             
-        case kSMLSyntaxTagCommand:
+        case kSMLSyntaxGroupCommand:
             break;
             
-        case kSMLSyntaxTagInstruction:
+        case kSMLSyntaxGroupInstruction:
             break;
             
-        case kSMLSyntaxTagKeyword:
+        case kSMLSyntaxGroupKeyword:
         {
             // normally we iterate over the string using an NSScanner to identiy our substrings.
             // in this simple case we just colour the occurence of a given string as a false keyword.
@@ -389,28 +389,28 @@
         }
             break;
             
-        case kSMLSyntaxTagAutoComplete:
+        case kSMLSyntaxGroupAutoComplete:
             break;
             
-        case kSMLSyntaxTagVariable:
+        case kSMLSyntaxGroupVariable:
             break;
             
-        case kSMLSyntaxTagFirstString:
+        case kSMLSyntaxGroupFirstString:
             break;
             
-        case kSMLSyntaxTagSecondString:
+        case kSMLSyntaxGroupSecondString:
             break;
             
-        case kSMLSyntaxTagAttribute:
+        case kSMLSyntaxGroupAttribute:
             break;
             
-        case kSMLSyntaxTagSingleLineComment:
+        case kSMLSyntaxGroupSingleLineComment:
             break;
             
-        case kSMLSyntaxTagMultiLineComment:
+        case kSMLSyntaxGroupMultiLineComment:
             break;
             
-        case kSMLSyntaxTagSecondStringPass2:
+        case kSMLSyntaxGroupSecondStringPass2:
             break;
     }
 }

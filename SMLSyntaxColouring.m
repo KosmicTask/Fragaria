@@ -25,25 +25,25 @@ Unless required by applicable law or agreed to in writing, software distributed 
 #import "SMLSyntaxColouringDelegate.h"
 
 // syntax colouring information dictionary keys
-NSString *SMLSyntaxTag = @"tag";
-NSString *SMLSyntaxTagID = @"tagID";
+NSString *SMLSyntaxGroup = @"grop";
+NSString *SMLSyntaxGroupID = @"groupID";
 NSString *SMLSyntaxWillColour = @"willColour";
 NSString *SMLSyntaxAttributes = @"attributes";
 NSString *SMLSyntaxInfo = @"syntaxInfo";
 
-// syntax colouring tag names
-NSString *SMLSyntaxTagNumber = @"number";
-NSString *SMLSyntaxTagCommand = @"command";
-NSString *SMLSyntaxTagInstruction = @"instruction";
-NSString *SMLSyntaxTagKeyword = @"keyword";
-NSString *SMLSyntaxTagAutoComplete = @"autocomplete";
-NSString *SMLSyntaxTagVariable = @"variable";
-NSString *SMLSyntaxTagFirstString = @"firstString";
-NSString *SMLSyntaxTagSecondString = @"secondString";
-NSString *SMLSyntaxTagAttribute = @"attribute";
-NSString *SMLSyntaxTagSingleLineComment = @"singleLineComment";
-NSString *SMLSyntaxTagMultiLineComment = @"multiLineComment";
-NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
+// syntax colouring group names
+NSString *SMLSyntaxGroupNumber = @"number";
+NSString *SMLSyntaxGroupCommand = @"command";
+NSString *SMLSyntaxGroupInstruction = @"instruction";
+NSString *SMLSyntaxGroupKeyword = @"keyword";
+NSString *SMLSyntaxGroupAutoComplete = @"autocomplete";
+NSString *SMLSyntaxGroupVariable = @"variable";
+NSString *SMLSyntaxGroupFirstString = @"firstString";
+NSString *SMLSyntaxGroupSecondString = @"secondString";
+NSString *SMLSyntaxGroupAttribute = @"attribute";
+NSString *SMLSyntaxGroupSingleLineComment = @"singleLineComment";
+NSString *SMLSyntaxGroupMultiLineComment = @"multiLineComment";
+NSString *SMLSyntaxGroupSecondStringPass2 = @"secondStringPass2";
 
 // class extension
 @interface SMLSyntaxColouring()
@@ -128,7 +128,7 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
 		NSAssert(theDocument, @"bad document");
 		
 		// retain the document
-		document = theDocument;
+		document = [theDocument retain];
 		
 		self.undoManager = [[[NSUndoManager alloc] init] autorelease];
 
@@ -219,6 +219,15 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
     return self;
 }
 
+/*
+ 
+ - dealloc
+ 
+ */
+- (void) dealloc {
+	[document release];
+	[super dealloc];
+}
 #pragma mark -
 #pragma mark KVO
 /*
@@ -739,8 +748,8 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
 	
     // colouring delegate
     id colouringDelegate = [document valueForKey:MGSFOSyntaxColouringDelegate];
-    BOOL delegateRespondsToWillColourTag = [colouringDelegate respondsToSelector:@selector(fragariaDocument:willColourTagWithBlock:string:range:info:)];
-    BOOL delegateRespondsToDidColourTag = [colouringDelegate respondsToSelector:@selector(fragariaDocument:didColourTagWithBlock:string:range:info:)];
+    BOOL delegateRespondsToWillColourGroup = [colouringDelegate respondsToSelector:@selector(fragariaDocument:willColourGroupWithBlock:string:range:info:)];
+    BOOL delegateRespondsToDidColourGroup = [colouringDelegate respondsToSelector:@selector(fragariaDocument:didColourGroupWithBlock:string:range:info:)];
     BOOL delegateDidColour = NO;
     NSDictionary *delegateInfo =  nil;
 	
@@ -769,14 +778,14 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
         //
         NSNumber *doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourNumbers];
        
-        // initial delegate tag colouring
-        if (delegateRespondsToWillColourTag) {
+        // initial delegate group colouring
+        if (delegateRespondsToWillColourGroup) {
             
             // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagNumber, SMLSyntaxTagID : @(kSMLSyntaxTagNumber), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : numbersColour, SMLSyntaxInfo : self.syntaxDictionary};
+            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupNumber, SMLSyntaxGroupID : @(kSMLSyntaxGroupNumber), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : numbersColour, SMLSyntaxInfo : self.syntaxDictionary};
             
             // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
             
         } else {
             delegateDidColour = NO;
@@ -828,9 +837,9 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
             }
         }
 
-        // final delegate tag colouring
-        if (delegateRespondsToDidColourTag) {
-            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        // final delegate group colouring
+        if (delegateRespondsToDidColourGroup) {
+            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
         } 
 
         //
@@ -838,14 +847,14 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
         //
         doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourCommands];
         
-        // initial delegate tag colouring
-        if (delegateRespondsToWillColourTag) {
+        // initial delegate group colouring
+        if (delegateRespondsToWillColourGroup) {
             
             // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagCommand, SMLSyntaxTagID : @(kSMLSyntaxTagCommand), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : commandsColour, SMLSyntaxInfo : self.syntaxDictionary};
+            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupCommand, SMLSyntaxGroupID : @(kSMLSyntaxGroupCommand), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : commandsColour, SMLSyntaxInfo : self.syntaxDictionary};
             
             // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
             
         } else {
             delegateDidColour = NO;
@@ -898,9 +907,9 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
 			}
 		}
 		
-        // final delegate tag colouring
-        if (delegateRespondsToDidColourTag) {
-            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        // final delegate group colouring
+        if (delegateRespondsToDidColourGroup) {
+            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
         }
 
 
@@ -909,14 +918,14 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
         //
         doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourInstructions];
         
-        // initial delegate tag colouring
-        if (delegateRespondsToWillColourTag) {
+        // initial delegate group colouring
+        if (delegateRespondsToWillColourGroup) {
             
             // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagInstruction, SMLSyntaxTagID : @(kSMLSyntaxTagInstruction), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : instructionsColour, SMLSyntaxInfo : self.syntaxDictionary};
+            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupInstruction, SMLSyntaxGroupID : @(kSMLSyntaxGroupInstruction), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : instructionsColour, SMLSyntaxInfo : self.syntaxDictionary};
             
             // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
             
         } else {
             delegateDidColour = NO;
@@ -968,9 +977,9 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
 			}
 		}
 
-        // final delegate tag colouring
-        if (delegateRespondsToDidColourTag) {
-            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        // final delegate group colouring
+        if (delegateRespondsToDidColourGroup) {
+            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
         }
 
 		//
@@ -978,14 +987,14 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
         //
         doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourKeywords];
         
-        // initial delegate tag colouring
-        if (delegateRespondsToWillColourTag) {
+        // initial delegate group colouring
+        if (delegateRespondsToWillColourGroup) {
             
             // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagKeyword, SMLSyntaxTagID : @(kSMLSyntaxTagKeyword), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : keywordsColour, SMLSyntaxInfo : self.syntaxDictionary};
+            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupKeyword, SMLSyntaxGroupID : @(kSMLSyntaxGroupKeyword), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : keywordsColour, SMLSyntaxInfo : self.syntaxDictionary};
             
             // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
             
         } else {
             delegateDidColour = NO;
@@ -1027,9 +1036,9 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
 			}
 		}
 
-        // final delegate tag colouring
-        if (delegateRespondsToDidColourTag) {
-            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        // final delegate group colouring
+        if (delegateRespondsToDidColourGroup) {
+            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
         }
 
 		//
@@ -1037,14 +1046,14 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
         //
         doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourAutocomplete];
         
-        // initial delegate tag colouring
-        if (delegateRespondsToWillColourTag) {
+        // initial delegate group colouring
+        if (delegateRespondsToWillColourGroup) {
             
             // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagAutoComplete, SMLSyntaxTagID : @(kSMLSyntaxTagAutoComplete), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : autocompleteWordsColour, SMLSyntaxInfo : self.syntaxDictionary};
+            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupAutoComplete, SMLSyntaxGroupID : @(kSMLSyntaxGroupAutoComplete), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : autocompleteWordsColour, SMLSyntaxInfo : self.syntaxDictionary};
             
             // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
             
         } else {
             delegateDidColour = NO;
@@ -1087,9 +1096,9 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
 			}
 		}
 		
-        // final delegate tag colouring
-        if (delegateRespondsToDidColourTag) {
-            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        // final delegate group colouring
+        if (delegateRespondsToDidColourGroup) {
+            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
         }
 
 		//
@@ -1097,14 +1106,14 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
         //
         doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourVariables];
         
-        // initial delegate tag colouring
-        if (delegateRespondsToWillColourTag) {
+        // initial delegate group colouring
+        if (delegateRespondsToWillColourGroup) {
             
             // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagVariable, SMLSyntaxTagID : @(kSMLSyntaxTagVariable), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : variablesColour, SMLSyntaxInfo : self.syntaxDictionary};
+            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupVariable, SMLSyntaxGroupID : @(kSMLSyntaxGroupVariable), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : variablesColour, SMLSyntaxInfo : self.syntaxDictionary};
             
             // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
             
         } else {
             delegateDidColour = NO;
@@ -1142,9 +1151,9 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
 			}
 		}	
 
-        // final delegate tag colouring
-        if (delegateRespondsToDidColourTag) {
-            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        // final delegate group colouring
+        if (delegateRespondsToDidColourGroup) {
+            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
         }
 
 		//
@@ -1153,14 +1162,14 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
 
         doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourStrings];
         
-        // initial delegate tag colouring
-        if (delegateRespondsToWillColourTag) {
+        // initial delegate group colouring
+        if (delegateRespondsToWillColourGroup) {
             
             // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagSecondString, SMLSyntaxTagID : @(kSMLSyntaxTagSecondString), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : stringsColour, SMLSyntaxInfo : self.syntaxDictionary};
+            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupSecondString, SMLSyntaxGroupID : @(kSMLSyntaxGroupSecondString), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : stringsColour, SMLSyntaxInfo : self.syntaxDictionary};
             
             // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
             
         } else {
             delegateDidColour = NO;
@@ -1180,9 +1189,9 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
 			}
 		}
 
-        // final delegate tag colouring
-        if (delegateRespondsToDidColourTag) {
-            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        // final delegate group colouring
+        if (delegateRespondsToDidColourGroup) {
+            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
         }
 
 		//
@@ -1190,14 +1199,14 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
         //
         doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourStrings];
         
-        // initial delegate tag colouring
-        if (delegateRespondsToWillColourTag) {
+        // initial delegate group colouring
+        if (delegateRespondsToWillColourGroup) {
             
             // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagFirstString, SMLSyntaxTagID : @(kSMLSyntaxTagFirstString), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : stringsColour, SMLSyntaxInfo : self.syntaxDictionary};
+            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupFirstString, SMLSyntaxGroupID : @(kSMLSyntaxGroupFirstString), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : stringsColour, SMLSyntaxInfo : self.syntaxDictionary};
             
             // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
             
         } else {
             delegateDidColour = NO;
@@ -1220,9 +1229,9 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
 			}
 		}
 
-        // final delegate tag colouring
-        if (delegateRespondsToDidColourTag) {
-            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        // final delegate group colouring
+        if (delegateRespondsToDidColourGroup) {
+            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
         }
 
 		//
@@ -1230,14 +1239,14 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
         //
         doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourAttributes];
         
-        // initial delegate tag colouring
-        if (delegateRespondsToWillColourTag) {
+        // initial delegate group colouring
+        if (delegateRespondsToWillColourGroup) {
             
             // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagAttribute, SMLSyntaxTagID : @(kSMLSyntaxTagAttribute), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : attributesColour, SMLSyntaxInfo : self.syntaxDictionary};
+            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupAttribute, SMLSyntaxGroupID : @(kSMLSyntaxGroupAttribute), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : attributesColour, SMLSyntaxInfo : self.syntaxDictionary};
             
             // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
             
         } else {
             delegateDidColour = NO;
@@ -1274,9 +1283,9 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
 			}
 		}
 		
-        // final delegate tag colouring
-        if (delegateRespondsToDidColourTag) {
-            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        // final delegate group colouring
+        if (delegateRespondsToDidColourGroup) {
+            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
         }
 
 		//
@@ -1284,14 +1293,14 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
         //
         doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourComments];
         
-        // initial delegate tag colouring
-        if (delegateRespondsToWillColourTag) {
+        // initial delegate group colouring
+        if (delegateRespondsToWillColourGroup) {
             
             // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagSingleLineComment, SMLSyntaxTagID : @(kSMLSyntaxTagSingleLineComment), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : commentsColour, SMLSyntaxInfo : self.syntaxDictionary};
+            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupSingleLineComment, SMLSyntaxGroupID : @(kSMLSyntaxGroupSingleLineComment), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : commentsColour, SMLSyntaxInfo : self.syntaxDictionary};
             
             // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
             
         } else {
             delegateDidColour = NO;
@@ -1358,9 +1367,9 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
             }
 		}
         
-        // final delegate tag colouring
-        if (delegateRespondsToDidColourTag) {
-            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        // final delegate group colouring
+        if (delegateRespondsToDidColourGroup) {
+            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
         }
 
 		//
@@ -1368,14 +1377,14 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
         //
         doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourComments];
         
-        // initial delegate tag colouring
-        if (delegateRespondsToWillColourTag) {
+        // initial delegate group colouring
+        if (delegateRespondsToWillColourGroup) {
             
             // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagMultiLineComment, SMLSyntaxTagID : @(kSMLSyntaxTagMultiLineComment), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : commentsColour, SMLSyntaxInfo : self.syntaxDictionary};
+            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupMultiLineComment, SMLSyntaxGroupID : @(kSMLSyntaxGroupMultiLineComment), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : commentsColour, SMLSyntaxInfo : self.syntaxDictionary};
             
             // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
             
         } else {
             delegateDidColour = NO;
@@ -1485,9 +1494,9 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
             }
 		}
         
-        // final delegate tag colouring
-        if (delegateRespondsToDidColourTag) {
-            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        // final delegate group colouring
+        if (delegateRespondsToDidColourGroup) {
+            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
         }
 
 		//
@@ -1495,14 +1504,14 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
         //
         doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourStrings];
         
-        // initial delegate tag colouring
-        if (delegateRespondsToWillColourTag) {
+        // initial delegate group colouring
+        if (delegateRespondsToWillColourGroup) {
             
             // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxTag : SMLSyntaxTagSecondStringPass2, SMLSyntaxTagID : @(kSMLSyntaxTagSecondStringPass2), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : stringsColour, SMLSyntaxInfo : self.syntaxDictionary};
+            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupSecondStringPass2, SMLSyntaxGroupID : @(kSMLSyntaxGroupSecondStringPass2), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : stringsColour, SMLSyntaxInfo : self.syntaxDictionary};
             
             // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
             
         } else {
             delegateDidColour = NO;
@@ -1525,9 +1534,9 @@ NSString *SMLSyntaxTagSecondStringPass2 = @"secondStringPass2";
 			}
 		}
 
-        // final delegate tag colouring
-        if (delegateRespondsToDidColourTag) {
-            [colouringDelegate fragariaDocument:document didColourTagWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+        // final delegate group colouring
+        if (delegateRespondsToDidColourGroup) {
+            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
         }
 
         //

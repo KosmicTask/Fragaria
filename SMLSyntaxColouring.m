@@ -22,7 +22,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 #import "MGSFragariaFramework.h"
 
 // syntax colouring information dictionary keys
-NSString *SMLSyntaxGroup = @"grop";
+NSString *SMLSyntaxGroup = @"group";
 NSString *SMLSyntaxGroupID = @"groupID";
 NSString *SMLSyntaxWillColour = @"willColour";
 NSString *SMLSyntaxAttributes = @"attributes";

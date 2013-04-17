@@ -101,7 +101,7 @@ typedef NSInteger SMLSyntaxGroupInteger;
  end
  
  // inform delegate document was coloured
- - fragariaDocument:willDidWithBlock:string:range:info
+ fragariaDocument:willDidWithBlock:string:range:info
  
  Colouring the string
  ====================

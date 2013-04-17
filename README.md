@@ -7,9 +7,13 @@ The MGSFragaria framework now properly supports both traditional reference count
 
 You can see Fragaria used in the following products:
 
+* [Applium Recorder](http://appium.io) : description required ([repo](https://github.com/appium/appium)).
+
+* CocosBuilder.
+
 * [KosmicTask](http://www.mugginsoft.com) : a multi (20+) language  scripting environment for OS X that features script editing, network sharing, remote execution, and file processing.
 
-If you use MGSFragaria in your app and want it added to the list raise it as an issue.
+If you use Fragaria in your app and want it added to the list just let us know or edit the README.
 
 #Features
 

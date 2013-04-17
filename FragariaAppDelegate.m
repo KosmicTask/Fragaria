@@ -348,8 +348,8 @@
         case kSMLSyntaxGroupSecondStringPass2:
             break;
     }
-    
 
+    
     // YES: Fragaria should colour group
     // NO: Fragaria should not colour group
     return fragariaShouldColour;

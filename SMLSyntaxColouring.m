@@ -814,6 +814,7 @@ NSString *SMLSyntaxDefinitionIncludeInKeywordEndCharacterSet = @"includeInKeywor
 	NSUInteger queryLocation = 0;
     unichar testCharacter = 0;
     
+    // trace
     //NSLog(@"rangeToRecolor location %i length %i", rangeToRecolour.location, rangeToRecolour.length);
     
     // adjust effective range
@@ -829,7 +830,7 @@ NSString *SMLSyntaxDefinitionIncludeInKeywordEndCharacterSet = @"includeInKeywor
 		}
 	}
 	
-    // setup working locations based on teh effective range
+    // setup working locations based on the effective range
 	NSUInteger rangeLocation = effectiveRange.location;
 	NSUInteger maxRangeLocation = NSMaxRange(effectiveRange);
     
@@ -853,818 +854,828 @@ NSString *SMLSyntaxDefinitionIncludeInKeywordEndCharacterSet = @"includeInKeywor
 	
     // colouring delegate
     id colouringDelegate = [document valueForKey:MGSFOSyntaxColouringDelegate];
-    BOOL delegateRespondsToWillColourGroup = [colouringDelegate respondsToSelector:@selector(fragariaDocument:willColourGroupWithBlock:string:range:info:)];
+    BOOL delegateRespondsToShouldColourGroup = [colouringDelegate respondsToSelector:@selector(fragariaDocument:shouldColourGroupWithBlock:string:range:info:)];
     BOOL delegateRespondsToDidColourGroup = [colouringDelegate respondsToSelector:@selector(fragariaDocument:didColourGroupWithBlock:string:range:info:)];
-    BOOL delegateDidColour = NO;
     NSDictionary *delegateInfo =  nil;
 	
-    // a block that the colour delegate can use to effect colouring
+    // define a block that the colour delegate can use to effect colouring
     BOOL (^colourRangeBlock)(NSDictionary *, NSRange) = ^(NSDictionary *colourInfo, NSRange range) {
         [self setColour:colourInfo range:range];
         
+        // at the moment we always succeed
         return YES;
     };
     
     @try {
 		
+        BOOL doColouring = YES;
+        
         //
-        // tell delegate we will colour the document
+        // query delegate about colouring the document
         //
-        if ([colouringDelegate respondsToSelector:@selector(fragariaDocument:willColourWithBlock:string:range:info:)]) {
+        if ([colouringDelegate respondsToSelector:@selector(fragariaDocument:shouldColourWithBlock:string:range:info:)]) {
             
             // build minimal delegate info dictionary
-            delegateInfo = @{SMLSyntaxInfo : self.syntaxDictionary};
+            delegateInfo = @{SMLSyntaxInfo : self.syntaxDictionary, SMLSyntaxWillColour : @(self.isSyntaxColouringRequired)};
             
-            [colouringDelegate fragariaDocument:document willColourWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            // query delegate about colouring
+            doColouring = [colouringDelegate fragariaDocument:document shouldColourWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            
         }
         
-        //
-        // Numbers
-        //
-        NSNumber *doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourNumbers];
-       
-        // initial delegate group colouring
-        if (delegateRespondsToWillColourGroup) {
-            
-            // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupNumber, SMLSyntaxGroupID : @(kSMLSyntaxGroupNumber), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : numbersColour, SMLSyntaxInfo : self.syntaxDictionary};
-            
-            // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
-            
-        } else {
-            delegateDidColour = NO;
-        }
-        
-        // do colouring
-		if ([doColouring boolValue] && !delegateDidColour) {
-            
-            // reset scanner
-			[rangeScanner mgs_setScanLocation:0];
-
-            // scan range to end
-            while (![rangeScanner isAtEnd]) {
+        if (doColouring) {
+            //
+            // Numbers
+            //
+            doColouring = [[SMLDefaults valueForKey:MGSFragariaPrefsColourNumbers] boolValue];
+           
+            // query delegate about colouring
+            if (delegateRespondsToShouldColourGroup) {
                 
-                // scan up to a number character
-                [rangeScanner scanUpToCharactersFromSet:self.numberCharacterSet intoString:NULL];
-                colourStartLocation = [rangeScanner scanLocation];
+                // build delegate info dictionary
+                delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupNumber, SMLSyntaxGroupID : @(kSMLSyntaxGroupNumber), SMLSyntaxWillColour : @(doColouring), SMLSyntaxAttributes : numbersColour, SMLSyntaxInfo : self.syntaxDictionary};
                 
-                // scan to number end
-                [rangeScanner scanCharactersFromSet:self.numberCharacterSet intoString:NULL];
-                colourEndLocation = [rangeScanner scanLocation];
+                // call the delegate
+                doColouring = [colouringDelegate fragariaDocument:document shouldColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
                 
-                if (colourStartLocation == colourEndLocation) {
-                    break;
-                }
-                
-                // don't colour if preceding character is a letter.
-                // this prevents us from colouring numbers in variable names,
-                queryLocation = colourStartLocation + rangeLocation;
-                if (queryLocation > 0) {
-                    testCharacter = [documentString characterAtIndex:queryLocation - 1];
-                    
-                    // numbers can occur in variable, class and function names
-                    // eg: var_1 should not be coloured as a number
-                    if ([self.nameCharacterSet characterIsMember:testCharacter]) {
-                        continue;
-                    }
-                }
-
-                // TODO: handle constructs such as 1..5 which may occur within some loop constructs
-                
-                // don't colour a trailing decimal point as some languages may use it as a line terminator
-                if (colourEndLocation > 0) {
-                    queryLocation = colourEndLocation - 1;
-                    testCharacter = [rangeString characterAtIndex:queryLocation];
-                    if (testCharacter == self.decimalPointCharacter) {
-                        colourEndLocation--;
-                    }
-                }
-
-                [self setColour:numbersColour range:NSMakeRange(colourStartLocation + rangeLocation, colourEndLocation - colourStartLocation)];
-            }
-        }
-
-        // final delegate group colouring
-        if (delegateRespondsToDidColourGroup) {
-            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
-        } 
-
-        //
-		// Commands
-        //
-        doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourCommands];
-        
-        // initial delegate group colouring
-        if (delegateRespondsToWillColourGroup) {
+            } 
             
-            // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupCommand, SMLSyntaxGroupID : @(kSMLSyntaxGroupCommand), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : commandsColour, SMLSyntaxInfo : self.syntaxDictionary};
-            
-            // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
-            
-        } else {
-            delegateDidColour = NO;
-        }
-
-		if (![self.beginCommand isEqualToString:@""] && [doColouring boolValue] && !delegateDidColour) {
-			searchSyntaxLength = [self.endCommand length];
-			unichar beginCommandCharacter = [self.beginCommand characterAtIndex:0];
-			unichar endCommandCharacter = [self.endCommand characterAtIndex:0];
-            
-            // reset scanner
-			[rangeScanner mgs_setScanLocation:0];
-
-            // scan range to end
-			while (![rangeScanner isAtEnd]) {
-				[rangeScanner scanUpToString:self.beginCommand intoString:nil];
-				colourStartLocation = [rangeScanner scanLocation];
-				endOfLine = NSMaxRange([rangeString lineRangeForRange:NSMakeRange(colourStartLocation, 0)]);
-				if (![rangeScanner scanUpToString:self.endCommand intoString:nil] || [rangeScanner scanLocation] >= endOfLine) {
-					[rangeScanner mgs_setScanLocation:endOfLine];
-					continue; // Don't colour it if it hasn't got a closing tag
-				} else {
-					// To avoid problems with strings like <yada <%=yada%> yada> we need to balance the number of begin- and end-tags
-					// If ever there's a beginCommand or endCommand with more than one character then do a check first
-					NSUInteger commandLocation = colourStartLocation + 1;
-					NSUInteger skipEndCommand = 0;
-					
-					while (commandLocation < endOfLine) {
-						unichar commandCharacterTest = [rangeString characterAtIndex:commandLocation];
-						if (commandCharacterTest == endCommandCharacter) {
-							if (!skipEndCommand) {
-								break;
-							} else {
-								skipEndCommand--;
-							}
-						}
-						if (commandCharacterTest == beginCommandCharacter) {
-							skipEndCommand++;
-						}
-						commandLocation++;
-					}
-					if (commandLocation < endOfLine) {
-						[rangeScanner mgs_setScanLocation:commandLocation + searchSyntaxLength];
-					} else {
-						[rangeScanner mgs_setScanLocation:endOfLine];
-					}
-				}
-				
-				[self setColour:commandsColour range:NSMakeRange(colourStartLocation + rangeLocation, [rangeScanner scanLocation] - colourStartLocation)];
-			}
-		}
-		
-        // final delegate group colouring
-        if (delegateRespondsToDidColourGroup) {
-            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
-        }
-
-
-        //
-		// Instructions
-        //
-        doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourInstructions];
-        
-        // initial delegate group colouring
-        if (delegateRespondsToWillColourGroup) {
-            
-            // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupInstruction, SMLSyntaxGroupID : @(kSMLSyntaxGroupInstruction), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : instructionsColour, SMLSyntaxInfo : self.syntaxDictionary};
-            
-            // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
-            
-        } else {
-            delegateDidColour = NO;
-        }
-
-		if (![self.beginInstruction isEqualToString:@""] && [doColouring boolValue] && !delegateDidColour) {
-			// It takes too long to scan the whole document if it's large, so for instructions, first multi-line comment and second multi-line comment search backwards and begin at the start of the first beginInstruction etc. that it finds from the present position and, below, break the loop if it has passed the scanned range (i.e. after the end instruction)
-			
-			beginLocationInMultiLine = [documentString rangeOfString:self.beginInstruction options:NSBackwardsSearch range:NSMakeRange(0, rangeLocation)].location;
-			endLocationInMultiLine = [documentString rangeOfString:self.endInstruction options:NSBackwardsSearch range:NSMakeRange(0, rangeLocation)].location;
-			if (beginLocationInMultiLine == NSNotFound || (endLocationInMultiLine != NSNotFound && beginLocationInMultiLine < endLocationInMultiLine)) {
-				beginLocationInMultiLine = rangeLocation;
-			}			
-
-			searchSyntaxLength = [self.endInstruction length];
-
-            // reset scanner
-			[documentScanner mgs_setScanLocation:0];
-
-            // scan document to end
-			while (![documentScanner isAtEnd]) {
-				searchRange = NSMakeRange(beginLocationInMultiLine, rangeToRecolour.length);
-				if (NSMaxRange(searchRange) > documentStringLength) {
-					searchRange = NSMakeRange(beginLocationInMultiLine, documentStringLength - beginLocationInMultiLine);
-				}
-				
-				colourStartLocation = [documentString rangeOfString:self.beginInstruction options:NSLiteralSearch range:searchRange].location;
-				if (colourStartLocation == NSNotFound) {
-					break;
-				}
-				[documentScanner mgs_setScanLocation:colourStartLocation];
-				if (![documentScanner scanUpToString:self.endInstruction intoString:nil] || [documentScanner scanLocation] >= documentStringLength) {
-					if (shouldOnlyColourTillTheEndOfLine) {
-						[documentScanner mgs_setScanLocation:NSMaxRange([documentString lineRangeForRange:NSMakeRange(colourStartLocation, 0)])];
-					} else {
-						[documentScanner mgs_setScanLocation:documentStringLength];
-					}
-				} else {
-					if ([documentScanner scanLocation] + searchSyntaxLength <= documentStringLength) {
-						[documentScanner mgs_setScanLocation:[documentScanner scanLocation] + searchSyntaxLength];
-					}
-				}
-				
-				[self setColour:instructionsColour range:NSMakeRange(colourStartLocation, [documentScanner scanLocation] - colourStartLocation)];
-				if ([documentScanner scanLocation] > maxRangeLocation) {
-					break;
-				}
-				beginLocationInMultiLine = [documentScanner scanLocation];
-			}
-		}
-
-        // final delegate group colouring
-        if (delegateRespondsToDidColourGroup) {
-            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
-        }
-
-		//
-		// Keywords
-        //
-        doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourKeywords];
-        
-        // initial delegate group colouring
-        if (delegateRespondsToWillColourGroup) {
-            
-            // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupKeyword, SMLSyntaxGroupID : @(kSMLSyntaxGroupKeyword), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : keywordsColour, SMLSyntaxInfo : self.syntaxDictionary};
-            
-            // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
-            
-        } else {
-            delegateDidColour = NO;
-        }
-
-		if ([keywords count] != 0 && [doColouring boolValue] && !delegateDidColour) {
-            
-            // reset scanner
-			[rangeScanner mgs_setScanLocation:0];
-            
-            // scan range to end
-			while (![rangeScanner isAtEnd]) {
-				[rangeScanner scanUpToCharactersFromSet:self.keywordStartCharacterSet intoString:nil];
-				colourStartLocation = [rangeScanner scanLocation];
-				if ((colourStartLocation + 1) < rangeStringLength) {
-					[rangeScanner mgs_setScanLocation:(colourStartLocation + 1)];
-				}
-				[rangeScanner scanUpToCharactersFromSet:self.keywordEndCharacterSet intoString:nil];
-				
-				colourEndLocation = [rangeScanner scanLocation];
-				if (colourEndLocation > rangeStringLength || colourStartLocation == colourEndLocation) {
-					break;
-				}
-				
-				NSString *keywordTestString = nil;
-				if (!keywordsCaseSensitive) {
-					keywordTestString = [[documentString substringWithRange:NSMakeRange(colourStartLocation + rangeLocation, colourEndLocation - colourStartLocation)] lowercaseString];
-				} else {
-					keywordTestString = [documentString substringWithRange:NSMakeRange(colourStartLocation + rangeLocation, colourEndLocation - colourStartLocation)];
-				}
-				if ([keywords containsObject:keywordTestString]) {
-					if (!recolourKeywordIfAlreadyColoured) {
-						if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:colourStartLocation + rangeLocation effectiveRange:NULL] isEqualToDictionary:commandsColour]) {
-							continue;
-						}
-					}	
-					[self setColour:keywordsColour range:NSMakeRange(colourStartLocation + rangeLocation, [rangeScanner scanLocation] - colourStartLocation)];
-				}
-			}
-		}
-
-        // final delegate group colouring
-        if (delegateRespondsToDidColourGroup) {
-            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
-        }
-
-		//
-		// Autocomplete
-        //
-        doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourAutocomplete];
-        
-        // initial delegate group colouring
-        if (delegateRespondsToWillColourGroup) {
-            
-            // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupAutoComplete, SMLSyntaxGroupID : @(kSMLSyntaxGroupAutoComplete), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : autocompleteWordsColour, SMLSyntaxInfo : self.syntaxDictionary};
-            
-            // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
-            
-        } else {
-            delegateDidColour = NO;
-        }
-
-		if ([self.autocompleteWords count] != 0 && [doColouring boolValue] && !delegateDidColour) {
-            
-            // reset scanner
-			[rangeScanner mgs_setScanLocation:0];
-            
-            // scan range to end
-			while (![rangeScanner isAtEnd]) {
-				[rangeScanner scanUpToCharactersFromSet:self.keywordStartCharacterSet intoString:nil];
-				colourStartLocation = [rangeScanner scanLocation];
-				if ((colourStartLocation + 1) < rangeStringLength) {
-					[rangeScanner mgs_setScanLocation:(colourStartLocation + 1)];
-				}
-				[rangeScanner scanUpToCharactersFromSet:self.keywordEndCharacterSet intoString:nil];
-				
-				colourEndLocation = [rangeScanner scanLocation];
-				if (colourEndLocation > rangeStringLength || colourStartLocation == colourEndLocation) {
-					break;
-				}
-				
-				NSString *autocompleteTestString = nil;
-				if (!keywordsCaseSensitive) {
-					autocompleteTestString = [[documentString substringWithRange:NSMakeRange(colourStartLocation + rangeLocation, colourEndLocation - colourStartLocation)] lowercaseString];
-				} else {
-					autocompleteTestString = [documentString substringWithRange:NSMakeRange(colourStartLocation + rangeLocation, colourEndLocation - colourStartLocation)];
-				}
-				if ([self.autocompleteWords containsObject:autocompleteTestString]) {
-					if (!recolourKeywordIfAlreadyColoured) {
-						if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:colourStartLocation + rangeLocation effectiveRange:NULL] isEqualToDictionary:commandsColour]) {
-							continue;
-						}
-					}	
-					
-					[self setColour:autocompleteWordsColour range:NSMakeRange(colourStartLocation + rangeLocation, [rangeScanner scanLocation] - colourStartLocation)];
-				}
-			}
-		}
-		
-        // final delegate group colouring
-        if (delegateRespondsToDidColourGroup) {
-            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
-        }
-
-		//
-		// Variables
-        //
-        doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourVariables];
-        
-        // initial delegate group colouring
-        if (delegateRespondsToWillColourGroup) {
-            
-            // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupVariable, SMLSyntaxGroupID : @(kSMLSyntaxGroupVariable), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : variablesColour, SMLSyntaxInfo : self.syntaxDictionary};
-            
-            // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
-            
-        } else {
-            delegateDidColour = NO;
-        }
-
-		if (self.beginVariableCharacterSet != nil && [doColouring boolValue]  && !delegateDidColour) {
-            
-            // reset scanner
-			[rangeScanner mgs_setScanLocation:0];
-            
-            // scan range to end
-			while (![rangeScanner isAtEnd]) {
-				[rangeScanner scanUpToCharactersFromSet:self.beginVariableCharacterSet intoString:nil];
-				colourStartLocation = [rangeScanner scanLocation];
-				if (colourStartLocation + 1 < rangeStringLength) {
-					if ([self.firstSingleLineComment isEqualToString:@"%"] && [rangeString characterAtIndex:colourStartLocation + 1] == '%') { // To avoid a problem in LaTex with \%
-						if ([rangeScanner scanLocation] < rangeStringLength) {
-							[rangeScanner mgs_setScanLocation:colourStartLocation + 1];
-						}
-						continue;
-					}
-				}
-				endOfLine = NSMaxRange([rangeString lineRangeForRange:NSMakeRange(colourStartLocation, 0)]);
-				if (![rangeScanner scanUpToCharactersFromSet:self.endVariableCharacterSet intoString:nil] || [rangeScanner scanLocation] >= endOfLine) {
-					[rangeScanner mgs_setScanLocation:endOfLine];
-					colourLength = [rangeScanner scanLocation] - colourStartLocation;
-				} else {
-					colourLength = [rangeScanner scanLocation] - colourStartLocation;
-					if ([rangeScanner scanLocation] < rangeStringLength) {
-						[rangeScanner mgs_setScanLocation:[rangeScanner scanLocation] + 1];
-					}
-				}
-				
-				[self setColour:variablesColour range:NSMakeRange(colourStartLocation + rangeLocation, colourLength)];
-			}
-		}	
-
-        // final delegate group colouring
-        if (delegateRespondsToDidColourGroup) {
-            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
-        }
-
-		//
-		// Second string, first pass
-        //
-
-        doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourStrings];
-        
-        // initial delegate group colouring
-        if (delegateRespondsToWillColourGroup) {
-            
-            // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupSecondString, SMLSyntaxGroupID : @(kSMLSyntaxGroupSecondString), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : stringsColour, SMLSyntaxInfo : self.syntaxDictionary};
-            
-            // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
-            
-        } else {
-            delegateDidColour = NO;
-        }
-
-		if (![self.secondString isEqualToString:@""] && [doColouring boolValue] && !delegateDidColour) {
-			@try {
-				secondStringMatcher = [[ICUMatcher alloc] initWithPattern:secondStringPattern overString:rangeString];
-			}
-			@catch (NSException *exception) {
-				return;
-			}
-
-			while ([secondStringMatcher findNext]) {
-				foundRange = [secondStringMatcher rangeOfMatch];
-				[self setColour:stringsColour range:NSMakeRange(foundRange.location + rangeLocation + 1, foundRange.length - 1)];
-			}
-		}
-
-        // final delegate group colouring
-        if (delegateRespondsToDidColourGroup) {
-            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
-        }
-
-		//
-		// First string
-        //
-        doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourStrings];
-        
-        // initial delegate group colouring
-        if (delegateRespondsToWillColourGroup) {
-            
-            // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupFirstString, SMLSyntaxGroupID : @(kSMLSyntaxGroupFirstString), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : stringsColour, SMLSyntaxInfo : self.syntaxDictionary};
-            
-            // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
-            
-        } else {
-            delegateDidColour = NO;
-        }
-
-		if (![self.firstString isEqualToString:@""] && [doColouring boolValue] && !delegateDidColour) {
-			@try {
-				firstStringMatcher = [[ICUMatcher alloc] initWithPattern:firstStringPattern overString:rangeString];
-			}
-			@catch (NSException *exception) {
-				return;
-			}
-			
-			while ([firstStringMatcher findNext]) {
-				foundRange = [firstStringMatcher rangeOfMatch];
-				if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:foundRange.location + rangeLocation effectiveRange:NULL] isEqualToDictionary:stringsColour]) {
-					continue;
-				}
-				[self setColour:stringsColour range:NSMakeRange(foundRange.location + rangeLocation + 1, foundRange.length - 1)];
-			}
-		}
-
-        // final delegate group colouring
-        if (delegateRespondsToDidColourGroup) {
-            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
-        }
-
-		//
-		// Attributes
-        //
-        doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourAttributes];
-        
-        // initial delegate group colouring
-        if (delegateRespondsToWillColourGroup) {
-            
-            // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupAttribute, SMLSyntaxGroupID : @(kSMLSyntaxGroupAttribute), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : attributesColour, SMLSyntaxInfo : self.syntaxDictionary};
-            
-            // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
-            
-        } else {
-            delegateDidColour = NO;
-        }
-
-		if ([doColouring boolValue] && !delegateDidColour) {
-            
-            // reset scanner
-			[rangeScanner mgs_setScanLocation:0];
-            
-            // scan range to end
-			while (![rangeScanner isAtEnd]) {
-				[rangeScanner scanUpToString:@" " intoString:nil];
-				colourStartLocation = [rangeScanner scanLocation];
-				if (colourStartLocation + 1 < rangeStringLength) {
-					[rangeScanner mgs_setScanLocation:colourStartLocation + 1];
-				} else {
-					break;
-				}
-				if (![[firstLayoutManager temporaryAttributesAtCharacterIndex:(colourStartLocation + rangeLocation) effectiveRange:NULL] isEqualToDictionary:commandsColour]) {
-					continue;
-				}
-				
-				[rangeScanner scanCharactersFromSet:self.attributesCharacterSet intoString:nil];
-				colourEndLocation = [rangeScanner scanLocation];
-				
-				if (colourEndLocation + 1 < rangeStringLength) {
-					[rangeScanner mgs_setScanLocation:[rangeScanner scanLocation] + 1];
-				}
-				
-				if ([documentString characterAtIndex:colourEndLocation + rangeLocation] == '=') {
-					[self setColour:attributesColour range:NSMakeRange(colourStartLocation + rangeLocation, colourEndLocation - colourStartLocation)];
-				}
-			}
-		}
-		
-        // final delegate group colouring
-        if (delegateRespondsToDidColourGroup) {
-            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
-        }
-
-		//
-		// Colour single-line comments
-        //
-        doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourComments];
-        
-        // initial delegate group colouring
-        if (delegateRespondsToWillColourGroup) {
-            
-            // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupSingleLineComment, SMLSyntaxGroupID : @(kSMLSyntaxGroupSingleLineComment), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : commentsColour, SMLSyntaxInfo : self.syntaxDictionary};
-            
-            // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
-            
-        } else {
-            delegateDidColour = NO;
-        }
-
-        for (NSString *singleLineComment in self.singleLineComments) {
-            if (![singleLineComment isEqualToString:@""] && [doColouring boolValue] && !delegateDidColour) {
+            // do colouring
+            if (doColouring) {
                 
                 // reset scanner
                 [rangeScanner mgs_setScanLocation:0];
-                searchSyntaxLength = [singleLineComment length];
-                
+
                 // scan range to end
                 while (![rangeScanner isAtEnd]) {
                     
-                    // scan for comment
-                    [rangeScanner scanUpToString:singleLineComment intoString:nil];
+                    // scan up to a number character
+                    [rangeScanner scanUpToCharactersFromSet:self.numberCharacterSet intoString:NULL];
                     colourStartLocation = [rangeScanner scanLocation];
                     
-                    // common case handling
-                    if ([singleLineComment isEqualToString:@"//"]) {
-                        if (colourStartLocation > 0 && [rangeString characterAtIndex:colourStartLocation - 1] == ':') {
-                            [rangeScanner mgs_setScanLocation:colourStartLocation + 1];
-                            continue; // To avoid http:// ftp:// file:// etc.
-                        }
-                    } else if ([singleLineComment isEqualToString:@"#"]) {
-                        if (rangeStringLength > 1) {
-                            rangeOfLine = [rangeString lineRangeForRange:NSMakeRange(colourStartLocation, 0)];
-                            if ([rangeString rangeOfString:@"#!" options:NSLiteralSearch range:rangeOfLine].location != NSNotFound) {
-                                [rangeScanner mgs_setScanLocation:NSMaxRange(rangeOfLine)];
-                                continue; // Don't treat the line as a comment if it begins with #!
-                            } else if (colourStartLocation > 0 && [rangeString characterAtIndex:colourStartLocation - 1] == '$') {
-                                [rangeScanner mgs_setScanLocation:colourStartLocation + 1];
-                                continue; // To avoid $#
-                            } else if (colourStartLocation > 0 && [rangeString characterAtIndex:colourStartLocation - 1] == '&') {
-                                [rangeScanner mgs_setScanLocation:colourStartLocation + 1];
-                                continue; // To avoid &#
-                            }
-                        }
-                    } else if ([singleLineComment isEqualToString:@"%"]) {
-                        if (rangeStringLength > 1) {
-                            if (colourStartLocation > 0 && [rangeString characterAtIndex:colourStartLocation - 1] == '\\') {
-                                [rangeScanner mgs_setScanLocation:colourStartLocation + 1];
-                                continue; // To avoid \% in LaTex
-                            }
-                        }
-                    } 
+                    // scan to number end
+                    [rangeScanner scanCharactersFromSet:self.numberCharacterSet intoString:NULL];
+                    colourEndLocation = [rangeScanner scanLocation];
                     
-                    // If the comment is within an already coloured string then disregard it
-                    if (colourStartLocation + rangeLocation + searchSyntaxLength < documentStringLength) {
-                        if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:colourStartLocation + rangeLocation effectiveRange:NULL] isEqualToDictionary:stringsColour]) {
-                            [rangeScanner mgs_setScanLocation:colourStartLocation + 1];
-                            continue; 
-                        }
-                    }
-                    
-                    // this is a single line comment so we can scan to the end of the line
-                    endOfLine = NSMaxRange([rangeString lineRangeForRange:NSMakeRange(colourStartLocation, 0)]);
-                    [rangeScanner mgs_setScanLocation:endOfLine];
-                    
-                    // colour the comment
-                    [self setColour:commentsColour range:NSMakeRange(colourStartLocation + rangeLocation, [rangeScanner scanLocation] - colourStartLocation)];
-                }
-            }
-		}
-        
-        // final delegate group colouring
-        if (delegateRespondsToDidColourGroup) {
-            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
-        }
-
-		//
-		// Multi-line comments
-        //
-        doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourComments];
-        
-        // initial delegate group colouring
-        if (delegateRespondsToWillColourGroup) {
-            
-            // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupMultiLineComment, SMLSyntaxGroupID : @(kSMLSyntaxGroupMultiLineComment), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : commentsColour, SMLSyntaxInfo : self.syntaxDictionary};
-            
-            // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
-            
-        } else {
-            delegateDidColour = NO;
-        }
-
-        for (NSArray *multiLineComment in self.multiLineComments) {
-            
-            // Get strings
-            NSString *beginMultiLineComment = [multiLineComment objectAtIndex:0];
-            NSString *endMultiLineComment = [multiLineComment objectAtIndex:1];
-            
-            // Is colouring required?
-            if (![beginMultiLineComment isEqualToString:@""] && [doColouring boolValue]  && !delegateDidColour) {
-                
-                // Default to start of document
-                beginLocationInMultiLine = 0;
-                
-                // If start and end comment markers are the the same we
-                // always start searching at the beginning of the document.
-                // Otherwise we must consider that our start location may be mid way through
-                // a multiline comment.
-                if (![beginMultiLineComment isEqualToString:endMultiLineComment]) {
-                    
-                    // Search backwards from range location looking for comment start
-                    beginLocationInMultiLine = [documentString rangeOfString:beginMultiLineComment options:NSBackwardsSearch range:NSMakeRange(0, rangeLocation)].location;
-                    endLocationInMultiLine = [documentString rangeOfString:endMultiLineComment options:NSBackwardsSearch range:NSMakeRange(0, rangeLocation)].location;
-                    
-                    // If comments not found then begin at range location
-                    if (beginLocationInMultiLine == NSNotFound || (endLocationInMultiLine != NSNotFound && beginLocationInMultiLine < endLocationInMultiLine)) {
-                        beginLocationInMultiLine = rangeLocation;
-                    }
-                }
-                
-                [documentScanner mgs_setScanLocation:beginLocationInMultiLine];
-                searchSyntaxLength = [endMultiLineComment length];
-                
-                // Iterate over the document until we exceed our work range
-                while (![documentScanner isAtEnd]) {
-                    
-                    // Search up to document end
-                    searchRange = NSMakeRange(beginLocationInMultiLine, documentStringLength - beginLocationInMultiLine);
-                    
-                    // Look for comment start in document
-                    colourStartLocation = [documentString rangeOfString:beginMultiLineComment options:NSLiteralSearch range:searchRange].location;
-                    if (colourStartLocation == NSNotFound) {
+                    if (colourStartLocation == colourEndLocation) {
                         break;
                     }
                     
-                    // Increment our location.
-                    // This is necessary to cover situations, such as F-Script, where the start and end comment strings are identical
-                    if (colourStartLocation + 1 < documentStringLength) {
-                        [documentScanner mgs_setScanLocation:colourStartLocation + 1];
+                    // don't colour if preceding character is a letter.
+                    // this prevents us from colouring numbers in variable names,
+                    queryLocation = colourStartLocation + rangeLocation;
+                    if (queryLocation > 0) {
+                        testCharacter = [documentString characterAtIndex:queryLocation - 1];
                         
-                        // If the comment is within a string disregard it
-                        if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:colourStartLocation effectiveRange:NULL] isEqualToDictionary:stringsColour]) {
-                            beginLocationInMultiLine++;
-                            continue; 
+                        // numbers can occur in variable, class and function names
+                        // eg: var_1 should not be coloured as a number
+                        if ([self.nameCharacterSet characterIsMember:testCharacter]) {
+                            continue;
                         }
+                    }
+
+                    // TODO: handle constructs such as 1..5 which may occur within some loop constructs
+                    
+                    // don't colour a trailing decimal point as some languages may use it as a line terminator
+                    if (colourEndLocation > 0) {
+                        queryLocation = colourEndLocation - 1;
+                        testCharacter = [rangeString characterAtIndex:queryLocation];
+                        if (testCharacter == self.decimalPointCharacter) {
+                            colourEndLocation--;
+                        }
+                    }
+
+                    [self setColour:numbersColour range:NSMakeRange(colourStartLocation + rangeLocation, colourEndLocation - colourStartLocation)];
+                }
+                
+                // inform delegate that colouring is done
+                if (delegateRespondsToDidColourGroup) {
+                    [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+                } 
+            }
+
+
+            //
+            // Commands
+            //
+            doColouring = [[SMLDefaults valueForKey:MGSFragariaPrefsColourCommands] boolValue];
+            
+            // query delegate about colouring
+            if (delegateRespondsToShouldColourGroup) {
+                
+                // build delegate info dictionary
+                delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupCommand, SMLSyntaxGroupID : @(kSMLSyntaxGroupCommand), SMLSyntaxWillColour : @(doColouring), SMLSyntaxAttributes : commandsColour, SMLSyntaxInfo : self.syntaxDictionary};
+                
+                // call the delegate
+                doColouring = [colouringDelegate fragariaDocument:document shouldColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+                
+            } 
+
+            if (doColouring && ![self.beginCommand isEqualToString:@""]) {
+                searchSyntaxLength = [self.endCommand length];
+                unichar beginCommandCharacter = [self.beginCommand characterAtIndex:0];
+                unichar endCommandCharacter = [self.endCommand characterAtIndex:0];
+                
+                // reset scanner
+                [rangeScanner mgs_setScanLocation:0];
+
+                // scan range to end
+                while (![rangeScanner isAtEnd]) {
+                    [rangeScanner scanUpToString:self.beginCommand intoString:nil];
+                    colourStartLocation = [rangeScanner scanLocation];
+                    endOfLine = NSMaxRange([rangeString lineRangeForRange:NSMakeRange(colourStartLocation, 0)]);
+                    if (![rangeScanner scanUpToString:self.endCommand intoString:nil] || [rangeScanner scanLocation] >= endOfLine) {
+                        [rangeScanner mgs_setScanLocation:endOfLine];
+                        continue; // Don't colour it if it hasn't got a closing tag
                     } else {
-                        [documentScanner mgs_setScanLocation:colourStartLocation];
+                        // To avoid problems with strings like <yada <%=yada%> yada> we need to balance the number of begin- and end-tags
+                        // If ever there's a beginCommand or endCommand with more than one character then do a check first
+                        NSUInteger commandLocation = colourStartLocation + 1;
+                        NSUInteger skipEndCommand = 0;
+                        
+                        while (commandLocation < endOfLine) {
+                            unichar commandCharacterTest = [rangeString characterAtIndex:commandLocation];
+                            if (commandCharacterTest == endCommandCharacter) {
+                                if (!skipEndCommand) {
+                                    break;
+                                } else {
+                                    skipEndCommand--;
+                                }
+                            }
+                            if (commandCharacterTest == beginCommandCharacter) {
+                                skipEndCommand++;
+                            }
+                            commandLocation++;
+                        }
+                        if (commandLocation < endOfLine) {
+                            [rangeScanner mgs_setScanLocation:commandLocation + searchSyntaxLength];
+                        } else {
+                            [rangeScanner mgs_setScanLocation:endOfLine];
+                        }
                     }
                     
-                    // Scan up to comment end
-                    if (![documentScanner scanUpToString:endMultiLineComment intoString:nil] || [documentScanner scanLocation] >= documentStringLength) {
-                        
-                        // Comment end not found
+                    [self setColour:commandsColour range:NSMakeRange(colourStartLocation + rangeLocation, [rangeScanner scanLocation] - colourStartLocation)];
+                }
+
+                // inform delegate that colouring is done
+                if (delegateRespondsToDidColourGroup) {
+                    [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+                }
+            }
+            
+
+
+            //
+            // Instructions
+            //
+            doColouring = [[SMLDefaults valueForKey:MGSFragariaPrefsColourInstructions] boolValue];
+            
+            // query delegate about colouring
+            if (delegateRespondsToShouldColourGroup) {
+                
+                // build delegate info dictionary
+                delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupInstruction, SMLSyntaxGroupID : @(kSMLSyntaxGroupInstruction), SMLSyntaxWillColour : @(doColouring), SMLSyntaxAttributes : instructionsColour, SMLSyntaxInfo : self.syntaxDictionary};
+                
+                // call the delegate
+                doColouring = [colouringDelegate fragariaDocument:document shouldColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+                
+            }
+
+            if (doColouring && ![self.beginInstruction isEqualToString:@""]) {
+                // It takes too long to scan the whole document if it's large, so for instructions, first multi-line comment and second multi-line comment search backwards and begin at the start of the first beginInstruction etc. that it finds from the present position and, below, break the loop if it has passed the scanned range (i.e. after the end instruction)
+                
+                beginLocationInMultiLine = [documentString rangeOfString:self.beginInstruction options:NSBackwardsSearch range:NSMakeRange(0, rangeLocation)].location;
+                endLocationInMultiLine = [documentString rangeOfString:self.endInstruction options:NSBackwardsSearch range:NSMakeRange(0, rangeLocation)].location;
+                if (beginLocationInMultiLine == NSNotFound || (endLocationInMultiLine != NSNotFound && beginLocationInMultiLine < endLocationInMultiLine)) {
+                    beginLocationInMultiLine = rangeLocation;
+                }			
+
+                searchSyntaxLength = [self.endInstruction length];
+
+                // reset scanner
+                [documentScanner mgs_setScanLocation:0];
+
+                // scan document to end
+                while (![documentScanner isAtEnd]) {
+                    searchRange = NSMakeRange(beginLocationInMultiLine, rangeToRecolour.length);
+                    if (NSMaxRange(searchRange) > documentStringLength) {
+                        searchRange = NSMakeRange(beginLocationInMultiLine, documentStringLength - beginLocationInMultiLine);
+                    }
+                    
+                    colourStartLocation = [documentString rangeOfString:self.beginInstruction options:NSLiteralSearch range:searchRange].location;
+                    if (colourStartLocation == NSNotFound) {
+                        break;
+                    }
+                    [documentScanner mgs_setScanLocation:colourStartLocation];
+                    if (![documentScanner scanUpToString:self.endInstruction intoString:nil] || [documentScanner scanLocation] >= documentStringLength) {
                         if (shouldOnlyColourTillTheEndOfLine) {
                             [documentScanner mgs_setScanLocation:NSMaxRange([documentString lineRangeForRange:NSMakeRange(colourStartLocation, 0)])];
                         } else {
                             [documentScanner mgs_setScanLocation:documentStringLength];
                         }
-                        colourLength = [documentScanner scanLocation] - colourStartLocation;
                     } else {
-                        
-                        // Comment end found
-                        if ([documentScanner scanLocation] < documentStringLength) {
-                            
-                            // Safely advance scanner
+                        if ([documentScanner scanLocation] + searchSyntaxLength <= documentStringLength) {
                             [documentScanner mgs_setScanLocation:[documentScanner scanLocation] + searchSyntaxLength];
                         }
-                        colourLength = [documentScanner scanLocation] - colourStartLocation;
-                        
-                        // HTML specific
-                        if ([endMultiLineComment isEqualToString:@"-->"]) {
-                            [documentScanner scanUpToCharactersFromSet:self.letterCharacterSet intoString:nil]; // Search for the first letter after -->
-                            if ([documentScanner scanLocation] + 6 < documentStringLength) {// Check if there's actually room for a </script>
-                                if ([documentString rangeOfString:@"</script>" options:NSCaseInsensitiveSearch range:NSMakeRange([documentScanner scanLocation] - 2, 9)].location != NSNotFound || [documentString rangeOfString:@"</style>" options:NSCaseInsensitiveSearch range:NSMakeRange([documentScanner scanLocation] - 2, 8)].location != NSNotFound) {
-                                    beginLocationInMultiLine = [documentScanner scanLocation];
-                                    continue; // If the comment --> is followed by </script> or </style> it is probably not a real comment
-                                }
-                            }
-                            [documentScanner mgs_setScanLocation:colourStartLocation + colourLength]; // Reset the scanner position
-                        }
                     }
-
-                    // Colour the range
-                    [self setColour:commentsColour range:NSMakeRange(colourStartLocation, colourLength)];
-
-                    // We may be done
+                    
+                    [self setColour:instructionsColour range:NSMakeRange(colourStartLocation, [documentScanner scanLocation] - colourStartLocation)];
                     if ([documentScanner scanLocation] > maxRangeLocation) {
                         break;
                     }
-                    
-                    // set start location for next search
                     beginLocationInMultiLine = [documentScanner scanLocation];
                 }
+
+                // inform delegate that colouring is done
+                if (delegateRespondsToDidColourGroup) {
+                    [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+                }
             }
-		}
+
+
+            //
+            // Keywords
+            //
+            doColouring = [[SMLDefaults valueForKey:MGSFragariaPrefsColourKeywords] boolValue];
+            
+            // query delegate about colouring
+            if (delegateRespondsToShouldColourGroup) {
+                
+                // build delegate info dictionary
+                delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupKeyword, SMLSyntaxGroupID : @(kSMLSyntaxGroupKeyword), SMLSyntaxWillColour : @(doColouring), SMLSyntaxAttributes : keywordsColour, SMLSyntaxInfo : self.syntaxDictionary};
+                
+                // call the delegate
+                doColouring = [colouringDelegate fragariaDocument:document shouldColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+                
+            }
+            
+            if (doColouring && [keywords count] > 0) {
+                
+                // reset scanner
+                [rangeScanner mgs_setScanLocation:0];
+                
+                // scan range to end
+                while (![rangeScanner isAtEnd]) {
+                    [rangeScanner scanUpToCharactersFromSet:self.keywordStartCharacterSet intoString:nil];
+                    colourStartLocation = [rangeScanner scanLocation];
+                    if ((colourStartLocation + 1) < rangeStringLength) {
+                        [rangeScanner mgs_setScanLocation:(colourStartLocation + 1)];
+                    }
+                    [rangeScanner scanUpToCharactersFromSet:self.keywordEndCharacterSet intoString:nil];
+                    
+                    colourEndLocation = [rangeScanner scanLocation];
+                    if (colourEndLocation > rangeStringLength || colourStartLocation == colourEndLocation) {
+                        break;
+                    }
+                    
+                    NSString *keywordTestString = nil;
+                    if (!keywordsCaseSensitive) {
+                        keywordTestString = [[documentString substringWithRange:NSMakeRange(colourStartLocation + rangeLocation, colourEndLocation - colourStartLocation)] lowercaseString];
+                    } else {
+                        keywordTestString = [documentString substringWithRange:NSMakeRange(colourStartLocation + rangeLocation, colourEndLocation - colourStartLocation)];
+                    }
+                    if ([keywords containsObject:keywordTestString]) {
+                        if (!recolourKeywordIfAlreadyColoured) {
+                            if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:colourStartLocation + rangeLocation effectiveRange:NULL] isEqualToDictionary:commandsColour]) {
+                                continue;
+                            }
+                        }	
+                        [self setColour:keywordsColour range:NSMakeRange(colourStartLocation + rangeLocation, [rangeScanner scanLocation] - colourStartLocation)];
+                    }
+                }
+                
+                // inform delegate that colouring is done
+                if (delegateRespondsToDidColourGroup) {
+                    [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+                }
+            }
+
+
+            //
+            // Autocomplete
+            //
+            doColouring = [[SMLDefaults valueForKey:MGSFragariaPrefsColourAutocomplete] boolValue];
+            
+            // query delegate about colouring
+            if (delegateRespondsToShouldColourGroup) {
+                
+                // build delegate info dictionary
+                delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupAutoComplete, SMLSyntaxGroupID : @(kSMLSyntaxGroupAutoComplete), SMLSyntaxWillColour : @(doColouring), SMLSyntaxAttributes : autocompleteWordsColour, SMLSyntaxInfo : self.syntaxDictionary};
+                
+                // call the delegate
+                doColouring = [colouringDelegate fragariaDocument:document shouldColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+                
+            }
+            
+            if (doColouring && [self.autocompleteWords count] > 0) {
+                
+                // reset scanner
+                [rangeScanner mgs_setScanLocation:0];
+                
+                // scan range to end
+                while (![rangeScanner isAtEnd]) {
+                    [rangeScanner scanUpToCharactersFromSet:self.keywordStartCharacterSet intoString:nil];
+                    colourStartLocation = [rangeScanner scanLocation];
+                    if ((colourStartLocation + 1) < rangeStringLength) {
+                        [rangeScanner mgs_setScanLocation:(colourStartLocation + 1)];
+                    }
+                    [rangeScanner scanUpToCharactersFromSet:self.keywordEndCharacterSet intoString:nil];
+                    
+                    colourEndLocation = [rangeScanner scanLocation];
+                    if (colourEndLocation > rangeStringLength || colourStartLocation == colourEndLocation) {
+                        break;
+                    }
+                    
+                    NSString *autocompleteTestString = nil;
+                    if (!keywordsCaseSensitive) {
+                        autocompleteTestString = [[documentString substringWithRange:NSMakeRange(colourStartLocation + rangeLocation, colourEndLocation - colourStartLocation)] lowercaseString];
+                    } else {
+                        autocompleteTestString = [documentString substringWithRange:NSMakeRange(colourStartLocation + rangeLocation, colourEndLocation - colourStartLocation)];
+                    }
+                    if ([self.autocompleteWords containsObject:autocompleteTestString]) {
+                        if (!recolourKeywordIfAlreadyColoured) {
+                            if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:colourStartLocation + rangeLocation effectiveRange:NULL] isEqualToDictionary:commandsColour]) {
+                                continue;
+                            }
+                        }	
+                        
+                        [self setColour:autocompleteWordsColour range:NSMakeRange(colourStartLocation + rangeLocation, [rangeScanner scanLocation] - colourStartLocation)];
+                    }
+                }
+                
+                // inform delegate that colouring is done
+                if (delegateRespondsToDidColourGroup) {
+                    [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+                }
+            }
+            
+
+            //
+            // Variables
+            //
+            doColouring = [[SMLDefaults valueForKey:MGSFragariaPrefsColourVariables] boolValue];
+            
+            // query delegate about colouring
+            if (delegateRespondsToShouldColourGroup) {
+                
+                // build delegate info dictionary
+                delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupVariable, SMLSyntaxGroupID : @(kSMLSyntaxGroupVariable), SMLSyntaxWillColour : @(doColouring), SMLSyntaxAttributes : variablesColour, SMLSyntaxInfo : self.syntaxDictionary};
+                
+                // call the delegate
+                doColouring = [colouringDelegate fragariaDocument:document shouldColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+                
+            }
+            
+            if (doColouring && self.beginVariableCharacterSet != nil) {
+                
+                // reset scanner
+                [rangeScanner mgs_setScanLocation:0];
+                
+                // scan range to end
+                while (![rangeScanner isAtEnd]) {
+                    [rangeScanner scanUpToCharactersFromSet:self.beginVariableCharacterSet intoString:nil];
+                    colourStartLocation = [rangeScanner scanLocation];
+                    if (colourStartLocation + 1 < rangeStringLength) {
+                        if ([self.firstSingleLineComment isEqualToString:@"%"] && [rangeString characterAtIndex:colourStartLocation + 1] == '%') { // To avoid a problem in LaTex with \%
+                            if ([rangeScanner scanLocation] < rangeStringLength) {
+                                [rangeScanner mgs_setScanLocation:colourStartLocation + 1];
+                            }
+                            continue;
+                        }
+                    }
+                    endOfLine = NSMaxRange([rangeString lineRangeForRange:NSMakeRange(colourStartLocation, 0)]);
+                    if (![rangeScanner scanUpToCharactersFromSet:self.endVariableCharacterSet intoString:nil] || [rangeScanner scanLocation] >= endOfLine) {
+                        [rangeScanner mgs_setScanLocation:endOfLine];
+                        colourLength = [rangeScanner scanLocation] - colourStartLocation;
+                    } else {
+                        colourLength = [rangeScanner scanLocation] - colourStartLocation;
+                        if ([rangeScanner scanLocation] < rangeStringLength) {
+                            [rangeScanner mgs_setScanLocation:[rangeScanner scanLocation] + 1];
+                        }
+                    }
+                    
+                    [self setColour:variablesColour range:NSMakeRange(colourStartLocation + rangeLocation, colourLength)];
+                }
+                
+                // inform delegate that colouring is done
+                if (delegateRespondsToDidColourGroup) {
+                    [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+                }
+            }
+
+
+            //
+            // Second string, first pass
+            //
+
+            doColouring = [[SMLDefaults valueForKey:MGSFragariaPrefsColourStrings] boolValue];
+            
+            // query delegate about colouring
+            if (delegateRespondsToShouldColourGroup) {
+                
+                // build delegate info dictionary
+                delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupSecondString, SMLSyntaxGroupID : @(kSMLSyntaxGroupSecondString), SMLSyntaxWillColour : @(doColouring), SMLSyntaxAttributes : stringsColour, SMLSyntaxInfo : self.syntaxDictionary};
+                
+                // call the delegate
+                doColouring = [colouringDelegate fragariaDocument:document shouldColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+                
+            } 
+
+            if (doColouring && ![self.secondString isEqualToString:@""]) {
+                
+                @try {
+                    secondStringMatcher = [[ICUMatcher alloc] initWithPattern:secondStringPattern overString:rangeString];
+                }
+                @catch (NSException *exception) {
+                    return;
+                }
+
+                while ([secondStringMatcher findNext]) {
+                    foundRange = [secondStringMatcher rangeOfMatch];
+                    [self setColour:stringsColour range:NSMakeRange(foundRange.location + rangeLocation + 1, foundRange.length - 1)];
+                }
+
+                // inform delegate that colouring is done
+                if (delegateRespondsToDidColourGroup) {
+                    [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+                }
+
+            }
+
+
+            //
+            // First string
+            //
+            doColouring = [[SMLDefaults valueForKey:MGSFragariaPrefsColourStrings] boolValue];
+            
+            // query delegate about colouring
+            if (delegateRespondsToShouldColourGroup) {
+                
+                // build delegate info dictionary
+                delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupFirstString, SMLSyntaxGroupID : @(kSMLSyntaxGroupFirstString), SMLSyntaxWillColour : @(doColouring), SMLSyntaxAttributes : stringsColour, SMLSyntaxInfo : self.syntaxDictionary};
+                
+                // call the delegate
+                doColouring = [colouringDelegate fragariaDocument:document shouldColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+                
+            }
         
-        // final delegate group colouring
-        if (delegateRespondsToDidColourGroup) {
-            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
-        }
+            if (doColouring && ![self.firstString isEqualToString:@""]) {
+                
+                @try {
+                    firstStringMatcher = [[ICUMatcher alloc] initWithPattern:firstStringPattern overString:rangeString];
+                }
+                @catch (NSException *exception) {
+                    return;
+                }
+                
+                while ([firstStringMatcher findNext]) {
+                    foundRange = [firstStringMatcher rangeOfMatch];
+                    if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:foundRange.location + rangeLocation effectiveRange:NULL] isEqualToDictionary:stringsColour]) {
+                        continue;
+                    }
+                    [self setColour:stringsColour range:NSMakeRange(foundRange.location + rangeLocation + 1, foundRange.length - 1)];
+                }
 
-		//
-		// Second string, second pass
-        //
-        doColouring = [SMLDefaults valueForKey:MGSFragariaPrefsColourStrings];
+                // inform delegate that colouring is done
+                if (delegateRespondsToDidColourGroup) {
+                    [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+                }
+            
+            }
+
+
+            //
+            // Attributes
+            //
+            doColouring = [[SMLDefaults valueForKey:MGSFragariaPrefsColourAttributes] boolValue];
+            
+            // query delegate about colouring
+            if (delegateRespondsToShouldColourGroup) {
+                
+                // build delegate info dictionary
+                delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupAttribute, SMLSyntaxGroupID : @(kSMLSyntaxGroupAttribute), SMLSyntaxWillColour : @(doColouring), SMLSyntaxAttributes : attributesColour, SMLSyntaxInfo : self.syntaxDictionary};
+                
+                // call the delegate
+                doColouring = [colouringDelegate fragariaDocument:document shouldColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+                
+            } 
+
+            if (doColouring) {
+                
+                // reset scanner
+                [rangeScanner mgs_setScanLocation:0];
+                
+                // scan range to end
+                while (![rangeScanner isAtEnd]) {
+                    [rangeScanner scanUpToString:@" " intoString:nil];
+                    colourStartLocation = [rangeScanner scanLocation];
+                    if (colourStartLocation + 1 < rangeStringLength) {
+                        [rangeScanner mgs_setScanLocation:colourStartLocation + 1];
+                    } else {
+                        break;
+                    }
+                    if (![[firstLayoutManager temporaryAttributesAtCharacterIndex:(colourStartLocation + rangeLocation) effectiveRange:NULL] isEqualToDictionary:commandsColour]) {
+                        continue;
+                    }
+                    
+                    [rangeScanner scanCharactersFromSet:self.attributesCharacterSet intoString:nil];
+                    colourEndLocation = [rangeScanner scanLocation];
+                    
+                    if (colourEndLocation + 1 < rangeStringLength) {
+                        [rangeScanner mgs_setScanLocation:[rangeScanner scanLocation] + 1];
+                    }
+                    
+                    if ([documentString characterAtIndex:colourEndLocation + rangeLocation] == '=') {
+                        [self setColour:attributesColour range:NSMakeRange(colourStartLocation + rangeLocation, colourEndLocation - colourStartLocation)];
+                    }
+                }
+
+                // inform delegate that colouring is done
+                if (delegateRespondsToDidColourGroup) {
+                    [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+                }
+
+            }
+            
+
+            //
+            // Colour single-line comments
+            //
+            doColouring = [[SMLDefaults valueForKey:MGSFragariaPrefsColourComments] boolValue];
+            
+            // initial delegate group colouring
+            if (delegateRespondsToShouldColourGroup) {
+                
+                // build delegate info dictionary
+                delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupSingleLineComment, SMLSyntaxGroupID : @(kSMLSyntaxGroupSingleLineComment), SMLSyntaxWillColour : @(doColouring), SMLSyntaxAttributes : commentsColour, SMLSyntaxInfo : self.syntaxDictionary};
+                
+                // call the delegate
+                doColouring = [colouringDelegate fragariaDocument:document shouldColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+                
+            } 
+
+            if (doColouring) {
+                for (NSString *singleLineComment in self.singleLineComments) {
+                    if (![singleLineComment isEqualToString:@""]) {
+                        
+                        // reset scanner
+                        [rangeScanner mgs_setScanLocation:0];
+                        searchSyntaxLength = [singleLineComment length];
+                        
+                        // scan range to end
+                        while (![rangeScanner isAtEnd]) {
+                            
+                            // scan for comment
+                            [rangeScanner scanUpToString:singleLineComment intoString:nil];
+                            colourStartLocation = [rangeScanner scanLocation];
+                            
+                            // common case handling
+                            if ([singleLineComment isEqualToString:@"//"]) {
+                                if (colourStartLocation > 0 && [rangeString characterAtIndex:colourStartLocation - 1] == ':') {
+                                    [rangeScanner mgs_setScanLocation:colourStartLocation + 1];
+                                    continue; // To avoid http:// ftp:// file:// etc.
+                                }
+                            } else if ([singleLineComment isEqualToString:@"#"]) {
+                                if (rangeStringLength > 1) {
+                                    rangeOfLine = [rangeString lineRangeForRange:NSMakeRange(colourStartLocation, 0)];
+                                    if ([rangeString rangeOfString:@"#!" options:NSLiteralSearch range:rangeOfLine].location != NSNotFound) {
+                                        [rangeScanner mgs_setScanLocation:NSMaxRange(rangeOfLine)];
+                                        continue; // Don't treat the line as a comment if it begins with #!
+                                    } else if (colourStartLocation > 0 && [rangeString characterAtIndex:colourStartLocation - 1] == '$') {
+                                        [rangeScanner mgs_setScanLocation:colourStartLocation + 1];
+                                        continue; // To avoid $#
+                                    } else if (colourStartLocation > 0 && [rangeString characterAtIndex:colourStartLocation - 1] == '&') {
+                                        [rangeScanner mgs_setScanLocation:colourStartLocation + 1];
+                                        continue; // To avoid &#
+                                    }
+                                }
+                            } else if ([singleLineComment isEqualToString:@"%"]) {
+                                if (rangeStringLength > 1) {
+                                    if (colourStartLocation > 0 && [rangeString characterAtIndex:colourStartLocation - 1] == '\\') {
+                                        [rangeScanner mgs_setScanLocation:colourStartLocation + 1];
+                                        continue; // To avoid \% in LaTex
+                                    }
+                                }
+                            } 
+                            
+                            // If the comment is within an already coloured string then disregard it
+                            if (colourStartLocation + rangeLocation + searchSyntaxLength < documentStringLength) {
+                                if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:colourStartLocation + rangeLocation effectiveRange:NULL] isEqualToDictionary:stringsColour]) {
+                                    [rangeScanner mgs_setScanLocation:colourStartLocation + 1];
+                                    continue; 
+                                }
+                            }
+                            
+                            // this is a single line comment so we can scan to the end of the line
+                            endOfLine = NSMaxRange([rangeString lineRangeForRange:NSMakeRange(colourStartLocation, 0)]);
+                            [rangeScanner mgs_setScanLocation:endOfLine];
+                            
+                            // colour the comment
+                            [self setColour:commentsColour range:NSMakeRange(colourStartLocation + rangeLocation, [rangeScanner scanLocation] - colourStartLocation)];
+                        }
+                    }
+                } // end for
+                
+                // inform delegate that colouring is done
+                if (delegateRespondsToDidColourGroup) {
+                    [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+                }
+            }
+            
+
+            //
+            // Multi-line comments
+            //
+            doColouring = [[SMLDefaults valueForKey:MGSFragariaPrefsColourComments] boolValue];
+            
+            // query delegate about colouring
+            if (delegateRespondsToShouldColourGroup) {
+                
+                // build delegate info dictionary
+                delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupMultiLineComment, SMLSyntaxGroupID : @(kSMLSyntaxGroupMultiLineComment), SMLSyntaxWillColour : @(doColouring), SMLSyntaxAttributes : commentsColour, SMLSyntaxInfo : self.syntaxDictionary};
+                
+                // call the delegate
+                doColouring = [colouringDelegate fragariaDocument:document shouldColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+                
+            }
         
-        // initial delegate group colouring
-        if (delegateRespondsToWillColourGroup) {
+            if (doColouring) {
+                for (NSArray *multiLineComment in self.multiLineComments) {
+                    
+                    // Get strings
+                    NSString *beginMultiLineComment = [multiLineComment objectAtIndex:0];
+                    NSString *endMultiLineComment = [multiLineComment objectAtIndex:1];
+                    
+                    if (![beginMultiLineComment isEqualToString:@""]) {
+                        
+                        // Default to start of document
+                        beginLocationInMultiLine = 0;
+                        
+                        // If start and end comment markers are the the same we
+                        // always start searching at the beginning of the document.
+                        // Otherwise we must consider that our start location may be mid way through
+                        // a multiline comment.
+                        if (![beginMultiLineComment isEqualToString:endMultiLineComment]) {
+                            
+                            // Search backwards from range location looking for comment start
+                            beginLocationInMultiLine = [documentString rangeOfString:beginMultiLineComment options:NSBackwardsSearch range:NSMakeRange(0, rangeLocation)].location;
+                            endLocationInMultiLine = [documentString rangeOfString:endMultiLineComment options:NSBackwardsSearch range:NSMakeRange(0, rangeLocation)].location;
+                            
+                            // If comments not found then begin at range location
+                            if (beginLocationInMultiLine == NSNotFound || (endLocationInMultiLine != NSNotFound && beginLocationInMultiLine < endLocationInMultiLine)) {
+                                beginLocationInMultiLine = rangeLocation;
+                            }
+                        }
+                        
+                        [documentScanner mgs_setScanLocation:beginLocationInMultiLine];
+                        searchSyntaxLength = [endMultiLineComment length];
+                        
+                        // Iterate over the document until we exceed our work range
+                        while (![documentScanner isAtEnd]) {
+                            
+                            // Search up to document end
+                            searchRange = NSMakeRange(beginLocationInMultiLine, documentStringLength - beginLocationInMultiLine);
+                            
+                            // Look for comment start in document
+                            colourStartLocation = [documentString rangeOfString:beginMultiLineComment options:NSLiteralSearch range:searchRange].location;
+                            if (colourStartLocation == NSNotFound) {
+                                break;
+                            }
+                            
+                            // Increment our location.
+                            // This is necessary to cover situations, such as F-Script, where the start and end comment strings are identical
+                            if (colourStartLocation + 1 < documentStringLength) {
+                                [documentScanner mgs_setScanLocation:colourStartLocation + 1];
+                                
+                                // If the comment is within a string disregard it
+                                if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:colourStartLocation effectiveRange:NULL] isEqualToDictionary:stringsColour]) {
+                                    beginLocationInMultiLine++;
+                                    continue; 
+                                }
+                            } else {
+                                [documentScanner mgs_setScanLocation:colourStartLocation];
+                            }
+                            
+                            // Scan up to comment end
+                            if (![documentScanner scanUpToString:endMultiLineComment intoString:nil] || [documentScanner scanLocation] >= documentStringLength) {
+                                
+                                // Comment end not found
+                                if (shouldOnlyColourTillTheEndOfLine) {
+                                    [documentScanner mgs_setScanLocation:NSMaxRange([documentString lineRangeForRange:NSMakeRange(colourStartLocation, 0)])];
+                                } else {
+                                    [documentScanner mgs_setScanLocation:documentStringLength];
+                                }
+                                colourLength = [documentScanner scanLocation] - colourStartLocation;
+                            } else {
+                                
+                                // Comment end found
+                                if ([documentScanner scanLocation] < documentStringLength) {
+                                    
+                                    // Safely advance scanner
+                                    [documentScanner mgs_setScanLocation:[documentScanner scanLocation] + searchSyntaxLength];
+                                }
+                                colourLength = [documentScanner scanLocation] - colourStartLocation;
+                                
+                                // HTML specific
+                                if ([endMultiLineComment isEqualToString:@"-->"]) {
+                                    [documentScanner scanUpToCharactersFromSet:self.letterCharacterSet intoString:nil]; // Search for the first letter after -->
+                                    if ([documentScanner scanLocation] + 6 < documentStringLength) {// Check if there's actually room for a </script>
+                                        if ([documentString rangeOfString:@"</script>" options:NSCaseInsensitiveSearch range:NSMakeRange([documentScanner scanLocation] - 2, 9)].location != NSNotFound || [documentString rangeOfString:@"</style>" options:NSCaseInsensitiveSearch range:NSMakeRange([documentScanner scanLocation] - 2, 8)].location != NSNotFound) {
+                                            beginLocationInMultiLine = [documentScanner scanLocation];
+                                            continue; // If the comment --> is followed by </script> or </style> it is probably not a real comment
+                                        }
+                                    }
+                                    [documentScanner mgs_setScanLocation:colourStartLocation + colourLength]; // Reset the scanner position
+                                }
+                            }
+
+                            // Colour the range
+                            [self setColour:commentsColour range:NSMakeRange(colourStartLocation, colourLength)];
+
+                            // We may be done
+                            if ([documentScanner scanLocation] > maxRangeLocation) {
+                                break;
+                            }
+                            
+                            // set start location for next search
+                            beginLocationInMultiLine = [documentScanner scanLocation];
+                        }
+                    }
+                } // end for
+                
+                // inform delegate that colouring is done
+                if (delegateRespondsToDidColourGroup) {
+                    [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+                }
+                
+           }
+        
+            //
+            // Second string, second pass
+            //
+            doColouring = [[SMLDefaults valueForKey:MGSFragariaPrefsColourStrings] boolValue];
             
-            // build delegate info dictionary
-            delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupSecondStringPass2, SMLSyntaxGroupID : @(kSMLSyntaxGroupSecondStringPass2), SMLSyntaxWillColour : doColouring, SMLSyntaxAttributes : stringsColour, SMLSyntaxInfo : self.syntaxDictionary};
-            
-            // call the delegate
-            delegateDidColour = [colouringDelegate fragariaDocument:document willColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
-            
-        } else {
-            delegateDidColour = NO;
+            // query delegate about colouring
+            if (delegateRespondsToShouldColourGroup) {
+                
+                // build delegate info dictionary
+                delegateInfo = @{SMLSyntaxGroup : SMLSyntaxGroupSecondStringPass2, SMLSyntaxGroupID : @(kSMLSyntaxGroupSecondStringPass2), SMLSyntaxWillColour : @(doColouring), SMLSyntaxAttributes : stringsColour, SMLSyntaxInfo : self.syntaxDictionary};
+                
+                // call the delegate
+                doColouring = [colouringDelegate fragariaDocument:document shouldColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+                
+            }
+        
+            if (doColouring && ![self.secondString isEqualToString:@""]) {
+                
+                @try {
+                    [secondStringMatcher reset];
+                }
+                @catch (NSException *exception) {
+                    return;
+                }
+                
+                while ([secondStringMatcher findNext]) {
+                    foundRange = [secondStringMatcher rangeOfMatch];
+                    if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:foundRange.location + rangeLocation effectiveRange:NULL] isEqualToDictionary:stringsColour] || [[firstLayoutManager temporaryAttributesAtCharacterIndex:foundRange.location + rangeLocation effectiveRange:NULL] isEqualToDictionary:commentsColour]) {
+                        continue;
+                    }
+                    [self setColour:stringsColour range:NSMakeRange(foundRange.location + rangeLocation + 1, foundRange.length - 1)];
+                }
+                
+                // inform delegate that colouring is done
+                if (delegateRespondsToDidColourGroup) {
+                    [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
+                }
+            }
+
+
+            //
+            // tell delegate we are did colour the document
+            //
+            if ([colouringDelegate respondsToSelector:@selector(fragariaDocument:didColourWithBlock:string:range:info:)]) {
+                
+                // build minimal delegate info dictionary
+                delegateInfo = @{@"syntaxInfo" : self.syntaxDictionary};
+                
+                [colouringDelegate fragariaDocument:document didColourWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
+            }
+
         }
 
-		if (![self.secondString isEqualToString:@""] && [doColouring boolValue] && !delegateDidColour) {
-			@try {
-				[secondStringMatcher reset];
-			}
-			@catch (NSException *exception) {
-				return;
-			}
-			
-			while ([secondStringMatcher findNext]) {
-				foundRange = [secondStringMatcher rangeOfMatch];
-				if ([[firstLayoutManager temporaryAttributesAtCharacterIndex:foundRange.location + rangeLocation effectiveRange:NULL] isEqualToDictionary:stringsColour] || [[firstLayoutManager temporaryAttributesAtCharacterIndex:foundRange.location + rangeLocation effectiveRange:NULL] isEqualToDictionary:commentsColour]) {
-					continue;
-				}
-				[self setColour:stringsColour range:NSMakeRange(foundRange.location + rangeLocation + 1, foundRange.length - 1)];
-			}
-		}
+    }
+	@catch (NSException *exception) {
+		NSLog(@"Syntax colouring exception: %@", exception);
+	}
 
-        // final delegate group colouring
-        if (delegateRespondsToDidColourGroup) {
-            [colouringDelegate fragariaDocument:document didColourGroupWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo];
-        }
-
+    @try {
         //
-        // tell delegate we are did colour the document
-        //
-        if ([colouringDelegate respondsToSelector:@selector(fragariaDocument:didColourWithBlock:string:range:info:)]) {
-            
-            // build minimal delegate info dictionary
-            delegateInfo = @{@"syntaxInfo" : self.syntaxDictionary};
-            
-            [colouringDelegate fragariaDocument:document didColourWithBlock:colourRangeBlock string:documentString range:rangeToRecolour info:delegateInfo ];
-        }
-
-        //
-        // Errors
+        // highlight errors
         //
         [self highlightErrors];
 	}
 	@catch (NSException *exception) {
-		NSLog(@"Syntax colouring exception: %@", exception);
+		NSLog(@"Error highlighting exception: %@", exception);
 	}
 	
 }

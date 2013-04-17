@@ -244,25 +244,37 @@
 
 /*
  
- - fragariaDocument:willColourWithBlock:string:range:info
+ - fragariaDocument:shouldColourWithBlock:string:range:info
  
  */
-- (void) fragariaDocument:(id)document willColourWithBlock:(BOOL (^)(NSDictionary *, NSRange))colourWithBlock string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info
+- (BOOL)fragariaDocument:(id)document shouldColourWithBlock:(BOOL (^)(NSDictionary *, NSRange))colourWithBlock string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info
 {
 #pragma unused(document, colourWithBlock, string, range, info)
-    NSLog(@"Will colour document.");
+    
+    // query info
+    BOOL willColour = [[info objectForKey:SMLSyntaxWillColour] boolValue];
+    NSDictionary *syntaxInfo = [info objectForKey:SMLSyntaxInfo];
+
+    // provide compiler comfort
+    (void)syntaxInfo, (void)willColour;
+    
+    NSLog(@"Should colour document.");
     
     // we can call colourWithBlock to perform initial colouring
+    
+    // YES: Fragaria should colour document
+    // NO: Fragaria should not colour document
+    return YES;
 }
 /*
  
- - fragariaDocument:willColourGroupWithBlock:string:range:info
+ - fragariaDocument:shouldColourGroupWithBlock:string:range:info
  
  */
-- (BOOL) fragariaDocument:(id)document willColourGroupWithBlock:(BOOL (^)(NSDictionary *, NSRange))colourWithBlock string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info
+- (BOOL)fragariaDocument:(id)document shouldColourGroupWithBlock:(BOOL (^)(NSDictionary *, NSRange))colourWithBlock string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info
 {
     #pragma unused(document, string)
-    BOOL success = NO;
+    BOOL fragariaShouldColour = YES;
     
     // query info
     NSString *group = [info objectForKey:SMLSyntaxGroup];
@@ -273,10 +285,15 @@
     // for key values see SMLSyntaxDefinition.h
     NSDictionary *syntaxInfo = [info objectForKey:SMLSyntaxInfo];
 
-    // compiler comfort
+    // provide compiler comfort
     (void)syntaxInfo;
 
-    NSLog(@"willColourGroupWithBlock Colouring group : %@ id : %li caller will colour : %@", group, groupID, (willColour ? @"YES" : @"NO"));
+    // follow the default behaviour. if we don't then colouring occurs even when we turn
+    // syntax colouring off in the preferences. this is fine in practice but confusing in a demo app.
+    fragariaShouldColour = willColour;
+    
+    // this amount of logging makes the app sluggish
+    NSLog(@"%@ group : %@ id : %li caller will colour : %@", NSStringFromSelector(_cmd), group, groupID, (willColour ? @"YES" : @"NO"));
     
     // group
     switch (groupID) {
@@ -288,7 +305,7 @@
                 // colour the whole string with the number group colour
                 colourWithBlock(attributes, range);
                 
-                success = YES;
+                fragariaShouldColour = NO;
             }
             break;
             
@@ -321,9 +338,9 @@
             
         case kSMLSyntaxGroupMultiLineComment:
             
-            // we can prevent further colouring by returning YES
+            // we can prevent colouring of this group by returning NO
             if (NO) {
-                success = YES;
+                fragariaShouldColour = NO;
             }
             
             break;
@@ -333,17 +350,17 @@
     }
     
 
-    // return YES if code has been fully coloured and no further colouring of group is required.
-    // return NO if we want the caller to colour the code for the current group.
-    return success;
+    // YES: Fragaria should colour group
+    // NO: Fragaria should not colour group
+    return fragariaShouldColour;
 }
 
 /*
  
- - fragariaDocument:willColourGroupWithBlock:string:range:info
+ - fragariaDocument:didColourGroupWithBlock:string:range:info
  
  */
-- (void) fragariaDocument:(id)document didColourGroupWithBlock:(BOOL (^)(NSDictionary *, NSRange))colourWithBlock string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info
+- (void)fragariaDocument:(id)document didColourGroupWithBlock:(BOOL (^)(NSDictionary *, NSRange))colourWithBlock string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info
 {
 #pragma unused(document, string)
     
@@ -357,7 +374,8 @@
     // compiler comfort
     (void)syntaxInfo;
     
-    NSLog(@"didColourGroupWithBlock Colouring group : %@ id : %li caller will colour : %@", group, groupID, (willColour ? @"YES" : @"NO"));
+    // this amount of logging makes the app sluggish
+    NSLog(@"%@ group : %@ id : %li caller will colour : %@",  NSStringFromSelector(_cmd), group, groupID, (willColour ? @"YES" : @"NO"));
     
     NSString *subString = [string substringWithRange:range];
     NSScanner *rangeScanner = [NSScanner scannerWithString:subString];
@@ -424,10 +442,10 @@
 
 /*
  
- - fragariaDocument:willColourWithBlock:string:range:info
+ - fragariaDocument:didColourWithBlock:string:range:info
  
  */
-- (void) fragariaDocument:(id)document didColourWithBlock:(BOOL (^)(NSDictionary *, NSRange))colourWithBlock string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info
+- (void)fragariaDocument:(id)document didColourWithBlock:(BOOL (^)(NSDictionary *, NSRange))colourWithBlock string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info
 {
     #pragma unused(document, colourWithBlock, string, range, info)
     NSLog(@"Did colour document.");

@@ -78,38 +78,39 @@ typedef NSInteger SMLSyntaxGroupInteger;
  Delegate calling
  ================
  
-  The delegate will receive messages in the following order:range:info:
+ The delegate will receive messages in the following sequence:
  
-  // we will colour this document
- - fragariaDocument:willColourWithBlock:string:range:info
+ // query delegate if should colour this document
+ doColouring = fragariaDocument:shouldColourWithBlock:string:range:info
+ if !doColouring quit colouring
  
- // the *ColourGroupWithBlock methods are sent for each group defined by SMLSyntaxGroupInteger
+ // send *ColourGroupWithBlock methods for each group defined by SMLSyntaxGroupInteger
  foreach group
  
-    // Fragaria will colour this group.
-    // to do initial colouring: colour as required and have the delegate return NO.
-    // to prevent group colouring simply return YES.
-    // to completely override the colouring: colour as required and have the delegate return YES.
-    BOOL delegateDidColour = (- fragariaDocument:willColourGroupWithBlock:string:range:info)
+    // query delegate if should colour this group
+    doColouring = fragariaDocument:shouldColourGroupWithBlock:string:range:info
 
-    // if delegateDidColour is NO then the Fragaria will colour the code once the above method returns.
-    // if delegateDidColour is YES then the Fragaria will NOT colour the code any further once the above method returns.
+    if doColouring
  
-    // Fragaria did colour this group.
-    // an opportunity for additional colouring to complement that already performed by Fragaria.
-    - fragariaDocument:didColourGroupWithBlock:string:range:info
+        colour the group
+ 
+        // inform delegate group was coloured
+        fragariaDocument:didColourGroupWithBlock:string:range:info
+ 
+    end if
  end
  
- // we did colour this document
+ // inform delegate document was coloured
  - fragariaDocument:willDidWithBlock:string:range:info
  
  Colouring the string
  ====================
  
  Each delegate method includes a block that can can be called with a dictionary of attributes and a range to affect colouring.
+ 
  */
-- (void)fragariaDocument:(id)document willColourWithBlock:(BOOL (^)(NSDictionary *, NSRange))block string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info;
-- (BOOL)fragariaDocument:(id)document willColourGroupWithBlock:(BOOL (^)(NSDictionary *, NSRange))block string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info;
+- (BOOL)fragariaDocument:(id)document shouldColourWithBlock:(BOOL (^)(NSDictionary *, NSRange))block string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info;
+- (BOOL)fragariaDocument:(id)document shouldColourGroupWithBlock:(BOOL (^)(NSDictionary *, NSRange))block string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info;
 - (void)fragariaDocument:(id)document didColourGroupWithBlock:(BOOL (^)(NSDictionary *, NSRange))block string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info;
 - (void)fragariaDocument:(id)document didColourWithBlock:(BOOL (^)(NSDictionary *, NSRange))block string:(NSString *)string range:(NSRange)range info:(NSDictionary *)info;
 @end

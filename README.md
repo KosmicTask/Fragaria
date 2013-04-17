@@ -95,7 +95,7 @@ Use the `MGSFOBreakpointDelegate` key to define a breakpoint delegate that respo
 [fragaria setObject:self forKey:MGSFODelegate];
 ```
 
-The breakpoint delegate returns an `NSSet` of breakpoint line numbers.
+The breakpoint delegate returns an `NSSet` of breakpoint line numbers. The implementation of this feature is at an early stage. Feel free to improve it.
 
 ## Syntax Error Highlighting
 
@@ -112,11 +112,40 @@ syntaxError.length = 10;
 fragaria.syntaxErrors = @[syntaxError];
 ```
 
+The implementation of this feature is at an early stage. Feel free to improve it.
+
 ##Custom colouring
 
 The `SMLSyntaxColouringDelegate` protocol allows a delegate to influence the syntax colouring for each of a number of syntactical groups such as numbers, attributes, comments or keywords. 
 
-The delegate can completely override the colouring for a given group or provide additional colouring support. Document level delegate messages provide an opportunity to provide colouring for custom group configurations. For more details see `SMLSyntaxColouringDelegate.h` and  the example code in `FragariaAppDelegate.m`.
+Pseudo code for the protocol method flow looks something like:
+
+    // query delegate if should colour this document
+    doColouring = fragariaDocument:shouldColourWithBlock:string:range:info
+	if !doColouring quit colouring
+ 
+ 	// send *ColourGroupWithBlock methods for each group defined by SMLSyntaxGroupInteger
+ 	foreach group
+ 
+    	// query delegate if should colour this group
+    	doColouring = fragariaDocument:shouldColourGroupWithBlock:string:range:info
+
+    	if doColouring
+ 
+        	colour the group
+ 
+        	// inform delegate group was coloured
+        	fragariaDocument:didColourGroupWithBlock:string:range:info
+ 
+    	end if
+ 	end
+ 
+ 	// inform delegate document was coloured
+ 	fragariaDocument:willDidWithBlock:string:range:info
+
+The delegate can completely override the colouring for a given group or provide additional colouring support (you will have to provide you own scanning logic). Document level delegate messages provide an opportunity to provide colouring for custom group configurations. 
+
+For more details see [SMLSyntaxColouringDelegate.h](SMLSyntaxColouringDelegate.h) and  the example code in [FragariaAppDelegate.m](FragariaAppDelegate.m).
 
 
 ##Supported languages
@@ -253,6 +282,9 @@ To define a new syntax definition:
 1. Generate a plist that defines the language syntax. The plist structure is simple and browsing the [existing definitions](Syntax%20Definitions) should provide some enlightenment. The plist keys are defined in ` SMLSyntaxDefinition.h`. For much deeper insight see `SMLSyntaxColouring - recolourRange:`.
 
 2. Insert a reference to the new plist into [SyntaxDefinitions.plist](SyntaxDefinitions.plist)
+
+#How can I contribute
+Take a look at the [TODO](TODO.md) list.
 
 ##Where did it come from?
 Fragaria started out as the vital pulp of Smultron, now called Fraise. If you want to add additional features to Fragaria then looking at the [Fraise](https://github.com/jfmoy/Fraise) and other forked sources is a good place to start. Fraise is a GC only app so you will need to consider memory management issues when importing code into Fragaria.

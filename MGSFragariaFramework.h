@@ -25,3 +25,5 @@
 #import "MGSFragariaPreferences.h"
 #import "MGSGlyphGenerator.h"
 #import "MGSFragariaPreferences.h"
+#import "SMLErrorPopOver.h"
+#import "SMLAutoCompleteDelegate.h"

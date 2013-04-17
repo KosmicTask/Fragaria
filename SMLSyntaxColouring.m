@@ -20,9 +20,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 #import "MGSFragaria.h"
 #import "MGSFragariaFramework.h"
-#import "SMLErrorPopOver.h"
-#import "SMLAutoCompleteDelegate.h"
-#import "SMLSyntaxColouringDelegate.h"
 
 // syntax colouring information dictionary keys
 NSString *SMLSyntaxGroup = @"grop";

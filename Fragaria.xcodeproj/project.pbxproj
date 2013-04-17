@@ -538,6 +538,14 @@
 			name = Framework;
 			sourceTree = "<group>";
 		};
+		AB83887D171E94C5004408F4 /* NS Categories */ = {
+			isa = PBXGroup;
+			children = (
+				ABF28AEE14C075D400ECAD48 /* NSScanner+Fragaria.m */,
+			);
+			name = "NS Categories";
+			sourceTree = "<group>";
+		};
 		AB92A4151192B66A0055A3E7 /* Application */ = {
 			isa = PBXGroup;
 			children = (
@@ -567,7 +575,7 @@
 		ABDED9B6128AB144002EE039 /* Fragaria */ = {
 			isa = PBXGroup;
 			children = (
-				ABF28AEE14C075D400ECAD48 /* NSScanner+Fragaria.m */,
+				AB83887D171E94C5004408F4 /* NS Categories */,
 				ABFBCC58119217F700F55626 /* Headers */,
 				AB3971C9118C1F8A00AEF388 /* MGSSyntaxController.m */,
 				ABC578EC1603D7EC0040B3FB /* MGSFragariaTextEditingPrefsViewController.m */,

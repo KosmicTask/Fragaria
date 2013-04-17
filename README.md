@@ -5,13 +5,19 @@ The MGSFragaria framework now properly supports both traditional reference count
 
 #Where can I see it in use
 
-You can see Fragaria used in the following products:
+You can see Fragaria used in the following projects and products:
 
-* [Applium Recorder](http://appium.io) : description required ([repo](https://github.com/appium/appium)).
+* [Appium Recorder](http://appium.io) : Appium is an open source, cross-platform test automation tool for native and hybrid mobile apps. ([repo](https://github.com/appium/appium)).
 
-* CocosBuilder.
+* [cocoa-rest-client](https://github.com/mmattozzi/cocoa-rest-client) A native OS X cocoa application for testing HTTP endpoints.
 
-* [KosmicTask](http://www.mugginsoft.com) : a multi (20+) language  scripting environment for OS X that features script editing, network sharing, remote execution, and file processing.
+* [CocosBuilder](http://www.cocosbuilder.com/). CocosBuilder is a free tool (released under MIT-licence) for rapidly developing games and apps. ([repo](https://github.com/cocos2d/CocosBuilder))
+
+* [Cocoduino](https://github.com/fabiankr/Cocoduino) is an IDE for the Arduino platform written in native Cocoa.
+
+* [KosmicTask](http://www.mugginsoft.com) is a multi (20+) language  scripting environment for OS X that features script editing, network sharing, remote execution, and file processing.
+
+* [nib2objc](https://github.com/akosma/nib2objc) This utility converts NIB files (or XIB ones) into Objective-C code
 
 If you use Fragaria in your app and want it added to the list just let us know or edit the README.
 

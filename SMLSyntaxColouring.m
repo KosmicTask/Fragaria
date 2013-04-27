@@ -2164,7 +2164,7 @@ NSString *SMLSyntaxDefinitionIncludeInKeywordEndCharacterSet = @"includeInKeywor
  
  */
 - (void)mgsTextDidPaste:(NSNotification *)aNotification
-{
+{        
     // send out document delegate notifications
 	[self performDocumentDelegateSelector:_cmd withObject:aNotification];
 }

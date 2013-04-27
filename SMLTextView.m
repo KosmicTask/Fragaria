@@ -165,8 +165,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
     // let super paste
     [super paste:sender];
 
+    // add the NSTextView  to the info dict
+    NSDictionary *info = @{@"NSTextView": self};
+
     // send paste notification
-    NSNotification *note = [NSNotification notificationWithName:@"MGSTextDidPasteNotification" object:self];
+    NSNotification *note = [NSNotification notificationWithName:@"MGSTextDidPasteNotification" object:self userInfo:info];
     [[NSNotificationCenter defaultCenter] postNotification:note];
     
     // inform delegate of Fragaria paste

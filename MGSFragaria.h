@@ -62,20 +62,20 @@ extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 @property (nonatomic, readonly, assign) MGSExtraInterfaceController *extraInterfaceController;
 @property (nonatomic, retain) id docSpec;
 
+// class methods
 + (id)currentInstance;
 + (void)setCurrentInstance:(MGSFragaria *)anInstance;
-
 + (void)initializeFramework;
 + (id)createDocSpec;
 + (void)docSpec:(id)docSpec setString:(NSString *)string;
 + (void)docSpec:(id)docSpec setString:(NSString *)string options:(NSDictionary *)options;
 + (void)docSpec:(id)docSpec setAttributedString:(NSAttributedString *)string;
 + (void)docSpec:(id)docSpec setAttributedString:(NSAttributedString *)string options:(NSDictionary *)options;
-
 + (NSString *)stringForDocSpec:(id)docSpec;
 + (NSAttributedString *)attributedStringForDocSpec:(id)docSpec;
 + (NSAttributedString *)attributedStringWithTemporaryAttributesAppliedForDocSpec:(id)docSpec;
 
+// instance methods
 - (id)initWithObject:(id)object;
 - (void)setObject:(id)object forKey:(id)key;
 - (id)objectForKey:(id)key;
@@ -87,7 +87,6 @@ extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 - (NSAttributedString *)attributedString;
 - (NSAttributedString *)attributedStringWithTemporaryAttributesApplied;
 - (NSString *)string;
-
 - (NSTextView *)textView;
 - (MGSTextMenuController *)textMenuController;
 - (void)setSyntaxColoured:(BOOL)value;
@@ -95,10 +94,9 @@ extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 - (void)setShowsLineNumbers:(BOOL)value;
 - (BOOL)showsLineNumbers;
 - (void)reloadString;
-
+- (void)replaceCharactersInRange:(NSRange)range withString:(NSString *)text options:(NSDictionary *)options;
 - (void)setSyntaxErrors:(NSArray *)errors;
 - (NSArray *)syntaxErrors;
-
-+ (NSImage *) imageNamed:(NSString *)name;
++ (NSImage *)imageNamed:(NSString *)name;
 
 @end

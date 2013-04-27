@@ -175,16 +175,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
     }
 }
 
-/*
- - appendString:
- */
-- (void)appendString:(NSString *)aString
-{
-    NSMutableString * string = [NSMutableString stringWithString:[super string]];
-    [string appendString:aString];
-    [self setString:string];
-}
-
 #pragma mark -
 #pragma mark KVO
 
@@ -608,44 +598,48 @@ Unless required by applicable law or agreed to in writing, software distributed 
  */
 - (void)setString:(NSString *)text options:(NSDictionary *)options
 {
+    NSRange all = NSMakeRange(0, [self.textStorage length]);
+    [self replaceCharactersInRange:all withString:text options:options];
+}
+/*
+ 
+ - replaceCharactersInRange:withString:options
+ 
+ */
+- (void)replaceCharactersInRange:(NSRange)range withString:(NSString *)text options:(NSDictionary *)options
+{
 	BOOL undo = [[options objectForKey:@"undo"] boolValue];
-	
-	if ([self isEditable] && undo) {
-		
-		/*
-		 
-		 see http://www.cocoabuilder.com/archive/cocoa/179875-exponent-action-in-nstextview-subclass.html
-		 entitled: Re: "exponent" action in NSTextView subclass (SOLVED)
-		 
-		 This details how to make programatic changes to the textStorage object.
-		 
-		 */
-		NSTextStorage *textStorage = [self textStorage];
-		NSRange all = NSMakeRange(0, [textStorage length]);
-        BOOL textIsEmpty = ([textStorage length] == 0 ? YES : NO);
+    BOOL textViewWasEmpty = ([self.textStorage length] == 0 ? YES : NO);
 
-		if ([self shouldChangeTextInRange:all replacementString:text]) {
-			[textStorage beginEditing];
-			[textStorage replaceCharactersInRange:all withString:text];
-			[textStorage endEditing];
+	if ([self isEditable] && undo) {
+        
+        // this sequence will be registered with the undo manager
+		if ([self shouldChangeTextInRange:range replacementString:text]) {
+            
+            // modify he text storage
+			[self.textStorage beginEditing];
+			[self.textStorage replaceCharactersInRange:range withString:text];
+			[self.textStorage endEditing];
             
             // reset the default font if text was empty as the font gets reset to system default.
-            if (textIsEmpty) {
+            if (textViewWasEmpty) {
                 [self setFont:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]]];
             }
 
-			[self didChangeText];
-            
-			NSUndoManager *undoManager = [self undoManager];
-			
 			// TODO: this doesn't seem to be having the desired effect
+            NSUndoManager *undoManager = [self undoManager];
 			[undoManager setActionName:NSLocalizedString(@"Content Change", @"undo content change")];
-			
+
+            // complete the text change operation
+			[self didChangeText];
 		}
-	} else {
-		[self setString:text];
-	}
-	
+	} else if (textViewWasEmpty) {
+        // this operation will not be registered with the undo manager
+        [self setString:text];
+    } else {
+        // this operation will not be registered with the undo manager
+		[self.textStorage replaceCharactersInRange:range withString:text];;
+	}	
 }
 
 /*
@@ -658,7 +652,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
     NSTextStorage *textStorage = [self textStorage];
     [textStorage setAttributedString:text];
     [[fragaria objectForKey:ro_MGSFOLineNumbers] updateLineNumbersCheckWidth:YES recolour:YES];
-  
 }
 
 /*
@@ -715,6 +708,18 @@ Unless required by applicable law or agreed to in writing, software distributed 
         [self setAttributedString:text];
 	}
 	
+}
+
+/*
+
+ - appendString:
+ 
+ */
+- (void)appendString:(NSString *)aString
+{
+    NSMutableString * string = [NSMutableString stringWithString:[super string]];
+    [string appendString:aString];
+    [self setString:string];
 }
 
 #pragma mark -

@@ -405,7 +405,6 @@ char kcLineWrapPrefChanged;
 
 #pragma mark -
 #pragma mark Accessors
-
 /*
  
  - setString:
@@ -428,6 +427,16 @@ char kcLineWrapPrefChanged;
 
 /*
  
+ - string
+ 
+ */
+- (NSString *)string
+{
+	return [[self class] stringForDocSpec:self.docSpec];
+}
+
+/*
+ 
  - setAttributedString:
  
  */
@@ -445,7 +454,6 @@ char kcLineWrapPrefChanged;
 {
 	[[self class] docSpec:self.docSpec setAttributedString:aString options:options];
 }
-
 
 /*
  
@@ -465,16 +473,6 @@ char kcLineWrapPrefChanged;
 - (NSAttributedString *)attributedStringWithTemporaryAttributesApplied
 {
 	return [[self class] attributedStringWithTemporaryAttributesAppliedForDocSpec:self.docSpec];
-}
-
-/*
- 
- - attributedString
- 
- */
-- (NSString *)string
-{
-	return [[self class] stringForDocSpec:self.docSpec];
 }
 
 /*
@@ -559,6 +557,19 @@ char kcLineWrapPrefChanged;
 {
     SMLSyntaxColouring *syntaxColouring = [docSpec valueForKey:ro_MGSFOSyntaxColouring];
     return syntaxColouring.syntaxErrors;
+}
+
+#pragma mark -
+#pragma mark String updating
+/*
+ 
+ - replaceCharactersInRange:withString:options
+ 
+ */
+- (void)replaceCharactersInRange:(NSRange)range withString:(NSString *)text options:(NSDictionary *)options
+{
+    SMLTextView *textView = (SMLTextView *)[self textView];
+    [textView replaceCharactersInRange:range withString:text options:options];
 }
 
 #pragma mark -

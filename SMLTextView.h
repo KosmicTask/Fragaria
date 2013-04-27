@@ -56,4 +56,5 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)setAttributedString:(NSAttributedString *)text;
 - (void)setAttributedString:(NSAttributedString *)text options:(NSDictionary *)options;
 - (void)updateLineWrap;
+- (void)replaceCharactersInRange:(NSRange)range withString:(NSString *)text options:(NSDictionary *)options;
 @end

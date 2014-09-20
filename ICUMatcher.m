@@ -170,6 +170,7 @@ typedef struct URegularExpression URegularExpression;
 			resultLength = uregex_replaceAll(re, replacementText, -1, destString, (int32_t)destStringBufferSize, &status);
 		else
 			resultLength = uregex_replaceFirst(re, replacementText, -1, destString, (int32_t)destStringBufferSize, &status);
+		free(replacementText);
 
 		// realloc some more space if possible
 		if(status == U_BUFFER_OVERFLOW_ERROR) {

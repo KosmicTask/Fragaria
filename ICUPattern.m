@@ -65,6 +65,7 @@ unsigned const ICUUnicodeWordBoundaries = UREGEX_UWORD;
 	UErrorCode status = 0;
 	UChar *regexStr = [aPattern UTF16String];
 	URegularExpression *e = uregex_open(regexStr, -1, flags, &err, &status);
+	free(regexStr);
 
 	if(U_FAILURE(status)) {
 		[NSException raise:@"Invalid Pattern Exception"

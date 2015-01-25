@@ -32,7 +32,7 @@
  other words, if you want to keep this string around beyond the given autorelease
  context, you need to copy the returned string.
 */
--(void *)UTF16String;
+@property (NS_NONATOMIC_IOSONLY, readonly) void *UTF16String;
 
 
 /*!
@@ -41,7 +41,7 @@
  @discussion Returns a UTF16 encoded string in the native encoding. The returned
  buffer must eventually be freed.
 */
--(void *)copyUTF16String;
+@property (NS_NONATOMIC_IOSONLY, readonly) void *copyUTF16String;
 
 /*!
     @method     findPattern:

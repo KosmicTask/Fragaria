@@ -29,48 +29,48 @@ Unless required by applicable law or agreed to in writing, software distributed 
 #endif
 
 
-typedef enum {
+typedef NS_ENUM(NSInteger, SMLLineEndings) {
 	SMLDefaultsLineEndings = 0,
 	SMLUnixLineEndings = 1,
 	SMLMacLineEndings = 2,
 	SMLDarkSideLineEndings = 3,
 	SMLLeaveLineEndingsUnchanged = 6
-} SMLLineEndings;
+} ;
 
 
-typedef enum {
+typedef NS_ENUM(NSInteger, SMLAdvancedFindScope) {
 	SMLCurrentDocumentScope = 0,
 	SMLCurrentProjectScope = 1,
 	SMLAllDocumentsScope = 2
-} SMLAdvancedFindScope;
+} ;
 
-typedef enum {
+typedef NS_OPTIONS(NSUInteger, SMLView) {
 	SMLListView = 0
-} SMLView;
+} ;
 
-typedef enum {
+typedef NS_ENUM(NSInteger, SMLWhatKindOfProject) {
 	SMLVirtualProject = 0,
 	SMLPermantProject = 1
-} SMLWhatKindOfProject;
+} ;
 
-typedef enum {
+typedef NS_ENUM(NSInteger, SMLCheckForUpdatesInterval) {
 	SMLCheckForUpdatesNever = 0,
 	SMLCheckForUpdatesDaily = 1,
 	SMLCheckForUpdatesWeekly = 2,
 	SMLCheckForUpdatesMonthly = 3
-} SMLCheckForUpdatesInterval;
+} ;
 
-typedef enum {
+typedef NS_ENUM(NSInteger, SMLPreviewParser) {
 	SMLPreviewHTML = 0,
 	SMLPreviewMarkdown = 1,
 	SMLPreviewMultiMarkdown = 2,
-} SMLPreviewParser;
+} ;
 
-typedef enum {
+typedef NS_ENUM(NSInteger, SMLOpenSaveMatrix) {
 	SMLOpenSaveRemember = 0,
 	SMLOpenSaveCurrent = 1,
 	SMLOpenSaveAlways = 2
-} SMLOpenSaveMatrix;
+} ;
 
 typedef struct _AppleEventSelectionRange {
 	short unused1; // 0 (not used)
@@ -81,9 +81,9 @@ typedef struct _AppleEventSelectionRange {
 	long theDate; // modification date/time
 } AppleEventSelectionRange;
 
-typedef enum {
+typedef NS_ENUM(NSInteger, SMLErrors) {
     SmultronSaveErrorEncodingInapplicable = 1,
-} SMLErrors;
+} ;
 
 #define SMULTRON_ERROR_DOMAIN @"org.smultron.Smultron.ErrorDomain"
 

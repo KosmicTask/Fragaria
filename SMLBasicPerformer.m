@@ -119,7 +119,7 @@ static id sharedInstance = nil;
     CFStringRef uuidString = CFUUIDCreateString(NULL, uuid);
     CFRelease(uuid);
     
-    return NSMakeCollectable(uuidString);
+    return (__bridge NSString *)(NSAllocateCollectable(uuidString, NSScannedOption));
 }
 
 /*
@@ -132,7 +132,7 @@ static id sharedInstance = nil;
 	NSArray *array = [arrayController arrangedObjects];
 	NSInteger idx = 0;
 	for (id item in array) {
-		[item setValue:[NSNumber numberWithInteger:idx] forKey:@"sortOrder"];
+		[item setValue:@(idx) forKey:@"sortOrder"];
 		idx++;
 	}
 }
@@ -165,7 +165,7 @@ static id sharedInstance = nil;
 			if (FSResolveAliasFile (&fsRef, true, &targetIsFolder, &wasAliased) == noErr && wasAliased) {
 				CFURLRef resolvedURL = CFURLCreateFromFSRef(NULL, &fsRef);
 				if (resolvedURL != NULL) {
-					resolvedPath = (NSString*)CFURLCopyFileSystemPath(resolvedURL, kCFURLPOSIXPathStyle);
+					resolvedPath = (NSString*)CFBridgingRelease(CFURLCopyFileSystemPath(resolvedURL, kCFURLPOSIXPathStyle));
                     CFRelease(resolvedURL);
 				}
 			}
@@ -177,7 +177,7 @@ static id sharedInstance = nil;
 		return path;
 	}
 	
-	return  NSMakeCollectable(resolvedPath);
+    return (__bridge NSString *)(NSAllocateCollectable(resolvedPath, NSScannedOption));
 }
 
 @end

@@ -108,15 +108,15 @@ static id sharedInstance = nil;
 	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.50f green:0.5f blue:0.2f alpha:1.0f]] forKey:MGSFragariaPrefsAttributesColourWell];
 	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.031f green:0.0f blue:0.855f alpha:1.0f]] forKey:MGSFragariaPrefsNumbersColourWell];
     
-	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsColourNumbers];
-	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsColourCommands];
-	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsColourInstructions];
-	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsColourKeywords];
-	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsColourAutocomplete];
-	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsColourVariables];
-	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsColourStrings];
-	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsColourAttributes];
-    [dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsColourComments];
+	[dictionary setValue:@YES forKey:MGSFragariaPrefsColourNumbers];
+	[dictionary setValue:@YES forKey:MGSFragariaPrefsColourCommands];
+	[dictionary setValue:@YES forKey:MGSFragariaPrefsColourInstructions];
+	[dictionary setValue:@YES forKey:MGSFragariaPrefsColourKeywords];
+	[dictionary setValue:@NO forKey:MGSFragariaPrefsColourAutocomplete];
+	[dictionary setValue:@YES forKey:MGSFragariaPrefsColourVariables];
+	[dictionary setValue:@YES forKey:MGSFragariaPrefsColourStrings];
+	[dictionary setValue:@YES forKey:MGSFragariaPrefsColourAttributes];
+    [dictionary setValue:@YES forKey:MGSFragariaPrefsColourComments];
 	
 	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor whiteColor]] forKey:MGSFragariaPrefsBackgroundColourWell];
 	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor textColor]] forKey:MGSFragariaPrefsTextColourWell];
@@ -124,39 +124,39 @@ static id sharedInstance = nil;
 	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor orangeColor]] forKey:MGSFragariaPrefsInvisibleCharactersColourWell];
 	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.96f green:0.96f blue:0.71f alpha:1.0f]] forKey:MGSFragariaPrefsHighlightLineColourWell];
 	
-	[dictionary setValue:[NSNumber numberWithInteger:40] forKey:MGSFragariaPrefsGutterWidth];
-	[dictionary setValue:[NSNumber numberWithInteger:4] forKey:MGSFragariaPrefsTabWidth];
-	[dictionary setValue:[NSNumber numberWithInteger:4] forKey:MGSFragariaPrefsIndentWidth];
-    [dictionary setValue:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsShowPageGuide];
-	[dictionary setValue:[NSNumber numberWithInteger:80] forKey:MGSFragariaPrefsShowPageGuideAtColumn];
-	[dictionary setValue:[NSNumber numberWithFloat:1.0f] forKey:MGSFragariaPrefsAutocompleteAfterDelay];
+	[dictionary setValue:@40 forKey:MGSFragariaPrefsGutterWidth];
+	[dictionary setValue:@4 forKey:MGSFragariaPrefsTabWidth];
+	[dictionary setValue:@4 forKey:MGSFragariaPrefsIndentWidth];
+    [dictionary setValue:@NO forKey:MGSFragariaPrefsShowPageGuide];
+	[dictionary setValue:@80 forKey:MGSFragariaPrefsShowPageGuideAtColumn];
+	[dictionary setValue:@1.0f forKey:MGSFragariaPrefsAutocompleteAfterDelay];
 	
 	[dictionary setValue:[NSArchiver archivedDataWithRootObject:[NSFont fontWithName:@"Menlo" size:11]] forKey:MGSFragariaPrefsTextFont];
 	
-	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsShowFullPathInWindowTitle];
-	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsShowLineNumberGutter];
-	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsSyntaxColourNewDocuments];
-	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsLineWrapNewDocuments];
-	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsIndentNewLinesAutomatically];
-	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsOnlyColourTillTheEndOfLine];
-	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsShowMatchingBraces];
-	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsShowInvisibleCharacters];
-	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsIndentWithSpaces];
-	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsColourMultiLineStrings];
-	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsAutocompleteSuggestAutomatically];
-	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsAutocompleteIncludeStandardWords];
-	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsAutoSpellCheck];
-	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsAutoGrammarCheck];
-	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsSmartInsertDelete];
-	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsAutomaticLinkDetection];
-	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsAutomaticQuoteSubstitution];
-	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsUseTabStops];
-	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsHighlightCurrentLine];
-	[dictionary setValue:[NSNumber numberWithInteger:4] forKey:MGSFragariaPrefsSpacesPerTabEntabDetab];
+	[dictionary setValue:@YES forKey:MGSFragariaPrefsShowFullPathInWindowTitle];
+	[dictionary setValue:@YES forKey:MGSFragariaPrefsShowLineNumberGutter];
+	[dictionary setValue:@YES forKey:MGSFragariaPrefsSyntaxColourNewDocuments];
+	[dictionary setValue:@YES forKey:MGSFragariaPrefsLineWrapNewDocuments];
+	[dictionary setValue:@YES forKey:MGSFragariaPrefsIndentNewLinesAutomatically];
+	[dictionary setValue:@YES forKey:MGSFragariaPrefsOnlyColourTillTheEndOfLine];
+	[dictionary setValue:@YES forKey:MGSFragariaPrefsShowMatchingBraces];
+	[dictionary setValue:@NO forKey:MGSFragariaPrefsShowInvisibleCharacters];
+	[dictionary setValue:@NO forKey:MGSFragariaPrefsIndentWithSpaces];
+	[dictionary setValue:@NO forKey:MGSFragariaPrefsColourMultiLineStrings];
+	[dictionary setValue:@NO forKey:MGSFragariaPrefsAutocompleteSuggestAutomatically];
+	[dictionary setValue:@NO forKey:MGSFragariaPrefsAutocompleteIncludeStandardWords];
+	[dictionary setValue:@NO forKey:MGSFragariaPrefsAutoSpellCheck];
+	[dictionary setValue:@NO forKey:MGSFragariaPrefsAutoGrammarCheck];
+	[dictionary setValue:@NO forKey:MGSFragariaPrefsSmartInsertDelete];
+	[dictionary setValue:@YES forKey:MGSFragariaPrefsAutomaticLinkDetection];
+	[dictionary setValue:@NO forKey:MGSFragariaPrefsAutomaticQuoteSubstitution];
+	[dictionary setValue:@YES forKey:MGSFragariaPrefsUseTabStops];
+	[dictionary setValue:@NO forKey:MGSFragariaPrefsHighlightCurrentLine];
+	[dictionary setValue:@4 forKey:MGSFragariaPrefsSpacesPerTabEntabDetab];
 	
-	[dictionary setValue:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsAutomaticallyIndentBraces];
-	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsAutoInsertAClosingParenthesis];
-	[dictionary setValue:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsAutoInsertAClosingBrace];
+	[dictionary setValue:@YES forKey:MGSFragariaPrefsAutomaticallyIndentBraces];
+	[dictionary setValue:@NO forKey:MGSFragariaPrefsAutoInsertAClosingParenthesis];
+	[dictionary setValue:@NO forKey:MGSFragariaPrefsAutoInsertAClosingBrace];
 	[dictionary setValue:@"Standard" forKey:MGSFragariaPrefsSyntaxColouringPopUpString];
 	
 	[defaultsController setInitialValues:dictionary];
@@ -189,7 +189,7 @@ static id sharedInstance = nil;
 + (id)allocWithZone:(NSZone *)zone
 {
 #pragma unused(zone)
-	return [[self sharedInstance] retain];
+	return [self sharedInstance];
 }
 
 #pragma mark -
@@ -200,7 +200,7 @@ static id sharedInstance = nil;
  - init
  
  */
-- (id)init
+- (instancetype)init
 {
     if (sharedInstance) return sharedInstance;
     self = [super init];

@@ -59,8 +59,8 @@ extern NSString * const ro_MGSFOSyntaxColouring; // readonly
     NSSet* objectSetterKeys;
 }
 
-@property (nonatomic, readonly, assign) MGSExtraInterfaceController *extraInterfaceController;
-@property (nonatomic, retain) id docSpec;
+@property (nonatomic, readonly) MGSExtraInterfaceController *extraInterfaceController;
+@property (nonatomic, strong) id docSpec;
 
 // class methods
 + (id)currentInstance;
@@ -76,27 +76,22 @@ extern NSString * const ro_MGSFOSyntaxColouring; // readonly
 + (NSAttributedString *)attributedStringWithTemporaryAttributesAppliedForDocSpec:(id)docSpec;
 
 // instance methods
-- (id)initWithObject:(id)object;
+- (instancetype)initWithObject:(id)object NS_DESIGNATED_INITIALIZER;
 - (void)setObject:(id)object forKey:(id)key;
 - (id)objectForKey:(id)key;
 - (void)embedInView:(NSView *)view;
-- (void)setString:(NSString *)aString;
 - (void)setString:(NSString *)aString options:(NSDictionary *)options;
-- (void)setAttributedString:(NSAttributedString *)aString;
 - (void)setAttributedString:(NSAttributedString *)aString options:(NSDictionary *)options;
-- (NSAttributedString *)attributedString;
-- (NSAttributedString *)attributedStringWithTemporaryAttributesApplied;
-- (NSString *)string;
-- (NSTextView *)textView;
-- (MGSTextMenuController *)textMenuController;
-- (void)setSyntaxColoured:(BOOL)value;
-- (BOOL)isSyntaxColoured;
-- (void)setShowsLineNumbers:(BOOL)value;
-- (BOOL)showsLineNumbers;
+@property (NS_NONATOMIC_IOSONLY, copy) NSAttributedString *attributedString;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSAttributedString *attributedStringWithTemporaryAttributesApplied;
+@property (NS_NONATOMIC_IOSONLY, copy) NSString *string;
+@property (NS_NONATOMIC_IOSONLY, readonly, strong) NSTextView *textView;
+@property (NS_NONATOMIC_IOSONLY, readonly, strong) MGSTextMenuController *textMenuController;
+@property (NS_NONATOMIC_IOSONLY, getter=isSyntaxColoured) BOOL syntaxColoured;
+@property (NS_NONATOMIC_IOSONLY) BOOL showsLineNumbers;
 - (void)reloadString;
 - (void)replaceCharactersInRange:(NSRange)range withString:(NSString *)text options:(NSDictionary *)options;
-- (void)setSyntaxErrors:(NSArray *)errors;
-- (NSArray *)syntaxErrors;
+@property (NS_NONATOMIC_IOSONLY, copy) NSArray *syntaxErrors;
 + (NSImage *)imageNamed:(NSString *)name;
 
 @end

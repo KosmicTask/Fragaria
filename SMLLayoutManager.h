@@ -32,7 +32,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
     NSMutableArray *lineRefs;
 }
 
-- (NSAttributedString *)attributedStringWithTemporaryAttributesApplied;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSAttributedString *attributedStringWithTemporaryAttributesApplied;
 
 @property BOOL showInvisibleCharacters;
 

@@ -29,23 +29,24 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	IBOutlet NSWindow *detabWindow;
 	IBOutlet NSWindow *goToLineWindow;
 	
-	IBOutlet NSView *openPanelAccessoryView;
-	IBOutlet NSPopUpButton *openPanelEncodingsPopUp;
+//	IBOutlet NSView *openPanelAccessoryView;
+//	IBOutlet __weak NSPopUpButton *openPanelEncodingsPopUp;
 	//IBOutlet NSView *printAccessoryView;
 	
-	IBOutlet NSWindow *commandResultWindow;
-	IBOutlet NSTextView *commandResultTextView;
+//	IBOutlet __weak NSWindow *commandResultWindow;
+//	IBOutlet __unsafe_unretained NSTextView *commandResultTextView;
 	
-	IBOutlet NSWindow *projectWindow;
-	IBOutlet NSPanel *regularExpressionsHelpPanel;
+//	IBOutlet __weak NSWindow *projectWindow;
+//	IBOutlet __weak NSPanel *regularExpressionsHelpPanel;
 }
 
 
-@property (readonly) IBOutlet NSView *openPanelAccessoryView;
-@property (readonly) IBOutlet NSPopUpButton *openPanelEncodingsPopUp;
-@property (readonly) IBOutlet NSWindow *commandResultWindow;
-@property (readonly) IBOutlet NSTextView *commandResultTextView;
-@property (readonly) IBOutlet NSWindow *projectWindow;
+@property (weak, readonly) IBOutlet NSView *openPanelAccessoryView;
+@property (weak, readonly) IBOutlet NSPopUpButton *openPanelEncodingsPopUp;
+@property (weak, readonly) IBOutlet NSWindow *commandResultWindow;
+@property (unsafe_unretained, readonly) IBOutlet NSTextView *commandResultTextView;
+@property (weak, readonly) IBOutlet NSWindow *projectWindow;
+@property (weak, readwrite) IBOutlet NSWindow *regularExpressionsHelpPanel;
 
 - (void)displayEntab;
 - (void)displayDetab;

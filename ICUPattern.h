@@ -52,14 +52,14 @@ extern const unsigned ICUUnicodeWordBoundaries;
 	@abstract   Returns a pattern with the specified flags set.
 	@discussion Flags are defined as the OR of the constants defined in the class.
 */
--(id)initWithString:(NSString *)aPattern flags:(unsigned)flags;
+-(instancetype)initWithString:(NSString *)aPattern flags:(unsigned)flags;
 
 /*!
     @method     initWithString:
 	@abstract   Returns a pattern with the specified flags set.
 	@discussion Flags are defined as 0.
 */
--(id)initWithString:(NSString *)aPattern;
+-(instancetype)initWithString:(NSString *)aPattern;
 
 /*!
     @method		componentsSplitFromString:
@@ -80,14 +80,13 @@ extern const unsigned ICUUnicodeWordBoundaries;
     @abstract   Returns the string representing the regular expression of this pattern.
     @discussion Returns the string representing the regular expression of this pattern.
 */
--(NSString *)pattern;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *pattern;
 
 /*!
     @method     setStringToSearch:
     @abstract   Sets the string that is being searched by this pattern.
     @discussion This method also resets any internal state of the pattern.
 */
--(void)setStringToSearch:(NSString *)aStringToSearchOver;
 
 /*!
     @method     stringToSearch
@@ -96,7 +95,7 @@ extern const unsigned ICUUnicodeWordBoundaries;
  strings, this may be memory-intensive/time-consuming.  Performance-critical applications may want to modify this 
  class to suite their needs to reduce the number of NSString objects that are created.
 */
--(NSString *)stringToSearch;
+@property (NS_NONATOMIC_IOSONLY, copy) NSString *stringToSearch;
 
 /*!
     @method     reset
@@ -110,6 +109,6 @@ extern const unsigned ICUUnicodeWordBoundaries;
     @abstract   Returns the compiled ICU URegularExpression for this pattern.
     @discussion This method primarily exists to allow the ICUMatcher to access the pattern.
 */
--(void *)re;
+@property (NS_NONATOMIC_IOSONLY, readonly) void *re;
 
 @end

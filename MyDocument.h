@@ -17,7 +17,6 @@
 	BOOL isEdited;
 }
 
-- (void)setSyntaxDefinition:(NSString *)name;
-- (NSString *)syntaxDefinition;
+@property (NS_NONATOMIC_IOSONLY, copy) NSString *syntaxDefinition;
 
 @end

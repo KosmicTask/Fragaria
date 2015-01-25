@@ -16,7 +16,7 @@
  - init
  
  */
-- (id)init
+- (instancetype)init
 {
     self = [super init];
     if (self) {
@@ -69,8 +69,8 @@
 	// see MGSFragariaPreferences.h for details
 	//
     if (NO) {
-        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:MGSFragariaPrefsAutocompleteSuggestAutomatically];
-        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:NO] forKey:MGSFragariaPrefsLineWrapNewDocuments];
+        [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:MGSFragariaPrefsAutocompleteSuggestAutomatically];
+        [[NSUserDefaults standardUserDefaults] setObject:@NO forKey:MGSFragariaPrefsLineWrapNewDocuments];
     }
 	
 	// define initial document configuration
@@ -78,8 +78,8 @@
 	// see MGSFragaria.h for details
 	//
     if (YES) {
-        [fragaria setObject:[NSNumber numberWithBool:YES] forKey:MGSFOIsSyntaxColoured];
-        [fragaria setObject:[NSNumber numberWithBool:YES] forKey:MGSFOShowLineNumberGutter];
+        [fragaria setObject:@YES forKey:MGSFOIsSyntaxColoured];
+        [fragaria setObject:@YES forKey:MGSFOShowLineNumberGutter];
     }
 
     // set text
@@ -176,7 +176,7 @@
 {
 	#pragma unused(notification)
 	
-	NSWindow *window = [[self windowControllers] objectAtIndex:0];
+	NSWindow *window = [self windowControllers][0];
 	
 	[window setDocumentEdited:YES];
 }

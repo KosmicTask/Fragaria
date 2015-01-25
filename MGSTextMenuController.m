@@ -58,7 +58,7 @@ static id sharedInstance = nil;
 + (id)allocWithZone:(NSZone *)zone
 {
 #pragma unused(zone)
-	return [[self sharedInstance] retain];
+	return [self sharedInstance];
 } 
 
 #pragma mark -
@@ -69,7 +69,7 @@ static id sharedInstance = nil;
  - init
  
  */
-- (id)init 
+- (instancetype)init 
 {
     if (sharedInstance == nil) {
         sharedInstance = [super init];
@@ -86,7 +86,7 @@ static id sharedInstance = nil;
 - (void)setEdited:(BOOL)aBool
 {
 	if ([[SMLCurrentDocument valueForKey:MGSFOIsEdited] boolValue] != aBool) {			
-		[[MGSFragaria currentInstance] setObject:[NSNumber numberWithBool:aBool] forKey:MGSFOIsEdited];
+		[MGSFragaria currentInstance][MGSFOIsEdited] = @(aBool);
 	}
 }
 
@@ -126,7 +126,7 @@ static id sharedInstance = nil;
 	for (item in enumerator) {
 		if ([[item valueForKey:@"active"] boolValue] == YES) {
 			NSUInteger encoding = [[item valueForKey:@"encoding"] unsignedIntegerValue];
-			menuItem = [[[NSMenuItem alloc] initWithTitle:[NSString localizedNameOfStringEncoding:encoding] action:@selector(changeEncodingAction:) keyEquivalent:@""] autorelease];
+			menuItem = [[NSMenuItem alloc] initWithTitle:[NSString localizedNameOfStringEncoding:encoding] action:@selector(changeEncodingAction:) keyEquivalent:@""];
 			[menuItem setTag:encoding];
 			[menuItem setTarget:self];
 			[textEncodingMenu insertItem:menuItem atIndex:0];
@@ -137,7 +137,7 @@ static id sharedInstance = nil;
 	for (item in enumerator) {
 		if ([[item valueForKey:@"active"] boolValue] == YES) {
 			NSUInteger encoding = [[item valueForKey:@"encoding"] unsignedIntegerValue];
-			menuItem = [[[NSMenuItem alloc] initWithTitle:[NSString localizedNameOfStringEncoding:encoding] action:@selector(reloadText:) keyEquivalent:@""] autorelease];
+			menuItem = [[NSMenuItem alloc] initWithTitle:[NSString localizedNameOfStringEncoding:encoding] action:@selector(reloadText:) keyEquivalent:@""];
 			[menuItem setTag:encoding];
 			[menuItem setTarget:self];
 			[reloadTextWithEncodingMenu insertItem:menuItem atIndex:0];
@@ -157,7 +157,7 @@ static id sharedInstance = nil;
 	NSMenuItem *menuItem;
 	NSInteger tag = [syntaxDefinitions count] - 1;
 	for (id item in enumerator) {
-		menuItem = [[[NSMenuItem alloc] initWithTitle:[item valueForKey:@"name"] action:@selector(changeSyntaxDefinitionAction:) keyEquivalent:@""] autorelease];
+		menuItem = [[NSMenuItem alloc] initWithTitle:[item valueForKey:@"name"] action:@selector(changeSyntaxDefinitionAction:) keyEquivalent:@""];
 		[menuItem setTag:tag];
 		[menuItem setTarget:self];
 		[syntaxDefinitionMenu insertItem:menuItem atIndex:0];
@@ -236,10 +236,10 @@ static id sharedInstance = nil;
 	
 	id document = SMLCurrentDocument;
 	
-	[[[document valueForKey:ro_MGSFOSyntaxColouring] undoManager] registerUndoWithTarget:self selector:@selector(performUndoChangeEncoding:) object:[NSArray arrayWithObject:[document valueForKey:@"encoding"]]];
+	[[[document valueForKey:ro_MGSFOSyntaxColouring] undoManager] registerUndoWithTarget:self selector:@selector(performUndoChangeEncoding:) object:@[[document valueForKey:@"encoding"]]];
 	[[[document valueForKey:ro_MGSFOSyntaxColouring] undoManager] setActionName:NAME_FOR_UNDO_CHANGE_ENCODING];
 	
-	[document setValue:[NSNumber numberWithInteger:encoding] forKey:@"encoding"];
+	[document setValue:[NSNumber numberWithInteger:(long)encoding] forKey:@"encoding"];
 	[document setValue:[NSString localizedNameOfStringEncoding:encoding] forKey:@"encodingName"];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"MGSFragariaTextEncodingChanged" object:[MGSFragaria currentInstance] userInfo:nil];
@@ -254,11 +254,11 @@ static id sharedInstance = nil;
 {
 	id document = SMLCurrentDocument;
 	
-	[[[document valueForKey:ro_MGSFOSyntaxColouring] undoManager] registerUndoWithTarget:self selector:@selector(performUndoChangeEncoding:) object:[NSArray arrayWithObject:[document valueForKey:@"encoding"]]];
+	[[[document valueForKey:ro_MGSFOSyntaxColouring] undoManager] registerUndoWithTarget:self selector:@selector(performUndoChangeEncoding:) object:@[[document valueForKey:@"encoding"]]];
 	[[[document valueForKey:ro_MGSFOSyntaxColouring] undoManager] setActionName:NAME_FOR_UNDO_CHANGE_ENCODING];
 	
-	[document setValue:[sender objectAtIndex:0] forKey:@"encoding"];
-	[document setValue:[NSString localizedNameOfStringEncoding:[[sender objectAtIndex:0] unsignedIntegerValue]] forKey:@"encodingName"];
+	[document setValue:sender[0] forKey:@"encoding"];
+	[document setValue:[NSString localizedNameOfStringEncoding:[sender[0] unsignedIntegerValue]] forKey:@"encodingName"];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"MGSFragariaTextEncodingChanged" object:[MGSFragaria currentInstance] userInfo:nil];
 
@@ -1160,10 +1160,10 @@ static id sharedInstance = nil;
 {
 	id document = SMLCurrentDocument;
 	
-	[[[document valueForKey:ro_MGSFOSyntaxColouring] undoManager] registerUndoWithTarget:self selector:@selector(performUndoChangeLineEndings:) object:[NSArray arrayWithObject:[document valueForKey:@"lineEndings"]]];
+	[[[document valueForKey:ro_MGSFOSyntaxColouring] undoManager] registerUndoWithTarget:self selector:@selector(performUndoChangeLineEndings:) object:@[[document valueForKey:@"lineEndings"]]];
 	[[[document valueForKey:ro_MGSFOSyntaxColouring] undoManager] setActionName:NAME_FOR_UNDO_CHANGE_LINE_ENDINGS];
 	
-	[document setValue:[NSNumber numberWithInteger:[sender tag] - 150] forKey:@"lineEndings"];
+	[document setValue:@([sender tag] - 150) forKey:@"lineEndings"];
 	
 	NSTextView *textView = SMLCurrentTextView;
 	NSRange selectedRange = [textView selectedRange];
@@ -1186,10 +1186,10 @@ static id sharedInstance = nil;
 {
 	id document = SMLCurrentDocument;
 	
-	[[[document valueForKey:ro_MGSFOSyntaxColouring] undoManager] registerUndoWithTarget:self selector:@selector(performUndoChangeLineEndings:) object:[NSArray arrayWithObject:[document valueForKey:@"lineEndings"]]];
+	[[[document valueForKey:ro_MGSFOSyntaxColouring] undoManager] registerUndoWithTarget:self selector:@selector(performUndoChangeLineEndings:) object:@[[document valueForKey:@"lineEndings"]]];
 	[[[document valueForKey:ro_MGSFOSyntaxColouring] undoManager] setActionName:NAME_FOR_UNDO_CHANGE_LINE_ENDINGS];
 	
-	[document setValue:[sender objectAtIndex:0] forKey:@"lineEndings"];
+	[document setValue:sender[0] forKey:@"lineEndings"];
 	
 	NSTextView *textView = SMLCurrentTextView;
 	NSRange selectedRange = [textView selectedRange];
@@ -1215,7 +1215,7 @@ static id sharedInstance = nil;
 {
 	id document = SMLCurrentDocument;
 	[document setValue:[sender title] forKey:MGSFOSyntaxDefinitionName];
-	[document setValue:[NSNumber numberWithBool:YES] forKey:@"hasManuallyChangedSyntaxDefinition"];
+	[document setValue:@YES forKey:@"hasManuallyChangedSyntaxDefinition"];
 	[[document valueForKey:ro_MGSFOSyntaxColouring] applySyntaxDefinition];
 	
 	[[document valueForKey:ro_MGSFOSyntaxColouring] pageRecolour];

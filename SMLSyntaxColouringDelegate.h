@@ -30,7 +30,7 @@ extern NSString *SMLSyntaxGroupMultiLineComment;
 extern NSString *SMLSyntaxGroupSecondStringPass2;
 
 // syntax colouring group IDs
-enum {
+typedef NS_ENUM(NSInteger, SMLSyntaxGroupInteger) {
     kSMLSyntaxGroupNumber = 0,
     kSMLSyntaxGroupCommand = 1,
     kSMLSyntaxGroupInstruction = 2,
@@ -44,7 +44,6 @@ enum {
     kSMLSyntaxGroupMultiLineComment = 10,
     kSMLSyntaxGroupSecondStringPass2 = 11
 };
-typedef NSInteger SMLSyntaxGroupInteger;
 
 @protocol SMLSyntaxColouringDelegate <NSObject>
 

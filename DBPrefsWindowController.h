@@ -57,17 +57,15 @@
 
 @property (copy) NSString *titlePrefix;
 
-+ (id)sharedPrefsWindowController;
++ (DBPrefsWindowController*)sharedPrefsWindowController;
 + (NSString *)nibName;
 
 - (void)setupToolbar;
 - (void)addView:(NSView *)view label:(NSString *)label;
 - (void)addView:(NSView *)view label:(NSString *)label image:(NSImage *)image;
 
-- (BOOL)crossFade;
-- (void)setCrossFade:(BOOL)fade;
-- (BOOL)shiftSlowsAnimation;
-- (void)setShiftSlowsAnimation:(BOOL)slows;
+@property (NS_NONATOMIC_IOSONLY) BOOL crossFade;
+@property (NS_NONATOMIC_IOSONLY) BOOL shiftSlowsAnimation;
 
 - (void)displayViewForIdentifier:(NSString *)identifier animate:(BOOL)animate;
 - (void)crossFadeView:(NSView *)oldView withView:(NSView *)newView;

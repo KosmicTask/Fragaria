@@ -36,7 +36,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
  - init
  
  */
-- (id)init 
+- (instancetype)init 
 {
 	self = [super init];
 	if (self) {
@@ -56,7 +56,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)displayEntab
 {
 	if (entabWindow == nil) {
-		[NSBundle loadNibNamed:@"SMLEntab.nib" owner:self];
+        [[NSBundle mainBundle] loadNibNamed:@"SMLEntab.nib" owner:self topLevelObjects:nil];
 	}
 	
 	[NSApp beginSheet:entabWindow modalForWindow:SMLCurrentWindow modalDelegate:self didEndSelector:nil contextInfo:nil];
@@ -70,7 +70,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)displayDetab
 {
 	if (detabWindow == nil) {
-		[NSBundle loadNibNamed:@"SMLDetab.nib" owner:self];
+        [[NSBundle mainBundle] loadNibNamed:@"SMLDetab.nib" owner:self topLevelObjects:nil];
 	}
 	
 	[NSApp beginSheet:detabWindow modalForWindow:SMLCurrentWindow modalDelegate:self didEndSelector:nil contextInfo:nil];
@@ -133,7 +133,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (void)displayGoToLine
 {
 	if (goToLineWindow == nil) {
-		[NSBundle loadNibNamed:@"SMLGoToLine.nib" owner:self];
+        [[NSBundle mainBundle] loadNibNamed:@"SMLGoToLine.nib" owner:self topLevelObjects:nil];
 	}
 	
 	[NSApp beginSheet:goToLineWindow modalForWindow:SMLCurrentWindow modalDelegate:self didEndSelector:nil contextInfo:nil];
@@ -164,7 +164,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (NSPopUpButton *)openPanelEncodingsPopUp
 {
 	if (openPanelEncodingsPopUp == nil) {
-		[NSBundle loadNibNamed:@"SMLOpenPanelAccessoryView.nib" owner:self];
+        [[NSBundle mainBundle] loadNibNamed:@"SMLOpenPanelAccessoryView.nib" owner:self topLevelObjects:nil];
 	}
 	
 	return openPanelEncodingsPopUp;
@@ -178,7 +178,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (NSView *)openPanelAccessoryView
 {
 	if (openPanelAccessoryView == nil) {
-		[NSBundle loadNibNamed:@"SMLOpenPanelAccessoryView.nib" owner:self];
+        [[NSBundle mainBundle] loadNibNamed:@"SMLOpenPanelAccessoryView.nib" owner:self topLevelObjects:nil];
 	}
 	
 	return openPanelAccessoryView;
@@ -191,11 +191,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
  */
 - (void)showRegularExpressionsHelpPanel
 {
-	if (regularExpressionsHelpPanel == nil) {
-		[NSBundle loadNibNamed:@"SMLRegularExpressionHelp.nib" owner:self];
+	if (_regularExpressionsHelpPanel == nil) {
+        [[NSBundle mainBundle] loadNibNamed:@"SMLRegularExpressionHelp.nib" owner:self topLevelObjects:nil];
 	}
 	
-	[regularExpressionsHelpPanel makeKeyAndOrderFront:nil];
+	[_regularExpressionsHelpPanel makeKeyAndOrderFront:nil];
 }
 
 #pragma mark -
@@ -209,7 +209,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (NSWindow *)commandResultWindow
 {
     if (commandResultWindow == nil) {
-		[NSBundle loadNibNamed:@"SMLCommandResult.nib" owner:self];
+        [[NSBundle mainBundle] loadNibNamed:@"SMLCommandResult.nib" owner:self topLevelObjects:nil];
 		[commandResultWindow setTitle:COMMAND_RESULT_WINDOW_TITLE];
 	}
 	
@@ -224,8 +224,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (NSTextView *)commandResultTextView
 {
     if (commandResultTextView == nil) {
-		[NSBundle loadNibNamed:@"SMLCommandResult.nib" owner:self];
-		[commandResultWindow setTitle:COMMAND_RESULT_WINDOW_TITLE];		
+        [[NSBundle mainBundle] loadNibNamed:@"SMLCommandResult.nib" owner:self topLevelObjects:nil];
+		[commandResultWindow setTitle:COMMAND_RESULT_WINDOW_TITLE];
 	}
 	
 	return commandResultTextView; 

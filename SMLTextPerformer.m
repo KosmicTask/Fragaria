@@ -112,12 +112,12 @@ static id sharedInstance = nil;
  */
 - (NSStringEncoding)guessEncodingFromData:(NSData *)textData
 {
-	NSString *string = [[[NSString alloc] initWithData:textData encoding:NSISOLatin1StringEncoding] autorelease];
+	NSString *string = [[NSString alloc] initWithData:textData encoding:NSISOLatin1StringEncoding];
 	NSStringEncoding encoding = 0;
 	BOOL foundExplicitEncoding = NO;
 	
 	if ([string length] > 9) { // If it's shorter than this you can't check for encoding string
-		NSScanner *scannerHTML = [[[NSScanner alloc] initWithString:string] autorelease];
+		NSScanner *scannerHTML = [[NSScanner alloc] initWithString:string];
 		NSUInteger beginning;
 		NSInteger end;
 		
@@ -134,7 +134,7 @@ static id sharedInstance = nil;
 			encoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((CFStringRef)[string substringWithRange:NSMakeRange(beginning, end - beginning)]));
 			foundExplicitEncoding = YES;
 		} else {
-			NSScanner *scannerXML = [[[NSScanner alloc] initWithString:string] autorelease];
+			NSScanner *scannerXML = [[NSScanner alloc] initWithString:string];
 			[scannerXML scanUpToString:@"encoding=" intoString:nil]; // If not found, search for "encoding=" (xml) and get the string after that
 			if ([scannerXML scanLocation] < [string length] - 9) { 
 				beginning = [scannerXML scanLocation] + 9 + 1; // After the " or '

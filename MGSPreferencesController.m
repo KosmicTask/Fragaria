@@ -22,7 +22,7 @@
  -initWithWindow: is the designated initializer for NSWindowController.
  
  */
-- (id)initWithWindow:(NSWindow *)window
+- (instancetype)initWithWindow:(NSWindow *)window
 {
 #pragma unused(window)
 	
@@ -64,9 +64,9 @@
     
 	[self addView:generalView label:generalIdentifier];
 
-	[self addView:textEditingPrefsViewController.view label:textIdentifier image:[NSImage imageNamed:@"General.png"]];
+	[self addView:textEditingPrefsViewController.view label:textIdentifier image:[NSImage imageNamed:@"General"]];
     
-    [self addView:fontsAndColoursPrefsViewController.view label:fontIdentifier image:[NSImage imageNamed:@"General.png"]];
+    [self addView:fontsAndColoursPrefsViewController.view label:fontIdentifier image:[NSImage imageNamed:@"General"]];
 		
 }
 

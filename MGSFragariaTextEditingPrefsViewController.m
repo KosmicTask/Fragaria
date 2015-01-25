@@ -20,7 +20,7 @@
  - init
  
  */
-- (id)init {
+- (instancetype)init {
     self = [super initWithNibName:@"MGSPreferencesTextEditing" bundle:[NSBundle bundleForClass:[self class]]];
     if (self) {
 

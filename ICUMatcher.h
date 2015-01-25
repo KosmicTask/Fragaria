@@ -37,7 +37,7 @@
     @abstract   Finds the next occurrence of the pattern in the input string.
     @discussion Use <code>group</code> and <code>rangeOfMatch</code> to extract the match.
 */
--(BOOL)findNext;
+@property (NS_NONATOMIC_IOSONLY, readonly) BOOL findNext;
 
 /*!
     @method     findFromIndex:
@@ -51,7 +51,7 @@
     @abstract   Returns the current match.
     @discussion Each match has one or more subexpressions associated with the match.  This returns the entire match.
 */
--(NSString *)group;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *group;
 
 /*!
     @method     groupAtIndex:
@@ -65,7 +65,7 @@
     @abstract   Returns the number of groups for the current match.
     @discussion Group 0 is the entire match and groups 1..n represent the groups for the subexpressions.
 */
--(unsigned)numberOfGroups;
+@property (NS_NONATOMIC_IOSONLY, readonly) unsigned int numberOfGroups;
 
 /*!
     @method     lookingAt:
@@ -79,15 +79,14 @@
     @abstract   Returns the pattern for this matcher.
     @discussion 
 */
--(ICUPattern *)pattern;
--(void)setPattern:(ICUPattern *)p;
+@property (NS_NONATOMIC_IOSONLY, copy) ICUPattern *pattern;
 
 /*!
     @method     matches
     @abstract   Returns YES if the patterns matches the <b>entire</b> input string.
     @discussion 
 */
--(BOOL)matches;
+@property (NS_NONATOMIC_IOSONLY, readonly) BOOL matches;
 
 /*!
     @method     replaceAllWithString:
@@ -115,7 +114,7 @@
     @abstract   Returns the range of the input string that corresponds to the current match.
     @discussion
 */
--(NSRange)rangeOfMatch;
+@property (NS_NONATOMIC_IOSONLY, readonly) NSRange rangeOfMatch;
 
 /*!
     @method     rangeOfMatchGroup:

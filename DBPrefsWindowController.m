@@ -19,7 +19,7 @@ static id _sharedPrefsWindowController = nil;
 #pragma mark Class Methods
 
 
-+ (id)sharedPrefsWindowController
++ (DBPrefsWindowController*)sharedPrefsWindowController
 {
 	if (!_sharedPrefsWindowController) {
 		_sharedPrefsWindowController = [[self alloc] initWithWindowNibName:[self nibName]];
@@ -43,7 +43,7 @@ static id _sharedPrefsWindowController = nil;
 #pragma mark Setup & Teardown
 
 
-- (id)initWithWindow:(NSWindow *)window
+- (instancetype)initWithWindow:(NSWindow *)window
   // -initWithWindow: is the designated initializer for NSWindowController.
 {
 	self = [super initWithWindow:nil];
@@ -134,7 +134,7 @@ static id _sharedPrefsWindowController = nil;
 	NSString *identifier = [[label copy] autorelease];
 	
 	[toolbarIdentifiers addObject:identifier];
-	[toolbarViews setObject:view forKey:identifier];
+	toolbarViews[identifier] = view;
 	
 	NSToolbarItem *item = [[[NSToolbarItem alloc] initWithItemIdentifier:identifier] autorelease];
 	[item setLabel:label];
@@ -142,7 +142,7 @@ static id _sharedPrefsWindowController = nil;
 	[item setTarget:self];
 	[item setAction:@selector(toggleActivePreferenceView:)];
 	
-	[toolbarItems setObject:item forKey:identifier];
+	toolbarItems[identifier] = item;
 }
 
 
@@ -213,7 +213,7 @@ static id _sharedPrefsWindowController = nil;
 		[toolbar release];
 	}
 	
-	NSString *firstIdentifier = [toolbarIdentifiers objectAtIndex:0];
+	NSString *firstIdentifier = toolbarIdentifiers[0];
 	[[[self window] toolbar] setSelectedItemIdentifier:firstIdentifier];
 	[self displayViewForIdentifier:firstIdentifier animate:NO];
 	
@@ -260,7 +260,7 @@ static id _sharedPrefsWindowController = nil;
 
 - (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)identifier willBeInsertedIntoToolbar:(BOOL)willBeInserted 
 {
-	return [toolbarItems objectForKey:identifier];
+	return toolbarItems[identifier];
 	(void)toolbar;
 	(void)willBeInserted;
 }
@@ -279,7 +279,7 @@ static id _sharedPrefsWindowController = nil;
 - (void)displayViewForIdentifier:(NSString *)identifier animate:(BOOL)animate
 {	
 		// Find the view we want to display.
-	NSView *newView = [toolbarViews objectForKey:identifier];
+	NSView *newView = toolbarViews[identifier];
 
 		// See if there are any visible views.
 	NSView *oldView = nil;
@@ -314,7 +314,7 @@ static id _sharedPrefsWindowController = nil;
 			[[self window] setFrame:[self frameForView:newView] display:YES animate:animate];
 		}
 		
-		[[self window] setTitle:[[toolbarItems objectForKey:identifier] label]];
+		[[self window] setTitle:[toolbarItems[identifier] label]];
 	}
 }
 
@@ -334,27 +334,19 @@ static id _sharedPrefsWindowController = nil;
     else
 		[viewAnimation setDuration:0.25];
 	
-	NSDictionary *fadeOutDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-		oldView, NSViewAnimationTargetKey,
-		NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey,
-		nil];
+	NSDictionary *fadeOutDictionary = @{NSViewAnimationTargetKey: oldView,
+		NSViewAnimationEffectKey: NSViewAnimationFadeOutEffect};
 
-	NSDictionary *fadeInDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-		newView, NSViewAnimationTargetKey,
-		NSViewAnimationFadeInEffect, NSViewAnimationEffectKey,
-		nil];
+	NSDictionary *fadeInDictionary = @{NSViewAnimationTargetKey: newView,
+		NSViewAnimationEffectKey: NSViewAnimationFadeInEffect};
 
-	NSDictionary *resizeDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-		[self window], NSViewAnimationTargetKey,
-		[NSValue valueWithRect:[[self window] frame]], NSViewAnimationStartFrameKey,
-		[NSValue valueWithRect:[self frameForView:newView]], NSViewAnimationEndFrameKey,
-		nil];
+	NSDictionary *resizeDictionary = @{NSViewAnimationTargetKey: [self window],
+		NSViewAnimationStartFrameKey: [NSValue valueWithRect:[[self window] frame]],
+		NSViewAnimationEndFrameKey: [NSValue valueWithRect:[self frameForView:newView]]};
 	
-	NSArray *animationArray = [NSArray arrayWithObjects:
-		fadeOutDictionary,
+	NSArray *animationArray = @[fadeOutDictionary,
 		fadeInDictionary,
-		resizeDictionary,
-		nil];
+		resizeDictionary];
 	
 	[viewAnimation setViewAnimations:animationArray];
 	[viewAnimation startAnimation];

@@ -21,9 +21,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 #import "MGSFragariaFramework.h"
 
 @interface SMLLineNumbers()
-@property (retain) NSDictionary *attributes;
-@property (retain) id document;
-@property (retain) NSClipView *updatingLineNumbersForClipView;
+@property (strong) NSDictionary *attributes;
+@property (strong) id document;
+@property (strong) NSClipView *updatingLineNumbersForClipView;
 
 @end
 
@@ -58,7 +58,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		self.document = theDocument;
 		zeroPoint = NSMakePoint(0, 0);
 		
-		self.attributes = [[[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]], NSFontAttributeName, nil] autorelease];
+		self.attributes = @{NSFontAttributeName: [NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]]};
 		NSUserDefaultsController *defaultsController = [NSUserDefaultsController sharedUserDefaultsController];
 		[defaultsController addObserver:self forKeyPath:@"values.FragariaTextFont" options:NSKeyValueObservingOptionNew context:@"TextFontChanged"];
 	}
@@ -75,8 +75,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
  */
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-	if ([(NSString *)context isEqualToString:@"TextFontChanged"]) {
-		self.attributes = [[[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]], NSFontAttributeName, nil] autorelease];
+	if ([(__bridge NSString *)context isEqualToString:@"TextFontChanged"]) {
+		self.attributes = @{NSFontAttributeName: [NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]]};
 	} else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 	}
@@ -149,7 +149,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
         
         // get break points from delegate
         NSSet* breakpoints = NULL;
-        id breakpointDelegate = [[MGSFragaria currentInstance] objectForKey:MGSFOBreakpointDelegate];
+        id breakpointDelegate = [MGSFragaria currentInstance][MGSFOBreakpointDelegate];
         if (breakpointDelegate && [breakpointDelegate respondsToSelector:@selector(breakpointsForFile:)])
         {
             breakpoints = [breakpointDelegate breakpointsForFile:[gutterScrollView.documentView fileName]];
@@ -177,7 +177,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
                 oneMoreTime = YES; // Continue one more time through the loop if the last glyph isn't newline
             }
         }
-        NSMutableString *lineNumbersString = [[[NSMutableString alloc] init] autorelease];
+        NSMutableString *lineNumbersString = [[NSMutableString alloc] init];
         
         int textLine = 0;
         NSMutableArray* textLineBreakpoints = [NSMutableArray array];
@@ -192,9 +192,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
                 textLine++;
                 
                 // flag breakpoints
-                if ([breakpoints containsObject:[NSNumber numberWithInt:(int)lineNumber]])
+                if ([breakpoints containsObject:@((int)lineNumber)])
                 {
-                    [textLineBreakpoints addObject:[NSNumber numberWithInt:textLine]];
+                    [textLineBreakpoints addObject:@(textLine)];
                 }
             } else {
                 [lineNumbersString appendFormat:@"%C\n", (unsigned short)0x00B7];
@@ -221,7 +221,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
             NSInteger widthOfStringInGutter = [lineNumbersString sizeWithAttributes:self.attributes].width;
             
             if (widthOfStringInGutter > ([[document valueForKey:MGSFOGutterWidth] integerValue] - 14)) { // Check if the gutterTextView has to be resized
-                [document setValue:[NSNumber numberWithInteger:widthOfStringInGutter + 20] forKey:MGSFOGutterWidth]; // Make it bigger than need be so it doesn't have to resized soon again
+                [document setValue:@(widthOfStringInGutter + 20) forKey:MGSFOGutterWidth]; // Make it bigger than need be so it doesn't have to resized soon again
                 if ([[document valueForKey:MGSFOShowLineNumberGutter] boolValue] == YES) {
                     gutterWidth = [[document valueForKey:MGSFOGutterWidth] integerValue];
                 } else {

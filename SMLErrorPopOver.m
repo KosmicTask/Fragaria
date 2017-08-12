@@ -14,7 +14,7 @@
 
 + (CGFloat) widthOfString:(NSString *)string withFont:(NSFont *)font {
     NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
-    return [[[[NSAttributedString alloc] initWithString:string attributes:attributes] autorelease] size].width;
+    return [[[NSAttributedString alloc] initWithString:string attributes:attributes] size].width;
 }
 
 + (void) showErrorDescriptions:(NSArray*)errors relativeToView:(NSView*) view
@@ -28,7 +28,7 @@
     if (!numErrors) return;
     
     // Create view controller
-    NSViewController* vc = [[[NSViewController alloc] initWithNibName:@"ErrorPopoverView" bundle:[NSBundle bundleForClass:[self class]]] autorelease];
+    NSViewController* vc = [[NSViewController alloc] initWithNibName:@"ErrorPopoverView" bundle:[NSBundle bundleForClass:[self class]]];
     
     // Create labels and add them to the view
     for (NSString* err in errors)
@@ -40,7 +40,7 @@
         int width = [self widthOfString:err withFont:font];
         if (width > maxWidth) maxWidth = width;
         
-        textField = [[[NSTextField alloc] initWithFrame:NSMakeRect(0, viewHeight - (kSMLErrorPopOverErrorSpacing * (errNo + 1)), 1024, kSMLErrorPopOverErrorSpacing)] autorelease];
+        textField = [[NSTextField alloc] initWithFrame:NSMakeRect(0, viewHeight - (kSMLErrorPopOverErrorSpacing * (errNo + 1)), 1024, kSMLErrorPopOverErrorSpacing)];
         [textField setStringValue:err.description];
         [textField setBezeled:NO];
         [textField setDrawsBackground:NO];
@@ -56,7 +56,7 @@
     [vc.view setFrameSize:NSMakeSize(maxWidth, viewHeight)];
     
     // Open the popover
-    NSPopover* popover = [[[NSPopover alloc] init] autorelease];
+    NSPopover* popover = [[NSPopover alloc] init];
     popover.behavior = NSPopoverBehaviorTransient;
     popover.contentSize = vc.view.bounds.size;
     popover.contentViewController = vc;

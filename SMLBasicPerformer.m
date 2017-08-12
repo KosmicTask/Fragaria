@@ -119,7 +119,7 @@ static id sharedInstance = nil;
     CFStringRef uuidString = CFUUIDCreateString(NULL, uuid);
     CFRelease(uuid);
     
-    return NSMakeCollectable(uuidString);
+    return CFBridgingRelease(uuidString);
 }
 
 /*
@@ -165,7 +165,7 @@ static id sharedInstance = nil;
 			if (FSResolveAliasFile (&fsRef, true, &targetIsFolder, &wasAliased) == noErr && wasAliased) {
 				CFURLRef resolvedURL = CFURLCreateFromFSRef(NULL, &fsRef);
 				if (resolvedURL != NULL) {
-					resolvedPath = (NSString*)CFURLCopyFileSystemPath(resolvedURL, kCFURLPOSIXPathStyle);
+					resolvedPath = (NSString*)CFBridgingRelease(CFURLCopyFileSystemPath(resolvedURL, kCFURLPOSIXPathStyle));
                     CFRelease(resolvedURL);
 				}
 			}
@@ -177,7 +177,7 @@ static id sharedInstance = nil;
 		return path;
 	}
 	
-	return  NSMakeCollectable(resolvedPath);
+	return  CFBridgingRelease(CFBridgingRetain(resolvedPath));
 }
 
 @end

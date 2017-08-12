@@ -29,6 +29,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 }
 
 @property (nonatomic,copy) NSString* fileName;
-@property (nonatomic,retain) NSArray* breakpointLines;
+@property (nonatomic,strong) NSArray* breakpointLines;
 
 @end

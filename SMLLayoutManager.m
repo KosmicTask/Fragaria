@@ -27,6 +27,9 @@ typedef enum {
     kNewLineLine = 2
 } MGSLineCacheIndex;
 
+static char SMLFontOrColourValueChanged;
+static char SMLInvisibleCharacterValueChanged;
+
 @interface SMLLayoutManager()
 - (void)resetAttributesAndGlyphs;
 @end
@@ -63,16 +66,16 @@ typedef enum {
 		NSUserDefaultsController *defaultsController = [NSUserDefaultsController sharedUserDefaultsController];
         
         // text font and colour preferences
-		[defaultsController addObserver:self forKeyPath:@"values.FragariaTextFont" options:NSKeyValueObservingOptionNew context:@"FontOrColourValueChanged"];
-		[defaultsController addObserver:self forKeyPath:@"values.FragariaInvisibleCharactersColourWell" options:NSKeyValueObservingOptionNew context:@"FontOrColourValueChanged"];
+		[defaultsController addObserver:self forKeyPath:@"values.FragariaTextFont" options:NSKeyValueObservingOptionNew context:&SMLFontOrColourValueChanged];
+		[defaultsController addObserver:self forKeyPath:@"values.FragariaInvisibleCharactersColourWell" options:NSKeyValueObservingOptionNew context:&SMLInvisibleCharacterValueChanged];
         
         // invisible characters preference
-        [defaultsController addObserver:self forKeyPath:@"values.FragariaShowInvisibleCharacters" options:NSKeyValueObservingOptionNew context:@"InvisibleCharacterValueChanged"];
+        [defaultsController addObserver:self forKeyPath:@"values.FragariaShowInvisibleCharacters" options:NSKeyValueObservingOptionNew context:&SMLInvisibleCharacterValueChanged];
         
         
         // assign our custom glyph generator
         if (useGlyphSubstitutionForInvisibleGlyphs) {
-            [self setGlyphGenerator:[[[MGSGlyphGenerator alloc] init] autorelease]];
+            [self setGlyphGenerator:[[MGSGlyphGenerator alloc] init]];
         }
 
 	}
@@ -88,10 +91,10 @@ typedef enum {
  */
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-	if ([(NSString *)context isEqualToString:@"FontOrColourValueChanged"]) {
+	if (context == &SMLFontOrColourValueChanged) {
 		[self resetAttributesAndGlyphs];
 		[[self firstTextView] setNeedsDisplay:YES];
-    } else if ([(NSString *)context isEqualToString:@"InvisibleCharacterValueChanged"]) {
+    } else if (context == &SMLInvisibleCharacterValueChanged) {
         [self setShowInvisibleCharacters:[[SMLDefaults valueForKey:MGSFragariaPrefsShowInvisibleCharacters] boolValue]];
         
         if (useGlyphSubstitutionForInvisibleGlyphs) {
@@ -197,7 +200,7 @@ do {
                 pointToDrawAt.y += glyphFragment.origin.y;
                 
                 // get our text line object
-                CTLineRef line = (CTLineRef)[lineRefs objectAtIndex:lineRefIndex];
+                CTLineRef line = (__bridge CTLineRef)[lineRefs objectAtIndex:lineRefIndex];
                 
                 CGContextSetTextPosition(gcContext, pointToDrawAt.x, pointToDrawAt.y);
                 CTLineDraw(line, gcContext);
@@ -328,7 +331,7 @@ forStartingGlyphAtIndex:(NSUInteger)glyphIndex
 	 
 	 */
 	
-	NSMutableAttributedString *attributedString = [[[self attributedString] mutableCopy] autorelease];
+	NSMutableAttributedString *attributedString = [[self attributedString] mutableCopy];
 	NSInteger lastCharacter = [attributedString length];
 	[self removeTemporaryAttribute:NSBackgroundColorAttributeName forCharacterRange:NSMakeRange(0, lastCharacter)];
 	
@@ -356,36 +359,31 @@ forStartingGlyphAtIndex:(NSUInteger)glyphIndex
 - (void)resetAttributesAndGlyphs
 {
     // assemble our default attributes
-    [defAttributes release];
     defAttributes = [[NSDictionary alloc] initWithObjectsAndKeys:
                   [NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]], NSFontAttributeName, [NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsInvisibleCharactersColourWell]], NSForegroundColorAttributeName, nil];
 
     // define substitute characters for whitespace chars
     unichar tabUnichar = 0x00AC;
-    [tabCharacter release];
     tabCharacter = [[NSString alloc] initWithCharacters:&tabUnichar length:1];
     unichar newLineUnichar = 0x00B6;
-    [newLineCharacter release];
     newLineCharacter = [[NSString alloc] initWithCharacters:&newLineUnichar length:1];
-    [spaceCharacter release];
     spaceCharacter = @".";
     
     if (drawInvisibleGlyphsUsingCoreText) {
         // all CFTypes can be added to NS collections
         // http://www.mikeash.com/pyblog/friday-qa-2010-01-22-toll-free-bridging-internals.html
-        [lineRefs release];
-        lineRefs = [[NSMutableArray arrayWithCapacity:kNewLineLine+1] retain];
+        lineRefs = [NSMutableArray arrayWithCapacity:kNewLineLine+1];
         
-        NSAttributedString *attrString = [[[NSAttributedString alloc] initWithString:tabCharacter attributes:defAttributes] autorelease];
-        CTLineRef textLine = CFMakeCollectable(CTLineCreateWithAttributedString((CFAttributedStringRef)attrString));
-        [lineRefs addObject:(id)textLine]; // kTabLine
+        NSAttributedString *attrString = [[NSAttributedString alloc] initWithString:tabCharacter attributes:defAttributes];
+        id textLine = CFBridgingRelease(CTLineCreateWithAttributedString((CFAttributedStringRef)attrString));
+        [lineRefs addObject:textLine]; // kTabLine
         
-        attrString = [[[NSAttributedString alloc] initWithString:spaceCharacter attributes:defAttributes] autorelease];
-        textLine = CFMakeCollectable(CTLineCreateWithAttributedString((CFAttributedStringRef)attrString));
+        attrString = [[NSAttributedString alloc] initWithString:spaceCharacter attributes:defAttributes];
+        textLine = CFBridgingRelease(CTLineCreateWithAttributedString((CFAttributedStringRef)attrString));
         [lineRefs addObject:(id)textLine]; // kSpaceLine
         
-        attrString = [[[NSAttributedString alloc] initWithString:newLineCharacter attributes:defAttributes] autorelease];
-        textLine = CFMakeCollectable(CTLineCreateWithAttributedString((CFAttributedStringRef)attrString));
+        attrString = [[NSAttributedString alloc] initWithString:newLineCharacter attributes:defAttributes];
+        textLine = CFBridgingRelease(CTLineCreateWithAttributedString((CFAttributedStringRef)attrString));
         [lineRefs addObject:(id)textLine]; // kNewLineLine
     }
     
@@ -395,10 +393,10 @@ forStartingGlyphAtIndex:(NSUInteger)glyphIndex
         NSString *glyphString = [NSString stringWithFormat:@"%@%@%@", tabCharacter, spaceCharacter, newLineCharacter];
         
         // use NSLayoutManager instance to generate required glyphs using the default attributes
-        NSTextStorage *textStorage = [[[NSTextStorage alloc] initWithString:glyphString] autorelease];
+        NSTextStorage *textStorage = [[NSTextStorage alloc] initWithString:glyphString];
         [textStorage setAttributes:defAttributes range:NSMakeRange(0, [glyphString length])];
-        NSLayoutManager *layoutManager = [[[NSLayoutManager alloc] init] autorelease];
-        NSTextContainer *textContainer = [[[NSTextContainer alloc] init] autorelease];
+        NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
+        NSTextContainer *textContainer = [[NSTextContainer alloc] init];
         [layoutManager addTextContainer:textContainer];
         [textStorage addLayoutManager:layoutManager];
         

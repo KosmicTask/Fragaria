@@ -22,11 +22,18 @@ Unless required by applicable law or agreed to in writing, software distributed 
 #import "MGSFragariaFramework.h"
 #import "SMLAutoCompleteDelegate.h"
 
+static char SMLTextFontChanged;
+static char SMLTextColourChanged;
+static char SMLBackgroundColourChanged;
+static char SMLSmartInsertDeleteChanged;
+static char SMLTabWidthChanged;
+static char SMLPageGuideChanged;
+
 // class extension
 @interface SMLTextView()
 - (void)windowDidBecomeMainOrKey:(NSNotification *)note;
 
-@property (retain) NSColor *pageGuideColour;
+@property (strong) NSColor *pageGuideColour;
 
 @end
 
@@ -44,7 +51,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 - (id)initWithFrame:(NSRect)frame
 {
 	if ((self = [super initWithFrame:frame])) {
-		SMLLayoutManager *layoutManager = [[[SMLLayoutManager alloc] init] autorelease];
+		SMLLayoutManager *layoutManager = [[SMLLayoutManager alloc] init];
 		[[self textContainer] replaceLayoutManager:layoutManager];
 		
 		[self setDefaults];
@@ -112,17 +119,16 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	[self updateIBeamCursor];	
 	NSTrackingArea *trackingArea = [[NSTrackingArea alloc] initWithRect:[self frame] options:(NSTrackingMouseEnteredAndExited | NSTrackingActiveWhenFirstResponder) owner:self userInfo:nil];
 	[self addTrackingArea:trackingArea];
-	[trackingArea autorelease];
     
 	NSUserDefaultsController *defaultsController = [NSUserDefaultsController sharedUserDefaultsController];
-	[defaultsController addObserver:self forKeyPath:@"values.FragariaTextFont" options:NSKeyValueObservingOptionNew context:@"TextFontChanged"];
-	[defaultsController addObserver:self forKeyPath:@"values.FragariaTextColourWell" options:NSKeyValueObservingOptionNew context:@"TextColourChanged"];
-	[defaultsController addObserver:self forKeyPath:@"values.FragariaBackgroundColourWell" options:NSKeyValueObservingOptionNew context:@"BackgroundColourChanged"];
-	[defaultsController addObserver:self forKeyPath:@"values.FragariaSmartInsertDelete" options:NSKeyValueObservingOptionNew context:@"SmartInsertDeleteChanged"];
-	[defaultsController addObserver:self forKeyPath:@"values.FragariaTabWidth" options:NSKeyValueObservingOptionNew context:@"TabWidthChanged"];
-	[defaultsController addObserver:self forKeyPath:@"values.FragariaShowPageGuide" options:NSKeyValueObservingOptionNew context:@"PageGuideChanged"];
-	[defaultsController addObserver:self forKeyPath:@"values.FragariaShowPageGuideAtColumn" options:NSKeyValueObservingOptionNew context:@"PageGuideChanged"];
-	[defaultsController addObserver:self forKeyPath:@"values.FragariaSmartInsertDelete" options:NSKeyValueObservingOptionNew context:@"SmartInsertDeleteChanged"];
+	[defaultsController addObserver:self forKeyPath:@"values.FragariaTextFont" options:NSKeyValueObservingOptionNew context:&SMLTextFontChanged];
+	[defaultsController addObserver:self forKeyPath:@"values.FragariaTextColourWell" options:NSKeyValueObservingOptionNew context:&SMLTextColourChanged];
+	[defaultsController addObserver:self forKeyPath:@"values.FragariaBackgroundColourWell" options:NSKeyValueObservingOptionNew context:&SMLBackgroundColourChanged];
+	[defaultsController addObserver:self forKeyPath:@"values.FragariaSmartInsertDelete" options:NSKeyValueObservingOptionNew context:&SMLSmartInsertDeleteChanged];
+	[defaultsController addObserver:self forKeyPath:@"values.FragariaTabWidth" options:NSKeyValueObservingOptionNew context:&SMLTabWidthChanged];
+	[defaultsController addObserver:self forKeyPath:@"values.FragariaShowPageGuide" options:NSKeyValueObservingOptionNew context:&SMLPageGuideChanged];
+	[defaultsController addObserver:self forKeyPath:@"values.FragariaShowPageGuideAtColumn" options:NSKeyValueObservingOptionNew context:&SMLPageGuideChanged];
+	[defaultsController addObserver:self forKeyPath:@"values.FragariaSmartInsertDelete" options:NSKeyValueObservingOptionNew context:&SMLSmartInsertDeleteChanged];
 	
 	lineHeight = [[[self textContainer] layoutManager] defaultLineHeightForFont:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]]];
 }
@@ -188,23 +194,23 @@ Unless required by applicable law or agreed to in writing, software distributed 
  */
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-	if ([(NSString *)context isEqualToString:@"TextFontChanged"]) {
+	if (context == &SMLTextFontChanged) {
 		[self setFont:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]]];
 		lineHeight = [[[self textContainer] layoutManager] defaultLineHeightForFont:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]]];
 		[[fragaria objectForKey:ro_MGSFOLineNumbers] updateLineNumbersForClipView:[[self enclosingScrollView] contentView] checkWidth:NO recolour:YES];
 		[self setPageGuideValues];
-	} else if ([(NSString *)context isEqualToString:@"TextColourChanged"]) {
+	} else if (context == &SMLTextColourChanged) {
 		[self setTextColor:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextColourWell]]];
 		[self setInsertionPointColor:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextColourWell]]];
 		[self setPageGuideValues];
 		[self updateIBeamCursor];
-	} else if ([(NSString *)context isEqualToString:@"BackgroundColourChanged"]) {
+	} else if (context == &SMLBackgroundColourChanged) {
 		[self setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsBackgroundColourWell]]];
-	} else if ([(NSString *)context isEqualToString:@"SmartInsertDeleteChanged"]) {
+	} else if (context == &SMLSmartInsertDeleteChanged) {
 		[self setSmartInsertDeleteEnabled:[[SMLDefaults valueForKey:MGSFragariaPrefsSmartInsertDelete] boolValue]];
-	} else if ([(NSString *)context isEqualToString:@"TabWidthChanged"]) {
+	} else if (context == &SMLTabWidthChanged) {
 		[self setTabWidth];
-	} else if ([(NSString *)context isEqualToString:@"PageGuideChanged"]) {
+	} else if (context == &SMLPageGuideChanged) {
 		[self setPageGuideValues];
 	} else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -416,17 +422,17 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	while (numberOfSpaces--) {
 		[sizeString appendString:@" "];
 	}
-	NSDictionary *sizeAttribute = [[[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]], NSFontAttributeName, nil] autorelease];
+	NSDictionary *sizeAttribute = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]], NSFontAttributeName, nil];
 	CGFloat sizeOfTab = [sizeString sizeWithAttributes:sizeAttribute].width;
 	
-	NSMutableParagraphStyle *style = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
+	NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
 	
 	NSArray *array = [style tabStops];
 	for (id item in array) {
 		[style removeTabStop:item];
 	}
 	[style setDefaultTabInterval:sizeOfTab];
-	NSDictionary *attributes = [[[NSDictionary alloc] initWithObjectsAndKeys:style, NSParagraphStyleAttributeName, nil] autorelease];
+	NSDictionary *attributes = [[NSDictionary alloc] initWithObjectsAndKeys:style, NSParagraphStyleAttributeName, nil];
 	[self setTypingAttributes:attributes];
 }
 
@@ -437,7 +443,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
  */
 - (void)setPageGuideValues
 {
-	NSDictionary *sizeAttribute = [[[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]], NSFontAttributeName, nil] autorelease];
+	NSDictionary *sizeAttribute = [[NSDictionary alloc] initWithObjectsAndKeys:[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextFont]], NSFontAttributeName, nil];
 	NSString *sizeString = @" ";
 	CGFloat sizeOfCharacter = [sizeString sizeWithAttributes:sizeAttribute].width;
 	pageGuideX = (sizeOfCharacter * ([[SMLDefaults valueForKey:MGSFragariaPrefsShowPageGuideAtColumn] integerValue] + 1)) - 1.5f; // -1.5 to put it between the two characters and draw only on one pixel and not two (as the system draws it in a special way), and that's also why the width above is set to zero 
@@ -482,7 +488,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 			if (characterToCheck == '{') {
 				if (skipMatchingBrace == 0) { // If we have found the opening brace check first how much space is in front of that line so the same amount can be inserted in front of the new line
 					NSString *openingBraceLineWhitespaceString;
-					NSScanner *openingLineScanner = [[[NSScanner alloc] initWithString:[completeString substringWithRange:[completeString lineRangeForRange:NSMakeRange(location, 0)]]] autorelease];
+					NSScanner *openingLineScanner = [[NSScanner alloc] initWithString:[completeString substringWithRange:[completeString lineRangeForRange:NSMakeRange(location, 0)]]];
 					[openingLineScanner setCharactersToBeSkipped:nil];
 					BOOL foundOpeningBraceWhitespace = [openingLineScanner scanCharactersFromSet:whitespaceCharacterSet intoString:&openingBraceLineWhitespaceString];
 					
@@ -561,7 +567,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 	NSString *lastLineString = [[self string] substringWithRange:[[self string] lineRangeForRange:NSMakeRange([self selectedRange].location - 1, 0)]];
 	if ([[SMLDefaults valueForKey:MGSFragariaPrefsIndentNewLinesAutomatically] boolValue] == YES) {
 		NSString *previousLineWhitespaceString;
-		NSScanner *previousLineScanner = [[[NSScanner alloc] initWithString:[[self string] substringWithRange:[[self string] lineRangeForRange:NSMakeRange([self selectedRange].location - 1, 0)]]] autorelease];
+		NSScanner *previousLineScanner = [[NSScanner alloc] initWithString:[[self string] substringWithRange:[[self string] lineRangeForRange:NSMakeRange([self selectedRange].location - 1, 0)]]];
 		[previousLineScanner setCharactersToBeSkipped:nil];		
 		if ([previousLineScanner scanCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:&previousLineWhitespaceString]) {
 			[self insertText:previousLineWhitespaceString];
@@ -945,7 +951,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 		[(NSColor *)[NSUnarchiver unarchiveObjectWithData:[SMLDefaults valueForKey:MGSFragariaPrefsTextColourWell]] set];
 		NSRectFillUsingOperation(NSMakeRect(0, 0, [cursorImage size].width, [cursorImage size].height), NSCompositeSourceAtop);
 		[cursorImage unlockFocus];
-        NSCursor *cursor = [[[NSCursor alloc] initWithImage:cursorImage hotSpot:[[NSCursor IBeamCursor] hotSpot]] autorelease];
+        NSCursor *cursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:[[NSCursor IBeamCursor] hotSpot]];
 		[self setColouredIBeamCursor:cursor];
 	}
 }

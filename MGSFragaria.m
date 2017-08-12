@@ -56,12 +56,12 @@ char kcLineWrapPrefChanged;
 
 // class extension
 @interface MGSFragaria()
-@property (nonatomic, readwrite, assign) MGSExtraInterfaceController *extraInterfaceController;
+@property (nonatomic, readwrite) MGSExtraInterfaceController *extraInterfaceController;
 
 - (void)updateGutterView;
 
-@property (nonatomic,retain) NSSet* objectGetterKeys;
-@property (nonatomic,retain) NSSet* objectSetterKeys;
+@property (nonatomic,strong) NSSet* objectGetterKeys;
+@property (nonatomic,strong) NSSet* objectSetterKeys;
 
 @end
 
@@ -251,7 +251,7 @@ char kcLineWrapPrefChanged;
 		}
         
         // register the font transformer
-        FRAFontTransformer *fontTransformer = [[[FRAFontTransformer alloc] init] autorelease];
+        FRAFontTransformer *fontTransformer = [[FRAFontTransformer alloc] init];
         [NSValueTransformer setValueTransformer:fontTransformer forName:@"FontTransformer"];
         
         // observe defaults that affect rendering
@@ -312,7 +312,7 @@ char kcLineWrapPrefChanged;
     Class syntaxColouringClass = [SMLSyntaxColouring class];
     
 	// create text scrollview
-	NSScrollView *textScrollView = [[[NSScrollView alloc] initWithFrame:NSMakeRect(0, 0, [contentView bounds].size.width, [contentView bounds].size.height)] autorelease];
+	NSScrollView *textScrollView = [[NSScrollView alloc] initWithFrame:NSMakeRect(0, 0, [contentView bounds].size.width, [contentView bounds].size.height)];
 	NSSize contentSize = [textScrollView contentSize];
 	[textScrollView setBorderType:NSNoBorder];
 	[textScrollView setHasVerticalScroller:YES];
@@ -322,12 +322,12 @@ char kcLineWrapPrefChanged;
 	[textScrollView setPostsFrameChangedNotifications:YES];
 		
 	// create textview
-	SMLTextView *textView = [[[editorTextViewClass alloc] initWithFrame:NSMakeRect(0, 0, contentSize.width, contentSize.height)] autorelease];
+	SMLTextView *textView = [[editorTextViewClass alloc] initWithFrame:NSMakeRect(0, 0, contentSize.width, contentSize.height)];
     [textView setFragaria:self];
 	[textScrollView setDocumentView:textView];
 
     // create line numbers
-	SMLLineNumbers *lineNumbers = [[[lineNumberClass alloc] initWithDocument:self.docSpec] autorelease];
+	SMLLineNumbers *lineNumbers = [[lineNumberClass alloc] initWithDocument:self.docSpec];
 	[self.docSpec setValue:lineNumbers forKey:ro_MGSFOLineNumbers];
 
     // SMLLineNumbers will be notified of changes to the text scroll view content view due to scrolling
@@ -335,7 +335,7 @@ char kcLineWrapPrefChanged;
 	[[NSNotificationCenter defaultCenter] addObserver:lineNumbers selector:@selector(viewBoundsDidChange:) name:NSViewFrameDidChangeNotification object:[textScrollView contentView]];
 
 	// create gutter scrollview
-	NSScrollView *gutterScrollView = [[[NSScrollView alloc] initWithFrame:NSMakeRect(0, 0, gutterWidth, contentSize.height)] autorelease];
+	NSScrollView *gutterScrollView = [[NSScrollView alloc] initWithFrame:NSMakeRect(0, 0, gutterWidth, contentSize.height)];
 	[gutterScrollView setBorderType:NSNoBorder];
 	[gutterScrollView setHasVerticalScroller:NO];
 	[gutterScrollView setHasHorizontalScroller:NO];
@@ -343,7 +343,7 @@ char kcLineWrapPrefChanged;
 	[[gutterScrollView contentView] setAutoresizesSubviews:YES];
 	
 	// create gutter textview
-	SMLGutterTextView *gutterTextView = [[[gutterTextViewClass alloc] initWithFrame:NSMakeRect(0, 0, gutterWidth, contentSize.height - 50)] autorelease];
+	SMLGutterTextView *gutterTextView = [[gutterTextViewClass alloc] initWithFrame:NSMakeRect(0, 0, gutterWidth, contentSize.height - 50)];
 	[gutterScrollView setDocumentView:gutterTextView];
 	
 	// update the docSpec
@@ -352,7 +352,7 @@ char kcLineWrapPrefChanged;
 	[self.docSpec setValue:gutterScrollView forKey:ro_MGSFOGutterScrollView];
 	
 	// add syntax colouring
-	SMLSyntaxColouring *syntaxColouring = [[[syntaxColouringClass alloc] initWithDocument:self.docSpec] autorelease];
+	SMLSyntaxColouring *syntaxColouring = [[syntaxColouringClass alloc] initWithDocument:self.docSpec];
 	[self.docSpec setValue:syntaxColouring forKey:ro_MGSFOSyntaxColouring];
 	[self.docSpec setValue:syntaxColouring forKey:MGSFOAutoCompleteDelegate];
     
@@ -711,8 +711,8 @@ char kcLineWrapPrefChanged;
     NSBundle* bundle = [NSBundle bundleForClass:[self class]];
     
     NSString *path = [bundle pathForImageResource:name];
-    return path != nil ? [[[NSImage alloc]
-                           initWithContentsOfFile:path] autorelease] : nil;
+    return path != nil ? [[NSImage alloc]
+                           initWithContentsOfFile:path] : nil;
 }
 
 @end

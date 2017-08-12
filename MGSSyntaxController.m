@@ -38,8 +38,8 @@ NSString * const KMGSSyntaxDefinitionsFolder = @"Syntax Definitions";
 - (NSDictionary *)syntaxDefinitionWithName:(NSString *)name;
 - (NSBundle *)bundle;
 
-@property (retain, nonatomic, readwrite) NSArray *syntaxDefinitionNames;
-@property (retain) NSMutableDictionary *syntaxDefinitions;
+@property (strong, nonatomic, readwrite) NSArray *syntaxDefinitionNames;
+@property (strong) NSMutableDictionary *syntaxDefinitions;
 
 @end
 
@@ -214,7 +214,7 @@ static id sharedInstance = nil;
 		[definitionNames addObject:name];
 	}
 	
-	self.syntaxDefinitionNames = [[definitionNames copy] autorelease];
+	self.syntaxDefinitionNames = [definitionNames copy];
 
 }
 
@@ -272,17 +272,17 @@ static id sharedInstance = nil;
 		NSString *fileName = [definition objectForKey:@"file"];
 		
 		// load dictionary from this bundle
-		NSDictionary *syntaxDictionary = [[[NSDictionary alloc] initWithContentsOfFile:[[self bundle] pathForResource:fileName ofType:KMGSSyntaxDefinitionsExt inDirectory:KMGSSyntaxDefinitionsFolder]] autorelease];
+		NSDictionary *syntaxDictionary = [[NSDictionary alloc] initWithContentsOfFile:[[self bundle] pathForResource:fileName ofType:KMGSSyntaxDefinitionsExt inDirectory:KMGSSyntaxDefinitionsFolder]];
 		if (syntaxDictionary) return syntaxDictionary;
 		
 		// load dictionary from main bundle
-		syntaxDictionary = [[[NSDictionary alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:fileName ofType:KMGSSyntaxDefinitionsExt inDirectory:KMGSSyntaxDefinitionsFolder]] autorelease];
+		syntaxDictionary = [[NSDictionary alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:fileName ofType:KMGSSyntaxDefinitionsExt inDirectory:KMGSSyntaxDefinitionsFolder]];
 		if (syntaxDictionary) return syntaxDictionary;
 		
 		// load from application support
 		NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
 		NSString *path = [[[[[NSHomeDirectory() stringByAppendingPathComponent:@"Library"] stringByAppendingPathComponent:@"Application Support"] stringByAppendingPathComponent:appName] stringByAppendingPathComponent:fileName] stringByAppendingString:KMGSSyntaxDictionaryExt];
-		syntaxDictionary = [[[NSDictionary alloc] initWithContentsOfFile:path] autorelease];
+		syntaxDictionary = [[NSDictionary alloc] initWithContentsOfFile:path];
 		if (syntaxDictionary) return syntaxDictionary;
 		
 		// no dictionary found so use standard definition
@@ -299,7 +299,7 @@ static id sharedInstance = nil;
 - (void)addSyntaxDefinitions:(NSMutableArray *)definitions path:(NSString *)path
 {
 	if ([[NSFileManager defaultManager] fileExistsAtPath:path] == YES) {
-		[definitions addObjectsFromArray:[[[NSArray alloc] initWithContentsOfFile:path] autorelease]];
+		[definitions addObjectsFromArray:[[NSArray alloc] initWithContentsOfFile:path]];
 	}
 	
 }

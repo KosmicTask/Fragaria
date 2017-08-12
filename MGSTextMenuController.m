@@ -58,7 +58,7 @@ static id sharedInstance = nil;
 + (id)allocWithZone:(NSZone *)zone
 {
 #pragma unused(zone)
-	return [[self sharedInstance] retain];
+	return [self sharedInstance];
 } 
 
 #pragma mark -
@@ -126,7 +126,7 @@ static id sharedInstance = nil;
 	for (item in enumerator) {
 		if ([[item valueForKey:@"active"] boolValue] == YES) {
 			NSUInteger encoding = [[item valueForKey:@"encoding"] unsignedIntegerValue];
-			menuItem = [[[NSMenuItem alloc] initWithTitle:[NSString localizedNameOfStringEncoding:encoding] action:@selector(changeEncodingAction:) keyEquivalent:@""] autorelease];
+			menuItem = [[NSMenuItem alloc] initWithTitle:[NSString localizedNameOfStringEncoding:encoding] action:@selector(changeEncodingAction:) keyEquivalent:@""];
 			[menuItem setTag:encoding];
 			[menuItem setTarget:self];
 			[textEncodingMenu insertItem:menuItem atIndex:0];
@@ -137,7 +137,7 @@ static id sharedInstance = nil;
 	for (item in enumerator) {
 		if ([[item valueForKey:@"active"] boolValue] == YES) {
 			NSUInteger encoding = [[item valueForKey:@"encoding"] unsignedIntegerValue];
-			menuItem = [[[NSMenuItem alloc] initWithTitle:[NSString localizedNameOfStringEncoding:encoding] action:@selector(reloadText:) keyEquivalent:@""] autorelease];
+			menuItem = [[NSMenuItem alloc] initWithTitle:[NSString localizedNameOfStringEncoding:encoding] action:@selector(reloadText:) keyEquivalent:@""];
 			[menuItem setTag:encoding];
 			[menuItem setTarget:self];
 			[reloadTextWithEncodingMenu insertItem:menuItem atIndex:0];
@@ -157,7 +157,7 @@ static id sharedInstance = nil;
 	NSMenuItem *menuItem;
 	NSInteger tag = [syntaxDefinitions count] - 1;
 	for (id item in enumerator) {
-		menuItem = [[[NSMenuItem alloc] initWithTitle:[item valueForKey:@"name"] action:@selector(changeSyntaxDefinitionAction:) keyEquivalent:@""] autorelease];
+		menuItem = [[NSMenuItem alloc] initWithTitle:[item valueForKey:@"name"] action:@selector(changeSyntaxDefinitionAction:) keyEquivalent:@""];
 		[menuItem setTag:tag];
 		[menuItem setTarget:self];
 		[syntaxDefinitionMenu insertItem:menuItem atIndex:0];

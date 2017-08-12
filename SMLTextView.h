@@ -37,8 +37,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
     BOOL lineWrap;
 }
 
-@property (retain) NSCursor *colouredIBeamCursor;
-@property (retain) MGSFragaria *fragaria;
+@property (strong) NSCursor *colouredIBeamCursor;
+@property (strong) MGSFragaria *fragaria;
 @property (nonatomic) BOOL lineWrap;
 
 - (void)setDefaults;

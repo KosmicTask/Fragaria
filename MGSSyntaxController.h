@@ -23,6 +23,6 @@
 - (NSDictionary *)syntaxDefinitionWithExtension:(NSString *)extension;
 - (NSString *)syntaxDefinitionNameWithExtension:(NSString *)extension;
 
-@property (retain, nonatomic,readonly) NSArray *syntaxDefinitionNames;
+@property (strong, nonatomic,readonly) NSArray *syntaxDefinitionNames;
 
 @end

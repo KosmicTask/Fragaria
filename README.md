@@ -1,9 +1,9 @@
-#What is it?
+# What is it?
 Fragaria is an OS X Cocoa syntax colouring NSTextView implemented within a framework named MGSFragaria. It supports a wide range of programming languages and includes preference panel support.
 
 The MGSFragaria framework now properly supports both traditional reference counting memory management and garbage collection.
 
-#Where can I see it in use
+# Where can I see it in use
 
 You can see Fragaria used in the following projects and products:
 
@@ -21,7 +21,7 @@ You can see Fragaria used in the following projects and products:
 
 If you use Fragaria in your app and want it added to the list just let us know or edit the README.
 
-#Features
+# Features
 
 Most features are accessed via the framework preferences.
 
@@ -36,7 +36,7 @@ Most features are accessed via the framework preferences.
 * Line wrapping
 
 
-##How do I use it?
+## How do I use it?
 
 The best way to learn how to use the framework is to look at the sample apps.
 
@@ -46,7 +46,7 @@ The best way to learn how to use the framework is to look at the sample apps.
 
 * __Fragaria Doc__ : a simple NSDocument based editor.
 
-##Show me code
+## Show me code
 
 A Fragaria view is embedded in a content view.
 
@@ -84,7 +84,7 @@ MGSFragariaFontsAndColoursPrefsViewController *fontsAndColoursPrefsViewControlle
 ```
 
 
-##Setting preferences
+## Setting preferences
 
 Preference strings are defined in MGSFragaria/MGSFragariaPreferences.h. Each preference name is prefixed with Fragaria for easy identification within the application preferences file.
 
@@ -97,7 +97,7 @@ Preference strings are defined in MGSFragaria/MGSFragariaPreferences.h. Each pre
 All preferences are observed and instances of Fragaria views update immediately to reflect the new preference.
 
 
-##Breakpoint Highlighting
+## Breakpoint Highlighting
 
 Use the `MGSFOBreakpointDelegate` key to define a breakpoint delegate that responds to conforms to `MGSBreakpointDelegate`
 
@@ -124,7 +124,7 @@ fragaria.syntaxErrors = @[syntaxError];
 
 The implementation of this feature is at an early stage. Feel free to improve it.
 
-##Custom colouring
+## Custom colouring
 
 The `SMLSyntaxColouringDelegate` protocol allows a delegate to influence the syntax colouring for each of a number of syntactical groups such as numbers, attributes, comments or keywords. 
 
@@ -158,10 +158,10 @@ The delegate can completely override the colouring for a given group or provide 
 For more details see [SMLSyntaxColouringDelegate.h](SMLSyntaxColouringDelegate.h) and  the example code in [FragariaAppDelegate.m](FragariaAppDelegate.m).
 
 
-##Supported languages
+## Supported languages
 Fragaria supports syntax colouring for a wide range of programming languages and configuration file formats:
 
-###A
+### A
 actionscript, 
 actionscript3, 
 active4d, 
@@ -177,10 +177,10 @@ aspdotnet-cs,
 aspdotnet-vb, 
 awk
 
-###B
+### B
 batch (shell)
 
-###C
+### C
 C, 
 cobol, 
 coffeescript, 
@@ -190,38 +190,38 @@ csharp,
 csound, 
 css
 
-###D
+### D
 D, 
 dylan
 
-###E
+### E
 eiffel, erl, eztpl
 
-###F
+### F
 F-script,
 fortran,
 freefem
 
-###G
+### G
 gedcom,
 gnuassembler,
 graphviz
 
-###H
+### H
 haskell,
 header,
 html
 
-###I
+### I
 idl
 
-###J
+### J
 java,
 javafx,
 javascript,
 jsp
 
-###L
+### L
 latex,
 lilypond,
 lisp,
@@ -229,7 +229,7 @@ logtalk,
 lsl,
 lua
 
-###M
+### M
 matlab,
 mel,
 metapost,
@@ -237,16 +237,16 @@ metaslang,
 mysql,
 nemerle,
 
-###N
+### N
 nrnhoc
 
 
-###O
+### O
 objectivec,
 objectivecaml,
 ox
 
-###P
+### P
 pascal,
 pdf,
 perl,
@@ -256,12 +256,12 @@ postscript,
 prolog,
 python
 
-###R
+### R
 r,
 rhtml,
 ruby
 
-###S
+### S
 scala,
 sgml,
 shell,
@@ -270,22 +270,22 @@ sql,
 stata,
 supercollider
 
-###T
+### T
 tcltk,
 torquescript
 
-###U
+### U
 udo
 
-###V
+### V
 vb,
 verilog,
 vhdl
 
-###X
+### X
 xml
 
-##Defining a new language syntax
+## Defining a new language syntax
 
 To define a new syntax definition:
 
@@ -293,10 +293,10 @@ To define a new syntax definition:
 
 2. Insert a reference to the new plist into [SyntaxDefinitions.plist](SyntaxDefinitions.plist)
 
-#How can I contribute
+# How can I contribute
 Take a look at the [TODO](TODO.md) list.
 
-##Where did it come from?
+## Where did it come from?
 Fragaria started out as the vital pulp of Smultron, now called Fraise. If you want to add additional features to Fragaria then looking at the [Fraise](https://github.com/jfmoy/Fraise) and other forked sources is a good place to start. Fraise is a GC only app so you will need to consider memory management issues when importing code into Fragaria.
 
 
